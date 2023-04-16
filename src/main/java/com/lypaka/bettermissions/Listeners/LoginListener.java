@@ -1,0 +1,74 @@
+package com.lypaka.bettermissions.Listeners;
+
+import com.google.common.reflect.TypeToken;
+import com.lypaka.bettermissions.Accounts.Account;
+import com.lypaka.bettermissions.Accounts.AccountHandler;
+import com.lypaka.bettermissions.BetterMissions;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+public class LoginListener {
+
+    public static List<Account> accountsToUpdate = new ArrayList<>();
+
+    @SubscribeEvent
+    public void onJoin (PlayerEvent.PlayerLoggedInEvent event) throws ObjectMappingException {
+
+        UUID uuid = event.getPlayer().getUniqueID();
+        BetterMissions.playerConfigManager.loadPlayer(uuid);
+        if (BetterMissions.playerConfigManager.getPlayerConfigNode(uuid, "Claimed-Missions").isVirtual()) {
+
+            ArrayList<String> emptyList = new ArrayList<>();
+            BetterMissions.playerConfigManager.getPlayerConfigNode(uuid, "Claimed-Missions").setValue(emptyList);
+            BetterMissions.playerConfigManager.savePlayer(uuid);
+
+        }
+        Account account;
+        if (!AccountHandler.accountMap.containsKey(uuid)) {
+
+            account = new Account(uuid,
+                    new ArrayList<>(BetterMissions.playerConfigManager.getPlayerConfigNode(uuid, "Claimed-Missions").getList(TypeToken.of(String.class))),
+                    new ArrayList<>(BetterMissions.playerConfigManager.getPlayerConfigNode(uuid, "Completed-Missions").getList(TypeToken.of(String.class))),
+                    new ArrayList<>(BetterMissions.playerConfigManager.getPlayerConfigNode(uuid, "In-Progress-Permanent-Missions").getList(TypeToken.of(String.class))),
+                    BetterMissions.playerConfigManager.getPlayerConfigNode(uuid, "Mission-Storage").getValue(new TypeToken<Map<String, Map<String, String>>>() {}));
+            account.create();
+
+        } else {
+
+            account = AccountHandler.accountMap.get(uuid);
+
+        }
+
+        if (!BetterMissions.disabled) {
+
+            if (account.getMissionMap().size() == 0) {
+
+                AccountHandler.assignRandomMission(account);
+                AccountHandler.saveProgress(account);
+
+            }
+
+        } else {
+
+            accountsToUpdate.add(account);
+
+        }
+
+    }
+
+    @SubscribeEvent
+    public void onLeave (PlayerEvent.PlayerLoggedOutEvent event) {
+
+        Account account = AccountHandler.accountMap.get(event.getPlayer().getUniqueID());
+        AccountHandler.saveProgress(account);
+        AccountHandler.accountMap.entrySet().removeIf(e -> e.getKey().toString().equalsIgnoreCase(event.getPlayer().getUniqueID().toString()));
+
+    }
+
+}
