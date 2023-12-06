@@ -4,7 +4,7 @@ import com.lypaka.bettermissions.BetterMissions;
 import com.lypaka.bettermissions.MissionTimer;
 import com.lypaka.bettermissions.Utils;
 import com.lypaka.lypakautils.FancyText;
-import com.lypaka.lypakautils.PermissionHandler;
+import com.lypaka.lypakautils.MiscHandlers.PermissionHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.command.CommandSource;

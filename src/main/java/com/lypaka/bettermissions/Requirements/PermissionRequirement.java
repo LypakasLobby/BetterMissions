@@ -1,6 +1,6 @@
 package com.lypaka.bettermissions.Requirements;
 
-import com.lypaka.lypakautils.PermissionHandler;
+import com.lypaka.lypakautils.MiscHandlers.PermissionHandler;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
 import java.util.List;

@@ -11,6 +11,7 @@ import com.pixelmonmod.pixelmon.enums.EnumGrowth;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,6 @@ public class Utils {
     public static boolean applies (Map<String, String> specs, Pokemon pokemon) {
 
         boolean applies = false;
-        if (specs == null) return true;
         for (Map.Entry<String, String> entry : specs.entrySet()) {
 
             String spec = entry.getKey();
@@ -442,226 +442,135 @@ public class Utils {
 
         int index = -1;
         List<String> files;
-        ComplexConfigManager ccm;
         for (Map.Entry<String, ComplexConfigManager> entry : BetterMissions.missionConfigManager.entrySet()) {
 
             switch (entry.getKey().toLowerCase()) {
 
-                case "breed":
-                    files = ConfigGetters.breedMissions;
-                    ccm = BetterMissions.missionConfigManager.get("Breed");
-                    for (int i = 0; i < files.size(); i++) {
-
-                        if (ccm.getConfigNode(i, "Command-ID").getString().equalsIgnoreCase(missionID)) {
-
-                            return i;
-
-                        }
-
-                    }
-                    break;
-
                 case "catch":
                     files = ConfigGetters.catchMissions;
-                    ccm = BetterMissions.missionConfigManager.get("Catch");
-                    for (int i = 0; i < files.size(); i++) {
-
-                        if (ccm.getConfigNode(i, "Command-ID").getString().equalsIgnoreCase(missionID)) {
-
-                            return i;
-
-                        }
-
-                    }
                     break;
 
                 case "craft":
                     files = ConfigGetters.craftMissions;
-                    ccm = BetterMissions.missionConfigManager.get("Craft");
-                    for (int i = 0; i < files.size(); i++) {
-
-                        if (ccm.getConfigNode(i, "Command-ID").getString().equalsIgnoreCase(missionID)) {
-
-                            return i;
-
-                        }
-
-                    }
                     break;
 
                 case "defeat":
                     files = ConfigGetters.defeatMissions;
-                    ccm = BetterMissions.missionConfigManager.get("Defeat");
-                    for (int i = 0; i < files.size(); i++) {
-
-                        if (ccm.getConfigNode(i, "Command-ID").getString().equalsIgnoreCase(missionID)) {
-
-                            return i;
-
-                        }
-
-                    }
                     break;
 
                 case "evolve":
                     files = ConfigGetters.evolveMissions;
-                    ccm = BetterMissions.missionConfigManager.get("Evolve");
-                    for (int i = 0; i < files.size(); i++) {
-
-                        if (ccm.getConfigNode(i, "Command-ID").getString().equalsIgnoreCase(missionID)) {
-
-                            return i;
-
-                        }
-
-                    }
                     break;
 
                 case "fish":
                     files = ConfigGetters.fishMissions;
-                    ccm = BetterMissions.missionConfigManager.get("Fish");
-                    for (int i = 0; i < files.size(); i++) {
-
-                        if (ccm.getConfigNode(i, "Command-ID").getString().equalsIgnoreCase(missionID)) {
-
-                            return i;
-
-                        }
-
-                    }
-                    break;
-
-                case "hatch":
-                    files = ConfigGetters.hatchMissions;
-                    ccm = BetterMissions.missionConfigManager.get("Hatch");
-                    for (int i = 0; i < files.size(); i++) {
-
-                        if (ccm.getConfigNode(i, "Command-ID").getString().equalsIgnoreCase(missionID)) {
-
-                            return i;
-
-                        }
-
-                    }
                     break;
 
                 case "kill":
                     files = ConfigGetters.killMissions;
-                    ccm = BetterMissions.missionConfigManager.get("Kill");
-                    for (int i = 0; i < files.size(); i++) {
-
-                        if (ccm.getConfigNode(i, "Command-ID").getString().equalsIgnoreCase(missionID)) {
-
-                            return i;
-
-                        }
-
-                    }
                     break;
 
                 case "lose":
                     files = ConfigGetters.loseMissions;
-                    ccm = BetterMissions.missionConfigManager.get("Lose");
-                    for (int i = 0; i < files.size(); i++) {
-
-                        if (ccm.getConfigNode(i, "Command-ID").getString().equalsIgnoreCase(missionID)) {
-
-                            return i;
-
-                        }
-
-                    }
                     break;
 
                 case "melee":
                     files = ConfigGetters.meleeMissions;
-                    ccm = BetterMissions.missionConfigManager.get("Melee");
-                    for (int i = 0; i < files.size(); i++) {
-
-                        if (ccm.getConfigNode(i, "Command-ID").getString().equalsIgnoreCase(missionID)) {
-
-                            return i;
-
-                        }
-
-                    }
                     break;
 
                 case "mine":
                     files = ConfigGetters.mineMissions;
-                    ccm = BetterMissions.missionConfigManager.get("Mine");
-                    for (int i = 0; i < files.size(); i++) {
-
-                        if (ccm.getConfigNode(i, "Command-ID").getString().equalsIgnoreCase(missionID)) {
-
-                            return i;
-
-                        }
-
-                    }
-                    break;
-
-                case "photograph":
-                    files = ConfigGetters.photographMissions;
-                    ccm = BetterMissions.missionConfigManager.get("Photograph");
-                    for (int i = 0; i < files.size(); i++) {
-
-                        if (ccm.getConfigNode(i, "Command-ID").getString().equalsIgnoreCase(missionID)) {
-
-                            return i;
-
-                        }
-
-                    }
-                    break;
-
-                case "raid":
-                    files = ConfigGetters.raidMissions;
-                    ccm = BetterMissions.missionConfigManager.get("Raid");
-                    for (int i = 0; i < files.size(); i++) {
-
-                        if (ccm.getConfigNode(i, "Command-ID").getString().equalsIgnoreCase(missionID)) {
-
-                            return i;
-
-                        }
-
-                    }
-                    break;
-
-                case "release":
-                    files = ConfigGetters.releaseMissions;
-                    ccm = BetterMissions.missionConfigManager.get("Release");
-                    for (int i = 0; i < files.size(); i++) {
-
-                        if (ccm.getConfigNode(i, "Command-ID").getString().equalsIgnoreCase(missionID)) {
-
-                            return i;
-
-                        }
-
-                    }
                     break;
 
                 default:
-                    files = ConfigGetters.smeltMissions;
-                    ccm = BetterMissions.missionConfigManager.get("Smelt");
-                    for (int i = 0; i < files.size(); i++) {
-
-                        if (ccm.getConfigNode(i, "Command-ID").getString().equalsIgnoreCase(missionID)) {
-
-                            return i;
-
-                        }
-
-                    }
+                    files = ConfigGetters.releaseMissions;
                     break;
+
+
+            }
+
+            for (int i = 0; i < files.size(); i++) {
+
+                if (entry.getValue().getConfigNode(i, "Command-ID").equals(missionID)) {
+
+                    index = i;
+                    break;
+
+                }
 
             }
 
         }
 
         return index;
+
+    }
+
+    public static String getMissionTypeFromMissionID (String missionID) {
+
+        String missionType = null;
+        List<String> files;
+        for (Map.Entry<String, ComplexConfigManager> entry : BetterMissions.missionConfigManager.entrySet()) {
+
+            switch (entry.getKey().toLowerCase()) {
+
+                case "catch":
+                    files = ConfigGetters.catchMissions;
+                    break;
+
+                case "craft":
+                    files = ConfigGetters.craftMissions;
+                    break;
+
+                case "defeat":
+                    files = ConfigGetters.defeatMissions;
+                    break;
+
+                case "evolve":
+                    files = ConfigGetters.evolveMissions;
+                    break;
+
+                case "fish":
+                    files = ConfigGetters.fishMissions;
+                    break;
+
+                case "kill":
+                    files = ConfigGetters.killMissions;
+                    break;
+
+                case "lose":
+                    files = ConfigGetters.loseMissions;
+                    break;
+
+                case "melee":
+                    files = ConfigGetters.meleeMissions;
+                    break;
+
+                case "mine":
+                    files = ConfigGetters.mineMissions;
+                    break;
+
+                default:
+                    files = ConfigGetters.releaseMissions;
+                    break;
+
+
+            }
+
+            for (int i = 0; i < files.size(); i++) {
+
+                if (entry.getValue().getConfigNode(i, "Command-ID").equals(missionID)) {
+
+                    missionType = entry.getKey();
+                    break;
+
+                }
+
+            }
+
+        }
+
+        return missionType;
 
     }
 

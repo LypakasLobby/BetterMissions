@@ -5,8 +5,8 @@ import com.lypaka.bettermissions.BetterMissions;
 import com.lypaka.bettermissions.Missions.MissionRegistry;
 import com.lypaka.lypakautils.ConfigurationLoaders.ComplexConfigManager;
 import com.lypaka.lypakautils.FancyText;
-import com.lypaka.lypakautils.JoinListener;
-import com.lypaka.lypakautils.PermissionHandler;
+import com.lypaka.lypakautils.Listeners.JoinListener;
+import com.lypaka.lypakautils.MiscHandlers.PermissionHandler;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 

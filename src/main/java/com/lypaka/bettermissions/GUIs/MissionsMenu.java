@@ -10,8 +10,10 @@ import com.lypaka.bettermissions.Accounts.AccountHandler;
 import com.lypaka.bettermissions.Config.ConfigGetters;
 import com.lypaka.bettermissions.Missions.*;
 import com.lypaka.lypakautils.FancyText;
-import com.lypaka.lypakautils.ItemStackBuilder;
-import com.lypaka.lypakautils.LogicalPixelmonMoneyHandler;
+import com.lypaka.lypakautils.MiscHandlers.ItemStackBuilder;
+import com.lypaka.lypakautils.MiscHandlers.LogicalPixelmonMoneyHandler;
+import com.pixelmonmod.pixelmon.api.storage.PlayerPartyStorage;
+import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ListNBT;
@@ -86,14 +88,15 @@ public class MissionsMenu {
             Button rerollButton;
             if (ConfigGetters.rerollsEnabled) {
 
-                double balance = LogicalPixelmonMoneyHandler.getBalance(player.getUniqueID());
+                PlayerPartyStorage storage = StorageProxy.getParty(player);
+                int balance = (int) LogicalPixelmonMoneyHandler.getBalance(player.getUniqueID());
                 if (balance >= ConfigGetters.rerollCost || ConfigGetters.rerollCost == 0) {
 
                     rerollButton = GooeyButton.builder()
                             .display(rerollIcon)
                             .onClick(() -> {
 
-                                LogicalPixelmonMoneyHandler.remove(player.getUniqueID(), ConfigGetters.rerollCost);
+                                storage.setBalance(balance - ConfigGetters.rerollCost);
                                 AccountHandler.assignRandomMission(account);
                                 AccountHandler.removeMission(account, missionID);
                                 AccountHandler.saveProgress(account);
@@ -120,15 +123,7 @@ public class MissionsMenu {
 
         } else {
 
-            if (missionID.equalsIgnoreCase("")) {
-
-                player.sendMessage(FancyText.getFormattedText("&cYou don't currently have a mission to display!"), player.getUniqueID());
-
-            } else {
-
-                player.sendMessage(FancyText.getFormattedText("&cAn error occurred when trying to open the menu! Please report this message to staff!"), player.getUniqueID());
-
-            }
+            player.sendMessage(FancyText.getFormattedText("&cAn error occurred when trying to open the menu! Please report this message to staff!"), player.getUniqueID());
 
         }
 

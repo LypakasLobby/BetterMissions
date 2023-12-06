@@ -12,8 +12,7 @@ import com.lypaka.bettermissions.Requirements.*;
 import com.lypaka.bettermissions.Utils;
 import com.lypaka.lypakautils.ConfigurationLoaders.ComplexConfigManager;
 import com.lypaka.lypakautils.FancyText;
-import com.lypaka.lypakautils.JoinListener;
-import com.lypaka.lypakautils.LogicalPixelmonMoneyHandler;
+import com.lypaka.lypakautils.Listeners.JoinListener;
 import com.pixelmonmod.pixelmon.api.events.LostToTrainerEvent;
 import com.pixelmonmod.pixelmon.api.events.LostToWildPixelmonEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
@@ -27,6 +26,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -109,6 +109,7 @@ public class LoseListeners {
                     int progress = AccountHandler.getMissionProgress(account, mission.getID());
                     int updated = progress + 1;
                     AccountHandler.updateProgress(account, mission.getID(), updated);
+                    boolean permanent = mission.getTimer() > 0;
                     if (AccountHandler.completed(mission.getAmount(), updated)) {
 
                         if (ConfigGetters.autoCycleMissions) {
@@ -127,7 +128,8 @@ public class LoseListeners {
 
                             completedEvent = new MissionCompletedEvent(player, mission, mission.getReward());
                             MinecraftForge.EVENT_BUS.post(completedEvent);
-                            LogicalPixelmonMoneyHandler.add(uuid, completedEvent.getRewardMoney());
+                            PlayerPartyStorage storage = StorageProxy.getParty(uuid);
+                            storage.add(completedEvent.getRewardMoney());
 
                         } else {
 
@@ -251,7 +253,8 @@ public class LoseListeners {
 
                                         completedEvent = new MissionCompletedEvent(player, missions, missions.getReward());
                                         MinecraftForge.EVENT_BUS.post(completedEvent);
-                                        LogicalPixelmonMoneyHandler.add(uuid, completedEvent.getRewardMoney());
+                                        PlayerPartyStorage storage = StorageProxy.getParty(uuid);
+                                        storage.add(completedEvent.getRewardMoney());
 
                                     } else {
 
@@ -398,7 +401,8 @@ public class LoseListeners {
 
                             completedEvent = new MissionCompletedEvent(player, mission, mission.getReward());
                             MinecraftForge.EVENT_BUS.post(completedEvent);
-                            LogicalPixelmonMoneyHandler.add(uuid, completedEvent.getRewardMoney());
+                            PlayerPartyStorage storage = StorageProxy.getParty(uuid);
+                            storage.add(completedEvent.getRewardMoney());
 
                         } else {
 
@@ -522,7 +526,8 @@ public class LoseListeners {
 
                                         completedEvent = new MissionCompletedEvent(player, missions, missions.getReward());
                                         MinecraftForge.EVENT_BUS.post(completedEvent);
-                                        LogicalPixelmonMoneyHandler.add(uuid, completedEvent.getRewardMoney());
+                                        PlayerPartyStorage storage = StorageProxy.getParty(uuid);
+                                        storage.add(completedEvent.getRewardMoney());
 
                                     } else {
 

@@ -5,7 +5,7 @@ import com.lypaka.bettermissions.Accounts.AccountHandler;
 import com.lypaka.bettermissions.BetterMissions;
 import com.lypaka.bettermissions.Config.ConfigGetters;
 import com.lypaka.lypakautils.FancyText;
-import com.lypaka.lypakautils.PermissionHandler;
+import com.lypaka.lypakautils.MiscHandlers.PermissionHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;

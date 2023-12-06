@@ -12,8 +12,7 @@ import com.lypaka.bettermissions.Requirements.*;
 import com.lypaka.bettermissions.Utils;
 import com.lypaka.lypakautils.ConfigurationLoaders.ComplexConfigManager;
 import com.lypaka.lypakautils.FancyText;
-import com.lypaka.lypakautils.JoinListener;
-import com.lypaka.lypakautils.LogicalPixelmonMoneyHandler;
+import com.lypaka.lypakautils.Listeners.JoinListener;
 import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.PlayerPartyStorage;
@@ -25,9 +24,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class CatchingListener {
 
@@ -129,7 +126,8 @@ public class CatchingListener {
 
                             completedEvent = new MissionCompletedEvent(player, mission, mission.getReward());
                             MinecraftForge.EVENT_BUS.post(completedEvent);
-                            LogicalPixelmonMoneyHandler.add(uuid, completedEvent.getRewardMoney());
+                            PlayerPartyStorage storage = StorageProxy.getParty(uuid);
+                            storage.add(completedEvent.getRewardMoney());
 
                         } else {
 
@@ -253,7 +251,8 @@ public class CatchingListener {
 
                                         completedEvent = new MissionCompletedEvent(player, missions, missions.getReward());
                                         MinecraftForge.EVENT_BUS.post(completedEvent);
-                                        LogicalPixelmonMoneyHandler.add(uuid, completedEvent.getRewardMoney());
+                                        PlayerPartyStorage storage = StorageProxy.getParty(uuid);
+                                        storage.add(completedEvent.getRewardMoney());
 
                                     } else {
 
