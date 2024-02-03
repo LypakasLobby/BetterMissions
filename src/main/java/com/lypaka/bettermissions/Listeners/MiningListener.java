@@ -69,7 +69,7 @@ public class MiningListener {
 
                         ItemRequirement itemRequirement = new ItemRequirement(mission.getRequirements().getItemRequirements(), player);
                         ComplexConfigManager configManager = BetterMissions.missionConfigManager.get("Mine");
-                        int index = Utils.getIndexFromMissionID(mission.getCommandID());
+                        int index = Utils.getIndexFromMissionID("Mine", mission.getID());
                         PartyRequirement partyRequirement = new PartyRequirement(configManager, index, mission.getRequirements().getPartyRequirements(), player);
                         PokedexRequirement pokedexRequirement = new PokedexRequirement(mission.getRequirements().getPokedexRequirements(), player);
                         PermissionRequirement permissionRequirement = new PermissionRequirement(mission.getRequirements().getPermissionRequirements(), player);
@@ -192,7 +192,7 @@ public class MiningListener {
 
                                     ItemRequirement itemRequirement = new ItemRequirement(missions.getRequirements().getItemRequirements(), player);
                                     ComplexConfigManager configManager = BetterMissions.missionConfigManager.get("Mine");
-                                    int index = Utils.getIndexFromMissionID(missions.getCommandID());
+                                    int index = Utils.getIndexFromMissionID("Mine", missions.getID());
                                     PartyRequirement partyRequirement = new PartyRequirement(configManager, index, missions.getRequirements().getPartyRequirements(), player);
                                     PokedexRequirement pokedexRequirement = new PokedexRequirement(missions.getRequirements().getPokedexRequirements(), player);
                                     PermissionRequirement permissionRequirement = new PermissionRequirement(missions.getRequirements().getPermissionRequirements(), player);

@@ -20,8 +20,6 @@ import java.util.UUID;
 
 public class AssignCommand {
 
-    private static SuggestionProvider<CommandSource> MISSION_SUGGESTIONS = ((context, builder) -> ISuggestionProvider.suggest(Utils.permanentMissionIDs, builder));
-
     public AssignCommand (CommandDispatcher<CommandSource> dispatcher) {
 
         for (String a : BetterMissionsCommand.ALIASES) {
@@ -34,7 +32,7 @@ public class AssignCommand {
                                                     Commands.argument("player", EntityArgument.players())
                                                             .then(
                                                                     Commands.argument("mission", StringArgumentType.word())
-                                                                            .suggests(MISSION_SUGGESTIONS)
+                                                                            .suggests(((context, builder) -> ISuggestionProvider.suggest(Utils.permanentMissionIDs, builder)))
                                                                             .executes(c -> {
 
                                                                                 if (BetterMissions.disabled) return 0;
@@ -98,12 +96,6 @@ public class AssignCommand {
             );
 
         }
-
-    }
-
-    public static void updateSuggestions() {
-
-        MISSION_SUGGESTIONS = ((context, builder) -> ISuggestionProvider.suggest(Utils.permanentMissionIDs, builder));
 
     }
 

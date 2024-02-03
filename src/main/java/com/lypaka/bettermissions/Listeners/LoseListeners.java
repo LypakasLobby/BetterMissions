@@ -70,7 +70,7 @@ public class LoseListeners {
 
                         ItemRequirement itemRequirement = new ItemRequirement(mission.getRequirements().getItemRequirements(), player);
                         ComplexConfigManager configManager = BetterMissions.missionConfigManager.get("Lose");
-                        int index = Utils.getIndexFromMissionID(mission.getCommandID());
+                        int index = Utils.getIndexFromMissionID("Lose", mission.getID());
                         PartyRequirement partyRequirement = new PartyRequirement(configManager, index, mission.getRequirements().getPartyRequirements(), player);
                         PokedexRequirement pokedexRequirement = new PokedexRequirement(mission.getRequirements().getPokedexRequirements(), player);
                         PermissionRequirement permissionRequirement = new PermissionRequirement(mission.getRequirements().getPermissionRequirements(), player);
@@ -109,7 +109,6 @@ public class LoseListeners {
                     int progress = AccountHandler.getMissionProgress(account, mission.getID());
                     int updated = progress + 1;
                     AccountHandler.updateProgress(account, mission.getID(), updated);
-                    boolean permanent = mission.getTimer() > 0;
                     if (AccountHandler.completed(mission.getAmount(), updated)) {
 
                         if (ConfigGetters.autoCycleMissions) {
@@ -194,7 +193,7 @@ public class LoseListeners {
 
                                     ItemRequirement itemRequirement = new ItemRequirement(missions.getRequirements().getItemRequirements(), player);
                                     ComplexConfigManager configManager = BetterMissions.missionConfigManager.get("Lose");
-                                    int index = Utils.getIndexFromMissionID(missions.getCommandID());
+                                    int index = Utils.getIndexFromMissionID("Lose", missions.getID());
                                     PartyRequirement partyRequirement = new PartyRequirement(configManager, index, missions.getRequirements().getPartyRequirements(), player);
                                     PokedexRequirement pokedexRequirement = new PokedexRequirement(missions.getRequirements().getPokedexRequirements(), player);
                                     PermissionRequirement permissionRequirement = new PermissionRequirement(missions.getRequirements().getPermissionRequirements(), player);
@@ -344,7 +343,7 @@ public class LoseListeners {
 
                         ItemRequirement itemRequirement = new ItemRequirement(mission.getRequirements().getItemRequirements(), player);
                         ComplexConfigManager configManager = BetterMissions.missionConfigManager.get("Lose");
-                        int index = Utils.getIndexFromMissionID(mission.getCommandID());
+                        int index = Utils.getIndexFromMissionID("Lose", mission.getID());
                         PartyRequirement partyRequirement = new PartyRequirement(configManager, index, mission.getRequirements().getPartyRequirements(), player);
                         PokedexRequirement pokedexRequirement = new PokedexRequirement(mission.getRequirements().getPokedexRequirements(), player);
                         PermissionRequirement permissionRequirement = new PermissionRequirement(mission.getRequirements().getPermissionRequirements(), player);
@@ -467,7 +466,7 @@ public class LoseListeners {
 
                                     ItemRequirement itemRequirement = new ItemRequirement(missions.getRequirements().getItemRequirements(), player);
                                     ComplexConfigManager configManager = BetterMissions.missionConfigManager.get("Lose");
-                                    int index = Utils.getIndexFromMissionID(missions.getCommandID());
+                                    int index = Utils.getIndexFromMissionID("Lose", missions.getID());
                                     PartyRequirement partyRequirement = new PartyRequirement(configManager, index, missions.getRequirements().getPartyRequirements(), player);
                                     PokedexRequirement pokedexRequirement = new PokedexRequirement(missions.getRequirements().getPokedexRequirements(), player);
                                     PermissionRequirement permissionRequirement = new PermissionRequirement(missions.getRequirements().getPermissionRequirements(), player);

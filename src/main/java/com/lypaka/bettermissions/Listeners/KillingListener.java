@@ -65,7 +65,7 @@ public class KillingListener {
                     }
                     ItemRequirement itemRequirement = new ItemRequirement(mission.getRequirements().getItemRequirements(), player);
                     ComplexConfigManager configManager = BetterMissions.missionConfigManager.get("Kill");
-                    int index = Utils.getIndexFromMissionID(mission.getCommandID());
+                    int index = Utils.getIndexFromMissionID("Kill", mission.getID());
                     MissionRequirementsEvent requirementsEvent = new MissionRequirementsEvent(player, mission.getID(), mission.getRequirements());
                     MinecraftForge.EVENT_BUS.post(requirementsEvent);
                     if (!requirementsEvent.isCanceled()) {
@@ -191,7 +191,7 @@ public class KillingListener {
 
                                     ItemRequirement itemRequirement = new ItemRequirement(missions.getRequirements().getItemRequirements(), player);
                                     ComplexConfigManager configManager = BetterMissions.missionConfigManager.get("Kill");
-                                    int index = Utils.getIndexFromMissionID(missions.getCommandID());
+                                    int index = Utils.getIndexFromMissionID("Kill", missions.getID());
                                     PartyRequirement partyRequirement = new PartyRequirement(configManager, index, missions.getRequirements().getPartyRequirements(), player);
                                     PokedexRequirement pokedexRequirement = new PokedexRequirement(missions.getRequirements().getPokedexRequirements(), player);
                                     PermissionRequirement permissionRequirement = new PermissionRequirement(missions.getRequirements().getPermissionRequirements(), player);

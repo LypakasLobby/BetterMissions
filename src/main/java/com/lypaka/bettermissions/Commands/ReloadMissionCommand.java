@@ -46,7 +46,6 @@ public class ReloadMissionCommand {
                                                                     Utils.reloadMissionType(missionType);
                                                                     MissionTimer.start();
                                                                     Utils.putAllPermanentShitsInOneList();
-                                                                    AssignCommand.updateSuggestions();
                                                                     c.getSource().sendFeedback(FancyText.getFormattedText("&aSuccessfully reloaded the " + missionType + " Missions!"), true);
 
                                                                 } catch (ObjectMappingException e) {

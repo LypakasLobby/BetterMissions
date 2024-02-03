@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Specification-Title: bettermissions
+Specification-Vendor: Lypaka
+Specification-Version: 1
+Implementation-Title: bettermissions
+Implementation-Version: 1.16.5-2.0.4
+Implementation-Vendor: Lypaka
+Implementation-Timestamp: 2024-02-03T12:50:32-0600
+

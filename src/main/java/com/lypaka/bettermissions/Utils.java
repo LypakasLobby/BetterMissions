@@ -438,139 +438,90 @@ public class Utils {
 
     }
 
-    public static int getIndexFromMissionID (String missionID) {
+    public static int getIndexFromMissionID (String type, String missionID) {
 
         int index = -1;
-        List<String> files;
+        List<String> files = new ArrayList<>();
+        type = type.toLowerCase();
+        ComplexConfigManager ccm = null;
         for (Map.Entry<String, ComplexConfigManager> entry : BetterMissions.missionConfigManager.entrySet()) {
 
-            switch (entry.getKey().toLowerCase()) {
+            if (ccm != null) break;
+            if (type.equalsIgnoreCase(entry.getKey())) {
 
-                case "catch":
-                    files = ConfigGetters.catchMissions;
-                    break;
+                ccm = entry.getValue();
+                switch (entry.getKey().toLowerCase()) {
 
-                case "craft":
-                    files = ConfigGetters.craftMissions;
-                    break;
+                    case "catch":
+                        files = ConfigGetters.catchMissions;
+                        break;
 
-                case "defeat":
-                    files = ConfigGetters.defeatMissions;
-                    break;
+                    case "craft":
+                        files = ConfigGetters.craftMissions;
+                        break;
 
-                case "evolve":
-                    files = ConfigGetters.evolveMissions;
-                    break;
+                    case "defeat":
+                        files = ConfigGetters.defeatMissions;
+                        break;
 
-                case "fish":
-                    files = ConfigGetters.fishMissions;
-                    break;
+                    case "evolve":
+                        files = ConfigGetters.evolveMissions;
+                        break;
 
-                case "kill":
-                    files = ConfigGetters.killMissions;
-                    break;
+                    case "fish":
+                        files = ConfigGetters.fishMissions;
+                        break;
 
-                case "lose":
-                    files = ConfigGetters.loseMissions;
-                    break;
+                    case "kill":
+                        files = ConfigGetters.killMissions;
+                        break;
 
-                case "melee":
-                    files = ConfigGetters.meleeMissions;
-                    break;
+                    case "lose":
+                        files = ConfigGetters.loseMissions;
+                        break;
 
-                case "mine":
-                    files = ConfigGetters.mineMissions;
-                    break;
+                    case "melee":
+                        files = ConfigGetters.meleeMissions;
+                        break;
 
-                default:
-                    files = ConfigGetters.releaseMissions;
-                    break;
+                    case "mine":
+                        files = ConfigGetters.mineMissions;
+                        break;
 
+                    case "photograph":
+                        files = ConfigGetters.photographMissions;
+                        break;
+
+                    case "raid":
+                        files = ConfigGetters.raidMissions;
+                        break;
+
+                    case "release":
+                        files = ConfigGetters.releaseMissions;
+                        break;
+
+                    default:
+                        files = ConfigGetters.smeltMissions;
+                        break;
+
+                }
 
             }
 
-            for (int i = 0; i < files.size(); i++) {
+        }
+        if (ccm == null) return index;
+        for (int i = 0; i < files.size(); i++) {
 
-                if (entry.getValue().getConfigNode(i, "Command-ID").equals(missionID)) {
+            if (ccm.getConfigNode(i, "Mission-ID").getString().equalsIgnoreCase(missionID)) {
 
-                    index = i;
-                    break;
-
-                }
+                index = i;
+                break;
 
             }
 
         }
 
         return index;
-
-    }
-
-    public static String getMissionTypeFromMissionID (String missionID) {
-
-        String missionType = null;
-        List<String> files;
-        for (Map.Entry<String, ComplexConfigManager> entry : BetterMissions.missionConfigManager.entrySet()) {
-
-            switch (entry.getKey().toLowerCase()) {
-
-                case "catch":
-                    files = ConfigGetters.catchMissions;
-                    break;
-
-                case "craft":
-                    files = ConfigGetters.craftMissions;
-                    break;
-
-                case "defeat":
-                    files = ConfigGetters.defeatMissions;
-                    break;
-
-                case "evolve":
-                    files = ConfigGetters.evolveMissions;
-                    break;
-
-                case "fish":
-                    files = ConfigGetters.fishMissions;
-                    break;
-
-                case "kill":
-                    files = ConfigGetters.killMissions;
-                    break;
-
-                case "lose":
-                    files = ConfigGetters.loseMissions;
-                    break;
-
-                case "melee":
-                    files = ConfigGetters.meleeMissions;
-                    break;
-
-                case "mine":
-                    files = ConfigGetters.mineMissions;
-                    break;
-
-                default:
-                    files = ConfigGetters.releaseMissions;
-                    break;
-
-
-            }
-
-            for (int i = 0; i < files.size(); i++) {
-
-                if (entry.getValue().getConfigNode(i, "Command-ID").equals(missionID)) {
-
-                    missionType = entry.getKey();
-                    break;
-
-                }
-
-            }
-
-        }
-
-        return missionType;
 
     }
 
