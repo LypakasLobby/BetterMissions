@@ -8,6 +8,7 @@ import com.lypaka.bettermissions.BetterMissions;
 import com.lypaka.bettermissions.Config.ConfigGetters;
 import com.lypaka.bettermissions.Missions.CraftMission;
 import com.lypaka.bettermissions.Missions.MissionRegistry;
+import com.lypaka.bettermissions.Missions.SmeltMission;
 import com.lypaka.bettermissions.Requirements.*;
 import com.lypaka.bettermissions.Utils;
 import com.lypaka.lypakautils.ConfigurationLoaders.ComplexConfigManager;
@@ -33,6 +34,7 @@ public class SmeltListener {
     @SubscribeEvent
     public void onSmelt (PlayerEvent.ItemSmeltedEvent event) throws ObjectMappingException {
 
+        System.out.println("hi from smelting");
         if (BetterMissions.disabled) return;
         ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
         UUID uuid = player.getUniqueID();
@@ -41,11 +43,14 @@ public class SmeltListener {
 
             Account account = AccountHandler.accountMap.get(uuid);
             String id = AccountHandler.getCurrentMission(account);
-            CraftMission mission = null;
-            for (CraftMission missions : MissionRegistry.craftMissions) {
+            System.out.println("current mission ID == " + id);
+            SmeltMission mission = null;
+            for (SmeltMission missions : MissionRegistry.smeltMissions) {
 
+                System.out.println("mission ID from registry: " + missions.getID());
                 if (missions.getID().equalsIgnoreCase(id)) {
 
+                    System.out.println("found match");
                     mission = missions;
                     break;
 
@@ -60,8 +65,11 @@ public class SmeltListener {
                     if (!RandomHelper.getRandomChance(mission.getChance())) return;
 
                 }
+                System.out.println("itemID == " + itemID);
+                System.out.println("mission item ids == " + mission.getItemIDs());
                 if (mission.getItemIDs().contains(itemID)) {
 
+                    System.out.println("item IDs contains item id");
                     MissionRequirementsEvent requirementsEvent = new MissionRequirementsEvent(player, mission.getID(), mission.getRequirements());
                     MinecraftForge.EVENT_BUS.post(requirementsEvent);
                     if (!requirementsEvent.isCanceled()) {
@@ -166,7 +174,7 @@ public class SmeltListener {
             if (mission == null) {
 
                 ArrayList<String> permanentMissions = AccountHandler.getCurrentPermanentMissionsList(account);
-                for (CraftMission missions : MissionRegistry.permanentCraftMissions) {
+                for (SmeltMission missions : MissionRegistry.permanentSmeltMissions) {
 
                     permanentMissions.removeIf(m -> {
 

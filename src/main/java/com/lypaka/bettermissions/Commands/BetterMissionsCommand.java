@@ -26,7 +26,6 @@ public class BetterMissionsCommand {
 
         new AddMissionCommand(event.getDispatcher());
         new AssignCommand(event.getDispatcher());
-        new LogCommand(event.getDispatcher());
         new MarkCompleteCommand(event.getDispatcher());
         new MenuCommand(event.getDispatcher());
         new ReloadCommand(event.getDispatcher());

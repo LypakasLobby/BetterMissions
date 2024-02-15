@@ -33,7 +33,7 @@ public class ConfigConverter {
             missionIDs.add(entry.getKey());
 
         }
-        ComplexConfigManager catchingConfigManager = new ComplexConfigManager(missionFiles, "catch-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager catchingConfigManager = new ComplexConfigManager(missionFiles, "catch-missions", "mission-template-normal.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         catchingConfigManager.init();
 
         timer.schedule(new TimerTask() {
@@ -208,7 +208,7 @@ public class ConfigConverter {
             missionIDs.add(entry.getKey());
 
         }
-        ComplexConfigManager craftingConfigManager = new ComplexConfigManager(missionFiles, "craft-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager craftingConfigManager = new ComplexConfigManager(missionFiles, "craft-missions", "mission-template-normal.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         craftingConfigManager.init();
 
         timer.schedule(new TimerTask() {
@@ -381,7 +381,7 @@ public class ConfigConverter {
             missionIDs.add(entry.getKey());
 
         }
-        ComplexConfigManager defeatingConfigManager = new ComplexConfigManager(missionFiles, "defeat-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager defeatingConfigManager = new ComplexConfigManager(missionFiles, "defeat-missions", "mission-template-normal.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         defeatingConfigManager.init();
 
         timer.schedule(new TimerTask() {
@@ -554,7 +554,7 @@ public class ConfigConverter {
             missionIDs.add(entry.getKey());
 
         }
-        ComplexConfigManager evolvingConfigManager = new ComplexConfigManager(missionFiles, "evolve-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager evolvingConfigManager = new ComplexConfigManager(missionFiles, "evolve-missions", "mission-template-normal.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         evolvingConfigManager.init();
 
         timer.schedule(new TimerTask() {
@@ -727,7 +727,7 @@ public class ConfigConverter {
             missionIDs.add(entry.getKey());
 
         }
-        ComplexConfigManager fishingConfigManager = new ComplexConfigManager(missionFiles, "fish-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager fishingConfigManager = new ComplexConfigManager(missionFiles, "fish-missions", "mission-template-normal.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         fishingConfigManager.init();
 
         timer.schedule(new TimerTask() {
@@ -900,7 +900,7 @@ public class ConfigConverter {
             missionIDs.add(entry.getKey());
 
         }
-        ComplexConfigManager killingConfigManager = new ComplexConfigManager(missionFiles, "kill-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager killingConfigManager = new ComplexConfigManager(missionFiles, "kill-missions", "mission-template-normal.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         killingConfigManager.init();
 
         timer.schedule(new TimerTask() {
@@ -1073,7 +1073,7 @@ public class ConfigConverter {
             missionIDs.add(entry.getKey());
 
         }
-        ComplexConfigManager losingConfigManager = new ComplexConfigManager(missionFiles, "lose-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager losingConfigManager = new ComplexConfigManager(missionFiles, "lose-missions", "mission-template-normal.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         losingConfigManager.init();
 
         timer.schedule(new TimerTask() {
@@ -1238,7 +1238,7 @@ public class ConfigConverter {
             missionIDs.add(entry.getKey());
 
         }
-        ComplexConfigManager meleeConfigManager = new ComplexConfigManager(missionFiles, "melee-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager meleeConfigManager = new ComplexConfigManager(missionFiles, "melee-missions", "mission-template-normal.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         meleeConfigManager.init();
 
         timer.schedule(new TimerTask() {
@@ -1411,7 +1411,7 @@ public class ConfigConverter {
             missionIDs.add(entry.getKey());
 
         }
-        ComplexConfigManager miningConfigManager = new ComplexConfigManager(missionFiles, "mine-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager miningConfigManager = new ComplexConfigManager(missionFiles, "mine-missions", "mission-template-normal.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         miningConfigManager.init();
 
         timer.schedule(new TimerTask() {
@@ -1599,7 +1599,7 @@ public class ConfigConverter {
             missionIDs.add(entry.getKey());
 
         }
-        ComplexConfigManager releasingConfigManager = new ComplexConfigManager(missionFiles, "release-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager releasingConfigManager = new ComplexConfigManager(missionFiles, "release-missions", "mission-template-normal.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         releasingConfigManager.init();
 
         timer.schedule(new TimerTask() {
@@ -1757,7 +1757,7 @@ public class ConfigConverter {
             missionIDs.add(entry.getKey());
 
         }
-        ComplexConfigManager breedingConfigManager = new ComplexConfigManager(missionFiles, "breed-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager breedingConfigManager = new ComplexConfigManager(missionFiles, "breed-missions", "mission-template-normal.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         breedingConfigManager.init();
 
         timer.schedule(new TimerTask() {
@@ -1915,7 +1915,7 @@ public class ConfigConverter {
             missionIDs.add(entry.getKey());
 
         }
-        ComplexConfigManager hatchingConfigManager = new ComplexConfigManager(missionFiles, "hatch-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager hatchingConfigManager = new ComplexConfigManager(missionFiles, "hatch-missions", "mission-template-normal.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         hatchingConfigManager.init();
 
         timer.schedule(new TimerTask() {
@@ -2073,7 +2073,7 @@ public class ConfigConverter {
             missionIDs.add(entry.getKey());
 
         }
-        ComplexConfigManager photographingConfigManager = new ComplexConfigManager(missionFiles, "photograph-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager photographingConfigManager = new ComplexConfigManager(missionFiles, "photograph-missions", "mission-template-normal.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         photographingConfigManager.init();
 
         timer.schedule(new TimerTask() {
@@ -2231,7 +2231,7 @@ public class ConfigConverter {
             missionIDs.add(entry.getKey());
 
         }
-        ComplexConfigManager raidingConfigManager = new ComplexConfigManager(missionFiles, "raid-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager raidingConfigManager = new ComplexConfigManager(missionFiles, "raid-missions", "mission-template-normal.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         raidingConfigManager.init();
 
         timer.schedule(new TimerTask() {
@@ -2389,7 +2389,7 @@ public class ConfigConverter {
             missionIDs.add(entry.getKey());
 
         }
-        ComplexConfigManager smeltingConfigManager = new ComplexConfigManager(missionFiles, "smelt-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager smeltingConfigManager = new ComplexConfigManager(missionFiles, "smelt-missions", "mission-template-normal.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         smeltingConfigManager.init();
 
         timer.schedule(new TimerTask() {
@@ -2465,6 +2465,21 @@ public class ConfigConverter {
                         e.printStackTrace();
 
                     }
+                    List<String> itemIDs = new ArrayList<>();
+                    if (!BetterMissions.dummyConfigManager.getConfigNode(14, "Missions", missionID, "Items").isVirtual()) {
+
+                        try {
+
+                            itemIDs = BetterMissions.dummyConfigManager.getConfigNode(14, "Missions", missionID, "Items").getList(TypeToken.of(String.class));
+
+                        } catch (ObjectMappingException e) {
+
+                            throw new RuntimeException(e);
+
+                        }
+
+                    }
+                    smeltingConfigManager.getConfigNode(index, "Items").setValue(itemIDs);
                     Map<String, String> itemRequirementsMap = new HashMap<>();
                     if (!BetterMissions.dummyConfigManager.getConfigNode(14, "Missions", missionID, "Requirements", "Items").isVirtual()) {
 

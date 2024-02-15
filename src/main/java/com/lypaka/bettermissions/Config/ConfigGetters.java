@@ -23,8 +23,6 @@ public class ConfigGetters {
     public static String missionRerollItemID;
     public static List<String> rerollLore;
     public static String newMissionNotification;
-    public static int registryInterval;
-    public static boolean showLoadingMessages;
     public static int updateInterval;
 
     public static List<String> breedMissions;
@@ -42,13 +40,6 @@ public class ConfigGetters {
     public static List<String> raidMissions;
     public static List<String> releaseMissions;
     public static List<String> smeltMissions;
-
-    public static String logBorderID;
-    public static String logBorderSlots;
-    public static String logMenuTitle;
-    public static int logMainMenuRows;
-    public static Map<String, Map<String, String>> logMainSlotMap;
-    public static Map<String, Map<String, String>> missionLogMap;
 
     public static void load() throws ObjectMappingException {
 
@@ -91,8 +82,6 @@ public class ConfigGetters {
         missionRerollItemID = BetterMissions.configManager.getConfigNode(0, "GUI", "Reroll", "ID").getString();
         rerollLore = BetterMissions.configManager.getConfigNode(0, "GUI", "Reroll", "Lore").getList(TypeToken.of(String.class));
         newMissionNotification = BetterMissions.configManager.getConfigNode(0, "New-Mission").getString();
-        registryInterval = BetterMissions.configManager.getConfigNode(0, "Registry-Interval").getInt();
-        showLoadingMessages = BetterMissions.configManager.getConfigNode(0, "Show-Loading-Messages").getBoolean();
         updateInterval = BetterMissions.configManager.getConfigNode(0, "Update").getInt();
 
         breedMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Breed-Missions").getList(TypeToken.of(String.class)));
@@ -110,13 +99,6 @@ public class ConfigGetters {
         raidMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Raid-Missions").getList(TypeToken.of(String.class)));
         releaseMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Release-Missions").getList(TypeToken.of(String.class)));
         smeltMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Smelt-Missions").getList(TypeToken.of(String.class)));
-
-        logBorderID = BetterMissions.configManager.getConfigNode(2, "Main-Menu", "Border-ID").getString();
-        logBorderSlots = BetterMissions.configManager.getConfigNode(2, "Main-Menu", "Border-Slots").getString();
-        logMenuTitle = BetterMissions.configManager.getConfigNode(2, "Main-Menu", "Menu-Title").getString();
-        logMainMenuRows = BetterMissions.configManager.getConfigNode(2, "Main-Menu", "GUI-Rows").getInt();
-        logMainSlotMap = BetterMissions.configManager.getConfigNode(2, "Main-Menu", "Slots").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        missionLogMap = BetterMissions.configManager.getConfigNode(2, "Mission-Logs").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
 
     }
 
@@ -137,13 +119,6 @@ public class ConfigGetters {
         raidMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Raid-Missions").getList(TypeToken.of(String.class)));
         releaseMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Release-Missions").getList(TypeToken.of(String.class)));
         smeltMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Smelt-Missions").getList(TypeToken.of(String.class)));
-
-        logBorderID = BetterMissions.configManager.getConfigNode(2, "Main-Menu", "Border-ID").getString();
-        logBorderSlots = BetterMissions.configManager.getConfigNode(2, "Main-Menu", "Border-Slots").getString();
-        logMenuTitle = BetterMissions.configManager.getConfigNode(2, "Main-Menu", "Menu-Title").getString();
-        logMainMenuRows = BetterMissions.configManager.getConfigNode(2, "Main-Menu", "GUI-Rows").getInt();
-        logMainSlotMap = BetterMissions.configManager.getConfigNode(2, "Main-Menu", "Slots").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        missionLogMap = BetterMissions.configManager.getConfigNode(2, "Mission-Logs").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
 
     }
 

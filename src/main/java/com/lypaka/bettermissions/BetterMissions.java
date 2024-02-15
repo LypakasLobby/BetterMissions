@@ -1,9 +1,6 @@
 package com.lypaka.bettermissions;
 
-import com.lypaka.bettermissions.Config.ConfigConverter;
 import com.lypaka.bettermissions.Config.ConfigGetters;
-import com.lypaka.bettermissions.Config.ConfigUpdater;
-import com.lypaka.bettermissions.Missions.MissionRegistry;
 import com.lypaka.lypakautils.ConfigurationLoaders.BasicConfigManager;
 import com.lypaka.lypakautils.ConfigurationLoaders.ComplexConfigManager;
 import com.lypaka.lypakautils.ConfigurationLoaders.ConfigUtils;
@@ -37,89 +34,12 @@ public class BetterMissions {
     public BetterMissions() throws IOException, ObjectMappingException {
 
         dir = ConfigUtils.checkDir(Paths.get("./config/bettermissions"));
-        String[] files = new String[]{"bettermissions.conf", "missions-list.conf", "progression-log.conf", "itemRequirementExample.conf", "partyRequirementExample.conf"};
+        String[] files = new String[]{"bettermissions.conf", "missions-list.conf", "defaultMissions.conf", "itemRequirementExample.conf", "partyRequirementExample.conf"};
         configManager = new BasicConfigManager(files, dir, BetterMissions.class, MOD_NAME, MOD_ID, logger);
         configManager.init();
         playerConfigManager = new PlayerConfigManager("account.conf", "player-accounts", dir, BetterMissions.class, MOD_NAME, MOD_ID, logger);
         playerConfigManager.init();
-        ConfigUpdater.updateConfig();
         ConfigGetters.load();
-        if (!ConfigGetters.converted) {
-
-            disabled = true;
-            String[] dummyFiles = new String[]{"catching.conf", "crafting.conf", "defeating.conf",
-                    "evolving.conf", "fishing.conf", "killing.conf", "losing.conf", "melee.conf",
-                    "mining.conf", "releasing.conf", "breeding.conf", "hatching.conf", "photographing.conf", "raiding.conf", "smelting.conf"};
-            dummyConfigManager = new BasicConfigManager(dummyFiles, dir, BetterMissions.class, MOD_NAME, MOD_ID, logger);
-            dummyConfigManager.init();
-            ConfigConverter.convertOldToNew();
-
-        } else {
-
-            disabled = true; // disabling the mod until all missions are loaded
-            ComplexConfigManager breedingConfigManager = new ComplexConfigManager(ConfigGetters.breedMissions, "breed-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
-            breedingConfigManager.init();
-            missionConfigManager.put("Breed", breedingConfigManager);
-
-            ComplexConfigManager hatchingConfigManager = new ComplexConfigManager(ConfigGetters.hatchMissions, "hatch-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
-            hatchingConfigManager.init();
-            missionConfigManager.put("Hatch", hatchingConfigManager);
-
-            ComplexConfigManager raidingConfigManager = new ComplexConfigManager(ConfigGetters.raidMissions, "raid-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
-            raidingConfigManager.init();
-            missionConfigManager.put("Raid", raidingConfigManager);
-
-            ComplexConfigManager photographingConfigManager = new ComplexConfigManager(ConfigGetters.photographMissions, "photograph-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
-            photographingConfigManager.init();
-            missionConfigManager.put("Photograph", photographingConfigManager);
-
-            ComplexConfigManager smeltingConfigManager = new ComplexConfigManager(ConfigGetters.smeltMissions, "smelt-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
-            smeltingConfigManager.init();
-            missionConfigManager.put("Smelt", smeltingConfigManager);
-
-            ComplexConfigManager catchingConfigManager = new ComplexConfigManager(ConfigGetters.catchMissions, "catch-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
-            catchingConfigManager.init();
-            missionConfigManager.put("Catch", catchingConfigManager);
-
-            ComplexConfigManager craftingConfigManager = new ComplexConfigManager(ConfigGetters.craftMissions, "craft-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
-            craftingConfigManager.init();
-            missionConfigManager.put("Craft", craftingConfigManager);
-
-            ComplexConfigManager defeatingConfigManager = new ComplexConfigManager(ConfigGetters.defeatMissions, "defeat-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
-            defeatingConfigManager.init();
-            missionConfigManager.put("Defeat", defeatingConfigManager);
-
-            ComplexConfigManager evolvingConfigManager = new ComplexConfigManager(ConfigGetters.evolveMissions, "evolve-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
-            evolvingConfigManager.init();
-            missionConfigManager.put("Evolve", evolvingConfigManager);
-
-            ComplexConfigManager fishingConfigManager = new ComplexConfigManager(ConfigGetters.fishMissions, "fish-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
-            fishingConfigManager.init();
-            missionConfigManager.put("Fish", fishingConfigManager);
-
-            ComplexConfigManager killingConfigManager = new ComplexConfigManager(ConfigGetters.killMissions, "kill-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
-            killingConfigManager.init();
-            missionConfigManager.put("Kill", killingConfigManager);
-
-            ComplexConfigManager losingConfigManager = new ComplexConfigManager(ConfigGetters.loseMissions, "lose-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
-            losingConfigManager.init();
-            missionConfigManager.put("Lose", losingConfigManager);
-
-            ComplexConfigManager meleeConfigManager = new ComplexConfigManager(ConfigGetters.meleeMissions, "melee-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
-            meleeConfigManager.init();
-            missionConfigManager.put("Melee", meleeConfigManager);
-
-            ComplexConfigManager miningConfigManager = new ComplexConfigManager(ConfigGetters.mineMissions, "mine-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
-            miningConfigManager.init();
-            missionConfigManager.put("Mine", miningConfigManager);
-
-            ComplexConfigManager releasingConfigManager = new ComplexConfigManager(ConfigGetters.releaseMissions, "release-missions", "mission-template.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
-            releasingConfigManager.init();
-            missionConfigManager.put("Release", releasingConfigManager);
-
-            MissionRegistry.loadBreedMissions(true);
-
-        }
 
     }
 
