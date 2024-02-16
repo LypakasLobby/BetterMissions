@@ -2,19 +2,19 @@ package com.lypaka.bettermissions.Missions;
 
 import com.google.common.reflect.TypeToken;
 import com.lypaka.bettermissions.BetterMissions;
-import com.lypaka.bettermissions.Config.ConfigGetters;
+import com.lypaka.bettermissions.ConfigGetters;
 import com.lypaka.bettermissions.Requirements.MissionRequirement;
 import com.lypaka.lypakautils.ConfigurationLoaders.ComplexConfigManager;
+import com.lypaka.lypakautils.ConfigurationLoaders.ConfigUtils;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
-import java.util.ArrayList;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MissionsHandler {
-
-    private static Map<String, List<Mission>> missionsMap;
 
     /*
     Craft, Smelt, Mine need lists of item IDs
@@ -24,747 +24,623 @@ public class MissionsHandler {
 
     public static void loadMissions() throws ObjectMappingException {
 
+        Map<String, Integer> missionCountMap = new HashMap<>();
+        Path dir = ConfigUtils.checkDir(Paths.get("./config/bettermissions/missions"));
         BetterMissions.logger.info("Loading missions, please wait...");
-        missionsMap = new HashMap<>();
 
-        boolean generateDefault = BetterMissions.configManager.getConfigNode(2, "Enabled").getBoolean();
-        if (generateDefault) {
-
-            generateDefaultMissions();
-
-        }
-
-        ComplexConfigManager breedingConfigManager = new ComplexConfigManager(ConfigGetters.breedMissions, "breed-missions", "mission-template-specs.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager breedingConfigManager = new ComplexConfigManager(ConfigGetters.breedMissions, "breed-missions", "mission-template-specs.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         breedingConfigManager.init();
         BetterMissions.missionConfigManager.put("Breed", breedingConfigManager);
+        int count = 0;
+        for (int index = 0; index < ConfigGetters.breedMissions.size(); index++) {
 
-        for (int i = 0; i < ConfigGetters.breedMissions.size(); i++) {
+            int amount = breedingConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = breedingConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = breedingConfigManager.getConfigNode(index, "Command-ID").getString();
+            String displayName = breedingConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> lore = breedingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            String missionID = breedingConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = breedingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = breedingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = breedingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            Map<String, List<String>> permissionRequirements = breedingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
+            Map<String, List<String>> timeRequirements = breedingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> weatherRequirements = breedingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            String rewardType = breedingConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            Map<String, String> specs = breedingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
+            int timer = breedingConfigManager.getConfigNode(index, "Timer").getInt();
+            BreedMission breedMission;
+            if (!breedingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
 
+                int reward = breedingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                breedMission = new BreedMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
 
+            } else {
+
+                List<String> reward = breedingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                breedMission = new BreedMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            }
+            breedMission.register();
+            count++;
 
         }
+        missionCountMap.put("Breed", count);
+        count = 0;
 
-        ComplexConfigManager catchingConfigManager = new ComplexConfigManager(ConfigGetters.catchMissions, "catch-missions", "mission-template-specs.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        ComplexConfigManager catchingConfigManager = new ComplexConfigManager(ConfigGetters.catchMissions, "catch-missions", "mission-template-specs.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         catchingConfigManager.init();
         BetterMissions.missionConfigManager.put("Catch", catchingConfigManager);
+        for (int index = 0; index < ConfigGetters.catchMissions.size(); index++) {
 
-        ComplexConfigManager craftingConfigManager = new ComplexConfigManager(ConfigGetters.craftMissions, "craft-missions", "mission-template-items.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+            int amount = catchingConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = catchingConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = catchingConfigManager.getConfigNode(index, "Command-ID").getString();
+            String displayName = catchingConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> lore = catchingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            String missionID = catchingConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = catchingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = catchingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = catchingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            Map<String, List<String>> permissionRequirements = catchingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
+            Map<String, List<String>> timeRequirements = catchingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> weatherRequirements = catchingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            String rewardType = catchingConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            Map<String, String> specs = catchingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
+            int timer = catchingConfigManager.getConfigNode(index, "Timer").getInt();
+            CatchMission catchMission;
+            if (!catchingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
+
+                int reward = catchingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                catchMission = new CatchMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            } else {
+
+                List<String> reward = catchingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                catchMission = new CatchMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            }
+            catchMission.register();
+            count++;
+
+        }
+        missionCountMap.put("Catch", count);
+        count = 0;
+
+        ComplexConfigManager craftingConfigManager = new ComplexConfigManager(ConfigGetters.craftMissions, "craft-missions", "mission-template-items.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         craftingConfigManager.init();
         BetterMissions.missionConfigManager.put("Craft", craftingConfigManager);
+        for (int index = 0; index < ConfigGetters.craftMissions.size(); index++) {
 
-        ComplexConfigManager defeatingConfigManager = new ComplexConfigManager(ConfigGetters.defeatMissions, "defeat-missions", "mission-template-locations.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+            int amount = craftingConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = craftingConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = craftingConfigManager.getConfigNode(index, "Command-ID").getString();
+            String displayName = craftingConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> lore = craftingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            List<String> itemIDs = craftingConfigManager.getConfigNode(index, "Items").getList(TypeToken.of(String.class));
+            String missionID = craftingConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = craftingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = craftingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = craftingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            Map<String, List<String>> permissionRequirements = craftingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
+            Map<String, List<String>> timeRequirements = craftingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> weatherRequirements = craftingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            String rewardType = craftingConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            int timer = craftingConfigManager.getConfigNode(index, "Timer").getInt();
+            CraftMission craftMission;
+            if (!craftingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
+
+                int reward = craftingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                craftMission = new CraftMission(missionID, amount, chance, displayName, commandID, lore, itemIDs, rewardType, reward, requirements, timer);
+
+            } else {
+
+                List<String> reward = craftingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                craftMission = new CraftMission(missionID, amount, chance, displayName, commandID, lore, itemIDs, rewardType, reward, requirements, timer);
+
+            }
+            craftMission.register();
+            count++;
+
+        }
+        missionCountMap.put("Craft", count);
+        count = 0;
+
+        ComplexConfigManager defeatingConfigManager = new ComplexConfigManager(ConfigGetters.defeatMissions, "defeat-missions", "mission-template-locations.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         defeatingConfigManager.init();
         BetterMissions.missionConfigManager.put("Defeat", defeatingConfigManager);
+        for (int index = 0; index < ConfigGetters.defeatMissions.size(); index++) {
 
-        ComplexConfigManager evolvingConfigManager = new ComplexConfigManager(ConfigGetters.evolveMissions, "evolve-missions", "mission-template-specs.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+            int amount = defeatingConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = defeatingConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = defeatingConfigManager.getConfigNode(index, "Command-ID").getString();
+            String displayName = defeatingConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> lore = defeatingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            List<String> locations = defeatingConfigManager.getConfigNode(index, "Locations").getList(TypeToken.of(String.class));
+            String missionID = defeatingConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = defeatingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = defeatingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = defeatingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            Map<String, List<String>> permissionRequirements = defeatingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
+            Map<String, List<String>> timeRequirements = defeatingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> weatherRequirements = defeatingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            String rewardType = defeatingConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            int timer = defeatingConfigManager.getConfigNode(index, "Timer").getInt();
+            DefeatMission defeatMission;
+            if (!defeatingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
+
+                int reward = defeatingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                defeatMission = new DefeatMission(missionID, amount, chance, displayName, commandID, locations, lore, rewardType, reward, requirements, timer);
+
+            } else {
+
+                List<String> reward = defeatingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                defeatMission = new DefeatMission(missionID, amount, chance, displayName, commandID, locations, lore, rewardType, reward, requirements, timer);
+
+            }
+            defeatMission.register();
+            count++;
+
+        }
+        missionCountMap.put("Defeat", count);
+        count = 0;
+
+        ComplexConfigManager evolvingConfigManager = new ComplexConfigManager(ConfigGetters.evolveMissions, "evolve-missions", "mission-template-specs.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         evolvingConfigManager.init();
         BetterMissions.missionConfigManager.put("Evolve", evolvingConfigManager);
+        for (int index = 0; index < ConfigGetters.evolveMissions.size(); index++) {
 
-        ComplexConfigManager fishingConfigManager = new ComplexConfigManager(ConfigGetters.fishMissions, "fish-missions", "mission-template-specs.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+            int amount = evolvingConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = evolvingConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = evolvingConfigManager.getConfigNode(index, "Command-ID").getString();
+            String displayName = evolvingConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> lore = evolvingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            String missionID = evolvingConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = evolvingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = evolvingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = evolvingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            Map<String, List<String>> permissionRequirements = evolvingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
+            Map<String, List<String>> timeRequirements = evolvingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> weatherRequirements = evolvingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            String rewardType = evolvingConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            Map<String, String> specs = evolvingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
+            int timer = evolvingConfigManager.getConfigNode(index, "Timer").getInt();
+            EvolveMission evolveMission;
+            if (!evolvingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
+
+                int reward = evolvingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                evolveMission = new EvolveMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            } else {
+
+                List<String> reward = evolvingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                evolveMission = new EvolveMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            }
+            evolveMission.register();
+            count++;
+
+        }
+        missionCountMap.put("Evolve", count);
+        count = 0;
+
+        ComplexConfigManager fishingConfigManager = new ComplexConfigManager(ConfigGetters.fishMissions, "fish-missions", "mission-template-specs.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         fishingConfigManager.init();
         BetterMissions.missionConfigManager.put("Fish", fishingConfigManager);
+        for (int index = 0; index < ConfigGetters.fishMissions.size(); index++) {
 
-        ComplexConfigManager hatchingConfigManager = new ComplexConfigManager(ConfigGetters.hatchMissions, "hatch-missions", "mission-template-specs.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+            int amount = fishingConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = fishingConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = fishingConfigManager.getConfigNode(index, "Command-ID").getString();
+            String displayName = fishingConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> lore = fishingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            String missionID = fishingConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = fishingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = fishingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = fishingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            Map<String, List<String>> permissionRequirements = fishingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
+            Map<String, List<String>> timeRequirements = fishingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> weatherRequirements = fishingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            String rewardType = fishingConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            Map<String, String> specs = fishingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
+            int timer = fishingConfigManager.getConfigNode(index, "Timer").getInt();
+            FishMission fishMission;
+            if (!fishingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
+
+                int reward = fishingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                fishMission = new FishMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            } else {
+
+                List<String> reward = fishingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                fishMission = new FishMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            }
+            fishMission.register();
+            count++;
+
+        }
+        missionCountMap.put("Fish", count);
+        count = 0;
+
+        ComplexConfigManager hatchingConfigManager = new ComplexConfigManager(ConfigGetters.hatchMissions, "hatch-missions", "mission-template-specs.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         hatchingConfigManager.init();
         BetterMissions.missionConfigManager.put("Hatch", hatchingConfigManager);
+        for (int index = 0; index < ConfigGetters.hatchMissions.size(); index++) {
 
-        ComplexConfigManager killingConfigManager = new ComplexConfigManager(ConfigGetters.killMissions, "kill-missions", "mission-template-specs.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+            int amount = hatchingConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = hatchingConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = hatchingConfigManager.getConfigNode(index, "Command-ID").getString();
+            String displayName = hatchingConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> lore = hatchingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            String missionID = hatchingConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            Map<String, List<String>> permissionRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
+            Map<String, List<String>> timeRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> weatherRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            String rewardType = hatchingConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            Map<String, String> specs = hatchingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
+            int timer = hatchingConfigManager.getConfigNode(index, "Timer").getInt();
+            HatchMission hatchMission;
+            if (!hatchingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
+
+                int reward = hatchingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                hatchMission = new HatchMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            } else {
+
+                List<String> reward = hatchingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                hatchMission = new HatchMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            }
+            hatchMission.register();
+            count++;
+
+        }
+        missionCountMap.put("Hatch", count);
+        count = 0;
+
+        ComplexConfigManager killingConfigManager = new ComplexConfigManager(ConfigGetters.killMissions, "kill-missions", "mission-template-specs.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         killingConfigManager.init();
         BetterMissions.missionConfigManager.put("Kill", killingConfigManager);
+        for (int index = 0; index < ConfigGetters.hatchMissions.size(); index++) {
 
-        ComplexConfigManager losingConfigManager = new ComplexConfigManager(ConfigGetters.loseMissions, "lose-missions", "mission-template-losing.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+            int amount = hatchingConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = hatchingConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = hatchingConfigManager.getConfigNode(index, "Command-ID").getString();
+            String displayName = hatchingConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> lore = hatchingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            String missionID = hatchingConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            Map<String, List<String>> permissionRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
+            Map<String, List<String>> timeRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> weatherRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            String rewardType = hatchingConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            Map<String, String> specs = hatchingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
+            int timer = hatchingConfigManager.getConfigNode(index, "Timer").getInt();
+            HatchMission hatchMission;
+            if (!hatchingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
+
+                int reward = hatchingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                hatchMission = new HatchMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            } else {
+
+                List<String> reward = hatchingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                hatchMission = new HatchMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            }
+            hatchMission.register();
+            count++;
+
+        }
+        missionCountMap.put("Hatch", count);
+        count = 0;
+
+        ComplexConfigManager losingConfigManager = new ComplexConfigManager(ConfigGetters.loseMissions, "lose-missions", "mission-template-losing.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         losingConfigManager.init();
         BetterMissions.missionConfigManager.put("Lose", losingConfigManager);
+        for (int index = 0; index < ConfigGetters.loseMissions.size(); index++) {
 
-        ComplexConfigManager meleeConfigManager = new ComplexConfigManager(ConfigGetters.meleeMissions, "melee-missions", "mission-template-melee.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+            int amount = losingConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = losingConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = losingConfigManager.getConfigNode(index, "Command-ID").getString();
+            String displayName = losingConfigManager.getConfigNode(index, "Display-Name").getString();
+            String entityType = losingConfigManager.getConfigNode(index, "Entity-Type").getString();
+            List<String> lore = losingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            String missionID = losingConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = losingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = losingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = losingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            Map<String, List<String>> permissionRequirements = losingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
+            Map<String, List<String>> timeRequirements = losingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> weatherRequirements = losingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            String rewardType = losingConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            int timer = losingConfigManager.getConfigNode(index, "Timer").getInt();
+            LoseMission loseMission;
+            if (!losingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
+
+                int reward = losingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                loseMission = new LoseMission(missionID, amount, chance, displayName, entityType, commandID, lore, rewardType, reward, requirements, timer);
+
+            } else {
+
+                List<String> reward = losingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                loseMission = new LoseMission(missionID, amount, chance, displayName, entityType, commandID, lore, rewardType, reward, requirements, timer);
+
+            }
+            loseMission.register();
+            count++;
+
+        }
+        missionCountMap.put("Lose", count);
+        count = 0;
+
+        ComplexConfigManager meleeConfigManager = new ComplexConfigManager(ConfigGetters.meleeMissions, "melee-missions", "mission-template-melee.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         meleeConfigManager.init();
         BetterMissions.missionConfigManager.put("Melee", meleeConfigManager);
+        for (int index = 0; index < ConfigGetters.meleeMissions.size(); index++) {
 
-        ComplexConfigManager miningConfigManager = new ComplexConfigManager(ConfigGetters.mineMissions, "mine-missions", "mission-template-blocks.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+            int amount = meleeConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = meleeConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = meleeConfigManager.getConfigNode(index, "Command-ID").getString();
+            String displayName = meleeConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> entityIDs = meleeConfigManager.getConfigNode(index, "Entities").getList(TypeToken.of(String.class));
+            List<String> lore = meleeConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            String missionID = meleeConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = meleeConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = meleeConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = meleeConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            Map<String, List<String>> permissionRequirements = meleeConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
+            Map<String, List<String>> timeRequirements = meleeConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> weatherRequirements = meleeConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            String rewardType = meleeConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            int timer = meleeConfigManager.getConfigNode(index, "Timer").getInt();
+            MeleeMission meleeMission;
+            if (!meleeConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
+
+                int reward = meleeConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                meleeMission = new MeleeMission(missionID, amount, chance, displayName, commandID, entityIDs, lore, rewardType, reward, requirements, timer);
+
+            } else {
+
+                List<String> reward = meleeConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                meleeMission = new MeleeMission(missionID, amount, chance, displayName, commandID, entityIDs, lore, rewardType, reward, requirements, timer);
+
+            }
+            meleeMission.register();
+            count++;
+
+        }
+        missionCountMap.put("Melee", count);
+        count = 0;
+
+        ComplexConfigManager miningConfigManager = new ComplexConfigManager(ConfigGetters.mineMissions, "mine-missions", "mission-template-blocks.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         miningConfigManager.init();
         BetterMissions.missionConfigManager.put("Mine", miningConfigManager);
+        for (int index = 0; index < ConfigGetters.mineMissions.size(); index++) {
 
-        ComplexConfigManager photographingConfigManager = new ComplexConfigManager(ConfigGetters.photographMissions, "photograph-missions", "mission-template-specs.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+            int amount = miningConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = miningConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = miningConfigManager.getConfigNode(index, "Command-ID").getString();
+            List<String> blockIDs = miningConfigManager.getConfigNode(index, "Blocks").getList(TypeToken.of(String.class));
+            String displayName = miningConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> lore = miningConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            String missionID = miningConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = miningConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = miningConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = miningConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            Map<String, List<String>> permissionRequirements = miningConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
+            Map<String, List<String>> timeRequirements = miningConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> weatherRequirements = miningConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            String rewardType = miningConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            int timer = miningConfigManager.getConfigNode(index, "Timer").getInt();
+            MineMission mineMission;
+            if (!miningConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
+
+                int reward = miningConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                mineMission = new MineMission(missionID, amount, chance, blockIDs, displayName, commandID, lore, rewardType, reward, requirements, timer);
+
+            } else {
+
+                List<String> reward = miningConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                mineMission = new MineMission(missionID, amount, chance, blockIDs, displayName, commandID, lore, rewardType, reward, requirements, timer);
+
+            }
+            mineMission.register();
+            count++;
+
+        }
+        missionCountMap.put("Mine", count);
+        count = 0;
+
+        ComplexConfigManager photographingConfigManager = new ComplexConfigManager(ConfigGetters.photographMissions, "photograph-missions", "mission-template-specs.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         photographingConfigManager.init();
         BetterMissions.missionConfigManager.put("Photograph", photographingConfigManager);
+        for (int index = 0; index < ConfigGetters.photographMissions.size(); index++) {
 
-        ComplexConfigManager raidingConfigManager = new ComplexConfigManager(ConfigGetters.raidMissions, "raid-missions", "mission-template-specs.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+            int amount = photographingConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = photographingConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = photographingConfigManager.getConfigNode(index, "Command-ID").getString();
+            String displayName = photographingConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> lore = photographingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            String missionID = photographingConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = photographingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = photographingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = photographingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            Map<String, List<String>> permissionRequirements = photographingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
+            Map<String, List<String>> timeRequirements = photographingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> weatherRequirements = photographingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            String rewardType = photographingConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            Map<String, String> specs = photographingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
+            int timer = photographingConfigManager.getConfigNode(index, "Timer").getInt();
+            PhotographMission photographMission;
+            if (!photographingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
+
+                int reward = photographingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                photographMission = new PhotographMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            } else {
+
+                List<String> reward = photographingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                photographMission = new PhotographMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            }
+            photographMission.register();
+            count++;
+
+        }
+        missionCountMap.put("Photograph", count);
+        count = 0;
+
+        ComplexConfigManager raidingConfigManager = new ComplexConfigManager(ConfigGetters.raidMissions, "raid-missions", "mission-template-specs.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         raidingConfigManager.init();
         BetterMissions.missionConfigManager.put("Raid", raidingConfigManager);
+        for (int index = 0; index < ConfigGetters.raidMissions.size(); index++) {
 
-        ComplexConfigManager releasingConfigManager = new ComplexConfigManager(ConfigGetters.releaseMissions, "release-missions", "mission-template-specs.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+            int amount = raidingConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = raidingConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = raidingConfigManager.getConfigNode(index, "Command-ID").getString();
+            String displayName = raidingConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> lore = raidingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            String missionID = raidingConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = raidingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = raidingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = raidingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            Map<String, List<String>> permissionRequirements = raidingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
+            Map<String, List<String>> timeRequirements = raidingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> weatherRequirements = raidingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            String rewardType = raidingConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            Map<String, String> specs = raidingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
+            int timer = raidingConfigManager.getConfigNode(index, "Timer").getInt();
+            RaidMission raidMission;
+            if (!raidingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
+
+                int reward = raidingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                raidMission = new RaidMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            } else {
+
+                List<String> reward = raidingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                raidMission = new RaidMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            }
+            raidMission.register();
+            count++;
+
+        }
+        missionCountMap.put("Raid", count);
+        count = 0;
+
+        ComplexConfigManager releasingConfigManager = new ComplexConfigManager(ConfigGetters.releaseMissions, "release-missions", "mission-template-specs.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         releasingConfigManager.init();
         BetterMissions.missionConfigManager.put("Release", releasingConfigManager);
+        for (int index = 0; index < ConfigGetters.releaseMissions.size(); index++) {
 
-        ComplexConfigManager smeltingConfigManager = new ComplexConfigManager(ConfigGetters.smeltMissions, "smelt-missions", "mission-template-items.conf", BetterMissions.dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+            int amount = releasingConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = releasingConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = releasingConfigManager.getConfigNode(index, "Command-ID").getString();
+            String displayName = releasingConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> lore = releasingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            String missionID = releasingConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = releasingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = releasingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = releasingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            Map<String, List<String>> permissionRequirements = releasingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
+            Map<String, List<String>> timeRequirements = releasingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> weatherRequirements = releasingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            String rewardType = releasingConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            Map<String, String> specs = releasingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
+            int timer = releasingConfigManager.getConfigNode(index, "Timer").getInt();
+            ReleaseMission releaseMission;
+            if (!releasingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
+
+                int reward = releasingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                releaseMission = new ReleaseMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            } else {
+
+                List<String> reward = releasingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                releaseMission = new ReleaseMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            }
+            releaseMission.register();
+            count++;
+
+        }
+        missionCountMap.put("Release", count);
+        count = 0;
+
+        ComplexConfigManager smeltingConfigManager = new ComplexConfigManager(ConfigGetters.smeltMissions, "smelt-missions", "mission-template-items.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         smeltingConfigManager.init();
         BetterMissions.missionConfigManager.put("Smelt", smeltingConfigManager);
+        for (int index = 0; index < ConfigGetters.smeltMissions.size(); index++) {
 
-
-
-    }
-
-    private static void generateDefaultMissions() throws ObjectMappingException {
-
-        /** BREED */
-        Map<String, Map<String, String>> breedMap = BetterMissions.configManager.getConfigNode(2, "Missions", "Breed").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        for (Map.Entry<String, Map<String, String>> entry : breedMap.entrySet()) {
-
-            String missionEntry = entry.getKey();
-            Map<String, String> data = entry.getValue();
-            int amount = Integer.parseInt(data.get("Amount"));
-            double chance = Double.parseDouble(data.get("Chance"));
-            String displayName = data.get("Display-Name");
-            String commandID = data.get("ID");
-            List<String> displayLore = BetterMissions.configManager.getConfigNode(2, "Missions", "Breed", missionEntry, "Lore").getList(TypeToken.of(String.class));
-            Map<String, Map<String, String>> itemRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Breed", missionEntry, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Breed", missionEntry, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Breed", missionEntry, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Breed", missionEntry, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Breed", missionEntry, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Breed", missionEntry, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            int amount = smeltingConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = smeltingConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = smeltingConfigManager.getConfigNode(index, "Command-ID").getString();
+            List<String> itemIDs = smeltingConfigManager.getConfigNode(index, "Items").getList(TypeToken.of(String.class));
+            String displayName = smeltingConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> lore = smeltingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            String missionID = smeltingConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = smeltingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            System.out.println("config item == " + itemRequirements);
+            Map<String, Map<String, String>> partyRequirements = smeltingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            System.out.println("config party == " + partyRequirements);
+            List<String> pokedexRequirements = smeltingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            System.out.println("config pokedex == " + pokedexRequirements);
+            Map<String, List<String>> permissionRequirements = smeltingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
+            System.out.println("config permission == " + permissionRequirements);
+            Map<String, List<String>> timeRequirements = smeltingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            System.out.println("config time == " + timeRequirements);
+            List<String> weatherRequirements = smeltingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            System.out.println("config weather == " + weatherRequirements);
             MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = BetterMissions.configManager.getConfigNode(2, "Missions", "Breed", missionEntry, "Reward", "Type").getString();
-            Map<String, String> specs = BetterMissions.configManager.getConfigNode(2, "Missions", "Breed", missionEntry, "Specs").getValue(new TypeToken<Map<String, String>>() {});
-            int timer = BetterMissions.configManager.getConfigNode(2, "Missions", "Breed", missionEntry, "Timer").getInt();
-            BreedMission breedMission;
-            if (!BetterMissions.configManager.getConfigNode(2, "Missions", "Breed", missionEntry, "Reward", "Value").isVirtual()) {
-
-                int reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Breed", missionEntry, "Reward", "Value").getInt();
-                breedMission = new BreedMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            } else {
-
-                List<String> reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Breed", missionEntry, "Reward", "Commands").getList(TypeToken.of(String.class));
-                breedMission = new BreedMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            }
-            List<Mission> missions = new ArrayList<>();
-            if (missionsMap.containsKey("Breed")) {
-
-                missions = missionsMap.get("Breed");
-
-            }
-            missions.add(breedMission);
-            missionsMap.put("Breed", missions);
-
-        }
-
-        /** CATCH */
-        Map<String, Map<String, String>> catchMap = BetterMissions.configManager.getConfigNode(2, "Missions", "Catch").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        for (Map.Entry<String, Map<String, String>> entry : catchMap.entrySet()) {
-
-            String missionEntry = entry.getKey();
-            Map<String, String> data = entry.getValue();
-            int amount = Integer.parseInt(data.get("Amount"));
-            double chance = Double.parseDouble(data.get("Chance"));
-            String displayName = data.get("Display-Name");
-            String commandID = data.get("ID");
-            List<String> displayLore = BetterMissions.configManager.getConfigNode(2, "Missions", "Catch", missionEntry, "Lore").getList(TypeToken.of(String.class));
-            Map<String, Map<String, String>> itemRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Catch", missionEntry, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Catch", missionEntry, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Catch", missionEntry, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Catch", missionEntry, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Catch", missionEntry, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Catch", missionEntry, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = BetterMissions.configManager.getConfigNode(2, "Missions", "Catch", missionEntry, "Reward", "Type").getString();
-            Map<String, String> specs = BetterMissions.configManager.getConfigNode(2, "Missions", "Catch", missionEntry, "Specs").getValue(new TypeToken<Map<String, String>>() {});
-            int timer = BetterMissions.configManager.getConfigNode(2, "Missions", "Catch", missionEntry, "Timer").getInt();
-            CatchMission catchMission;
-            if (!BetterMissions.configManager.getConfigNode(2, "Missions", "Catch", missionEntry, "Reward", "Value").isVirtual()) {
-
-                int reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Catch", missionEntry, "Reward", "Value").getInt();
-                catchMission = new CatchMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            } else {
-
-                List<String> reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Catch", missionEntry, "Reward", "Commands").getList(TypeToken.of(String.class));
-                catchMission = new CatchMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            }
-            List<Mission> missions = new ArrayList<>();
-            if (missionsMap.containsKey("Catch")) {
-
-                missions = missionsMap.get("Catch");
-
-            }
-            missions.add(catchMission);
-            missionsMap.put("Catch", missions);
-
-        }
-
-        /** CRAFT */
-        Map<String, Map<String, String>> craftMap = BetterMissions.configManager.getConfigNode(2, "Missions", "Craft").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        for (Map.Entry<String, Map<String, String>> entry : craftMap.entrySet()) {
-
-            String missionEntry = entry.getKey();
-            Map<String, String> data = entry.getValue();
-            int amount = Integer.parseInt(data.get("Amount"));
-            double chance = Double.parseDouble(data.get("Chance"));
-            String displayName = data.get("Display-Name");
-            String commandID = data.get("ID");
-            List<String> displayLore = BetterMissions.configManager.getConfigNode(2, "Missions", "Craft", missionEntry, "Lore").getList(TypeToken.of(String.class));
-            Map<String, Map<String, String>> itemRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Craft", missionEntry, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Craft", missionEntry, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Craft", missionEntry, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Craft", missionEntry, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Craft", missionEntry, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Craft", missionEntry, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = BetterMissions.configManager.getConfigNode(2, "Missions", "Craft", missionEntry, "Reward", "Type").getString();
-            List<String> ids = BetterMissions.configManager.getConfigNode(2, "Missions", "Craft", missionEntry, "Items").getList(TypeToken.of(String.class));
-            int timer = BetterMissions.configManager.getConfigNode(2, "Missions", "Craft", missionEntry, "Timer").getInt();
-            CraftMission craftMission;
-            if (!BetterMissions.configManager.getConfigNode(2, "Missions", "Craft", missionEntry, "Reward", "Value").isVirtual()) {
-
-                int reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Craft", missionEntry, "Reward", "Value").getInt();
-                craftMission = new CraftMission(missionEntry, amount, chance, displayName, commandID, ids, displayLore, rewardType, reward, requirements, timer);
-
-            } else {
-
-                List<String> reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Craft", missionEntry, "Reward", "Commands").getList(TypeToken.of(String.class));
-                craftMission = new CraftMission(missionEntry, amount, chance, displayName, commandID, ids, displayLore, rewardType, reward, requirements, timer);
-
-            }
-            List<Mission> missions = new ArrayList<>();
-            if (missionsMap.containsKey("Craft")) {
-
-                missions = missionsMap.get("Craft");
-
-            }
-            missions.add(craftMission);
-            missionsMap.put("Craft", missions);
-
-        }
-
-        /** DEFEAT */
-        Map<String, Map<String, String>> defeatMap = BetterMissions.configManager.getConfigNode(2, "Missions", "Defeat").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        for (Map.Entry<String, Map<String, String>> entry : defeatMap.entrySet()) {
-
-            String missionEntry = entry.getKey();
-            Map<String, String> data = entry.getValue();
-            int amount = Integer.parseInt(data.get("Amount"));
-            double chance = Double.parseDouble(data.get("Chance"));
-            String displayName = data.get("Display-Name");
-            String commandID = data.get("ID");
-            List<String> displayLore = BetterMissions.configManager.getConfigNode(2, "Missions", "Defeat", missionEntry, "Lore").getList(TypeToken.of(String.class));
-            Map<String, Map<String, String>> itemRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Defeat", missionEntry, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Defeat", missionEntry, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Defeat", missionEntry, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Defeat", missionEntry, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Defeat", missionEntry, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Defeat", missionEntry, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = BetterMissions.configManager.getConfigNode(2, "Missions", "Defeat", missionEntry, "Reward", "Type").getString();
-            List<String> locations = BetterMissions.configManager.getConfigNode(2, "Missions", "Defeat", missionEntry, "Locations").getList(TypeToken.of(String.class));
-            int timer = BetterMissions.configManager.getConfigNode(2, "Missions", "Defeat", missionEntry, "Timer").getInt();
-            DefeatMission defeatMission;
-            if (!BetterMissions.configManager.getConfigNode(2, "Missions", "Defeat", missionEntry, "Reward", "Value").isVirtual()) {
-
-                int reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Defeat", missionEntry, "Reward", "Value").getInt();
-                defeatMission = new DefeatMission(missionEntry, amount, chance, displayName, commandID, locations, displayLore, rewardType, reward, requirements, timer);
-
-            } else {
-
-                List<String> reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Defeat", missionEntry, "Reward", "Commands").getList(TypeToken.of(String.class));
-                defeatMission = new DefeatMission(missionEntry, amount, chance, displayName, commandID, locations, displayLore, rewardType, reward, requirements, timer);
-
-            }
-            List<Mission> missions = new ArrayList<>();
-            if (missionsMap.containsKey("Defeat")) {
-
-                missions = missionsMap.get("Defeat");
-
-            }
-            missions.add(defeatMission);
-            missionsMap.put("Defeat", missions);
-
-        }
-
-        /** EVOLVE */
-        Map<String, Map<String, String>> evolveMap = BetterMissions.configManager.getConfigNode(2, "Missions", "Evolve").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        for (Map.Entry<String, Map<String, String>> entry : evolveMap.entrySet()) {
-
-            String missionEntry = entry.getKey();
-            Map<String, String> data = entry.getValue();
-            int amount = Integer.parseInt(data.get("Amount"));
-            double chance = Double.parseDouble(data.get("Chance"));
-            String displayName = data.get("Display-Name");
-            String commandID = data.get("ID");
-            List<String> displayLore = BetterMissions.configManager.getConfigNode(2, "Missions", "Evolve", missionEntry, "Lore").getList(TypeToken.of(String.class));
-            Map<String, Map<String, String>> itemRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Evolve", missionEntry, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Evolve", missionEntry, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Evolve", missionEntry, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Evolve", missionEntry, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Evolve", missionEntry, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Evolve", missionEntry, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = BetterMissions.configManager.getConfigNode(2, "Missions", "Evolve", missionEntry, "Reward", "Type").getString();
-            Map<String, String> specs = BetterMissions.configManager.getConfigNode(2, "Missions", "Evolve", missionEntry, "Specs").getValue(new TypeToken<Map<String, String>>() {});
-            int timer = BetterMissions.configManager.getConfigNode(2, "Missions", "Evolve", missionEntry, "Timer").getInt();
-            EvolveMission evolveMission;
-            if (!BetterMissions.configManager.getConfigNode(2, "Missions", "Evolve", missionEntry, "Reward", "Value").isVirtual()) {
-
-                int reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Evolve", missionEntry, "Reward", "Value").getInt();
-                evolveMission = new EvolveMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            } else {
-
-                List<String> reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Evolve", missionEntry, "Reward", "Commands").getList(TypeToken.of(String.class));
-                evolveMission = new EvolveMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            }
-            List<Mission> missions = new ArrayList<>();
-            if (missionsMap.containsKey("Evolve")) {
-
-                missions = missionsMap.get("Evolve");
-
-            }
-            missions.add(evolveMission);
-            missionsMap.put("Evolve", missions);
-
-        }
-
-        /** FISH */
-        Map<String, Map<String, String>> fishMap = BetterMissions.configManager.getConfigNode(2, "Missions", "Fish").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        for (Map.Entry<String, Map<String, String>> entry : fishMap.entrySet()) {
-
-            String missionEntry = entry.getKey();
-            Map<String, String> data = entry.getValue();
-            int amount = Integer.parseInt(data.get("Amount"));
-            double chance = Double.parseDouble(data.get("Chance"));
-            String displayName = data.get("Display-Name");
-            String commandID = data.get("ID");
-            List<String> displayLore = BetterMissions.configManager.getConfigNode(2, "Missions", "Fish", missionEntry, "Lore").getList(TypeToken.of(String.class));
-            Map<String, Map<String, String>> itemRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Fish", missionEntry, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Fish", missionEntry, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Fish", missionEntry, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Fish", missionEntry, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Fish", missionEntry, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Fish", missionEntry, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = BetterMissions.configManager.getConfigNode(2, "Missions", "Fish", missionEntry, "Reward", "Type").getString();
-            Map<String, String> specs = BetterMissions.configManager.getConfigNode(2, "Missions", "Fish", missionEntry, "Specs").getValue(new TypeToken<Map<String, String>>() {});
-            int timer = BetterMissions.configManager.getConfigNode(2, "Missions", "Fish", missionEntry, "Timer").getInt();
-            FishMission fishMission;
-            if (!BetterMissions.configManager.getConfigNode(2, "Missions", "Fish", missionEntry, "Reward", "Value").isVirtual()) {
-
-                int reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Fish", missionEntry, "Reward", "Value").getInt();
-                fishMission = new FishMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            } else {
-
-                List<String> reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Fish", missionEntry, "Reward", "Commands").getList(TypeToken.of(String.class));
-                fishMission = new FishMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            }
-            List<Mission> missions = new ArrayList<>();
-            if (missionsMap.containsKey("Fish")) {
-
-                missions = missionsMap.get("Fish");
-
-            }
-            missions.add(fishMission);
-            missionsMap.put("Fish", missions);
-
-        }
-
-        /** HATCH */
-        Map<String, Map<String, String>> hatchMap = BetterMissions.configManager.getConfigNode(2, "Missions", "Hatch").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        for (Map.Entry<String, Map<String, String>> entry : hatchMap.entrySet()) {
-
-            String missionEntry = entry.getKey();
-            Map<String, String> data = entry.getValue();
-            int amount = Integer.parseInt(data.get("Amount"));
-            double chance = Double.parseDouble(data.get("Chance"));
-            String displayName = data.get("Display-Name");
-            String commandID = data.get("ID");
-            List<String> displayLore = BetterMissions.configManager.getConfigNode(2, "Missions", "Hatch", missionEntry, "Lore").getList(TypeToken.of(String.class));
-            Map<String, Map<String, String>> itemRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Hatch", missionEntry, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Hatch", missionEntry, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Hatch", missionEntry, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Hatch", missionEntry, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Hatch", missionEntry, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Hatch", missionEntry, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = BetterMissions.configManager.getConfigNode(2, "Missions", "Hatch", missionEntry, "Reward", "Type").getString();
-            Map<String, String> specs = BetterMissions.configManager.getConfigNode(2, "Missions", "Hatch", missionEntry, "Specs").getValue(new TypeToken<Map<String, String>>() {});
-            int timer = BetterMissions.configManager.getConfigNode(2, "Missions", "Hatch", missionEntry, "Timer").getInt();
-            HatchMission hatchMission;
-            if (!BetterMissions.configManager.getConfigNode(2, "Missions", "Hatch", missionEntry, "Reward", "Value").isVirtual()) {
-
-                int reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Hatch", missionEntry, "Reward", "Value").getInt();
-                hatchMission = new HatchMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            } else {
-
-                List<String> reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Hatch", missionEntry, "Reward", "Commands").getList(TypeToken.of(String.class));
-                hatchMission = new HatchMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            }
-            List<Mission> missions = new ArrayList<>();
-            if (missionsMap.containsKey("Hatch")) {
-
-                missions = missionsMap.get("Hatch");
-
-            }
-            missions.add(hatchMission);
-            missionsMap.put("Hatch", missions);
-
-        }
-
-        /** KILL */
-        Map<String, Map<String, String>> killMap = BetterMissions.configManager.getConfigNode(2, "Missions", "Kill").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        for (Map.Entry<String, Map<String, String>> entry : killMap.entrySet()) {
-
-            String missionEntry = entry.getKey();
-            Map<String, String> data = entry.getValue();
-            int amount = Integer.parseInt(data.get("Amount"));
-            double chance = Double.parseDouble(data.get("Chance"));
-            String displayName = data.get("Display-Name");
-            String commandID = data.get("ID");
-            List<String> displayLore = BetterMissions.configManager.getConfigNode(2, "Missions", "Kill", missionEntry, "Lore").getList(TypeToken.of(String.class));
-            Map<String, Map<String, String>> itemRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Kill", missionEntry, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Kill", missionEntry, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Kill", missionEntry, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Kill", missionEntry, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Kill", missionEntry, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Kill", missionEntry, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = BetterMissions.configManager.getConfigNode(2, "Missions", "Kill", missionEntry, "Reward", "Type").getString();
-            Map<String, String> specs = BetterMissions.configManager.getConfigNode(2, "Missions", "Kill", missionEntry, "Specs").getValue(new TypeToken<Map<String, String>>() {});
-            int timer = BetterMissions.configManager.getConfigNode(2, "Missions", "Kill", missionEntry, "Timer").getInt();
-            KillMission killMission;
-            if (!BetterMissions.configManager.getConfigNode(2, "Missions", "Kill", missionEntry, "Reward", "Value").isVirtual()) {
-
-                int reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Kill", missionEntry, "Reward", "Value").getInt();
-                killMission = new KillMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            } else {
-
-                List<String> reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Kill", missionEntry, "Reward", "Commands").getList(TypeToken.of(String.class));
-                killMission = new KillMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            }
-            List<Mission> missions = new ArrayList<>();
-            if (missionsMap.containsKey("Kill")) {
-
-                missions = missionsMap.get("Kill");
-
-            }
-            missions.add(killMission);
-            missionsMap.put("Kill", missions);
-
-        }
-
-        /** LOSE */
-        Map<String, Map<String, String>> loseMap = BetterMissions.configManager.getConfigNode(2, "Missions", "Lose").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        for (Map.Entry<String, Map<String, String>> entry : loseMap.entrySet()) {
-
-            String missionEntry = entry.getKey();
-            Map<String, String> data = entry.getValue();
-            int amount = Integer.parseInt(data.get("Amount"));
-            double chance = Double.parseDouble(data.get("Chance"));
-            String displayName = data.get("Display-Name");
-            String commandID = data.get("ID");
-            List<String> displayLore = BetterMissions.configManager.getConfigNode(2, "Missions", "Lose", missionEntry, "Lore").getList(TypeToken.of(String.class));
-            Map<String, Map<String, String>> itemRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Lose", missionEntry, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Lose", missionEntry, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Lose", missionEntry, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Lose", missionEntry, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Lose", missionEntry, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Lose", missionEntry, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = BetterMissions.configManager.getConfigNode(2, "Missions", "Lose", missionEntry, "Reward", "Type").getString();
-            String entityType = BetterMissions.configManager.getConfigNode(2, "Missions", "Lose", missionEntry, "Entity-Type").getString();
-            int timer = BetterMissions.configManager.getConfigNode(2, "Missions", "Lose", missionEntry, "Timer").getInt();
-            LoseMission loseMission;
-            if (!BetterMissions.configManager.getConfigNode(2, "Missions", "Lose", missionEntry, "Reward", "Value").isVirtual()) {
-
-                int reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Lose", missionEntry, "Reward", "Value").getInt();
-                loseMission = new LoseMission(missionEntry, amount, chance, displayName, entityType, commandID, displayLore, rewardType, reward, requirements, timer);
-
-            } else {
-
-                List<String> reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Lose", missionEntry, "Reward", "Commands").getList(TypeToken.of(String.class));
-                loseMission = new LoseMission(missionEntry, amount, chance, displayName, entityType, commandID, displayLore, rewardType, reward, requirements, timer);
-
-            }
-            List<Mission> missions = new ArrayList<>();
-            if (missionsMap.containsKey("Lose")) {
-
-                missions = missionsMap.get("Lose");
-
-            }
-            missions.add(loseMission);
-            missionsMap.put("Lose", missions);
-
-        }
-
-        /** MELEE */
-        Map<String, Map<String, String>> meleeMap = BetterMissions.configManager.getConfigNode(2, "Missions", "Melee").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        for (Map.Entry<String, Map<String, String>> entry : meleeMap.entrySet()) {
-
-            String missionEntry = entry.getKey();
-            Map<String, String> data = entry.getValue();
-            int amount = Integer.parseInt(data.get("Amount"));
-            double chance = Double.parseDouble(data.get("Chance"));
-            String displayName = data.get("Display-Name");
-            String commandID = data.get("ID");
-            List<String> entities = BetterMissions.configManager.getConfigNode(2, "Missions", "Melee", missionEntry, "Entities").getList(TypeToken.of(String.class));
-            List<String> displayLore = BetterMissions.configManager.getConfigNode(2, "Missions", "Melee", missionEntry, "Lore").getList(TypeToken.of(String.class));
-            Map<String, Map<String, String>> itemRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Melee", missionEntry, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Melee", missionEntry, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Melee", missionEntry, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Melee", missionEntry, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Melee", missionEntry, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Melee", missionEntry, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = BetterMissions.configManager.getConfigNode(2, "Missions", "Melee", missionEntry, "Reward", "Type").getString();
-            int timer = BetterMissions.configManager.getConfigNode(2, "Missions", "Melee", missionEntry, "Timer").getInt();
-            MeleeMission meleeMission;
-            if (!BetterMissions.configManager.getConfigNode(2, "Missions", "Melee", missionEntry, "Reward", "Value").isVirtual()) {
-
-                int reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Melee", missionEntry, "Reward", "Value").getInt();
-                meleeMission = new MeleeMission(missionEntry, amount, chance, displayName, commandID, entities, displayLore, rewardType, reward, requirements, timer);
-
-            } else {
-
-                List<String> reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Melee", missionEntry, "Reward", "Commands").getList(TypeToken.of(String.class));
-                meleeMission = new MeleeMission(missionEntry, amount, chance, displayName, commandID, entities, displayLore, rewardType, reward, requirements, timer);
-
-            }
-            List<Mission> missions = new ArrayList<>();
-            if (missionsMap.containsKey("Melee")) {
-
-                missions = missionsMap.get("Melee");
-
-            }
-            missions.add(meleeMission);
-            missionsMap.put("Melee", missions);
-
-        }
-
-        /** MINE */
-        Map<String, Map<String, String>> mineMap = BetterMissions.configManager.getConfigNode(2, "Missions", "Mine").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        for (Map.Entry<String, Map<String, String>> entry : mineMap.entrySet()) {
-
-            String missionEntry = entry.getKey();
-            Map<String, String> data = entry.getValue();
-            int amount = Integer.parseInt(data.get("Amount"));
-            double chance = Double.parseDouble(data.get("Chance"));
-            String displayName = data.get("Display-Name");
-            String commandID = data.get("ID");
-            List<String> blockTypes = BetterMissions.configManager.getConfigNode(2, "Missions", "Mine", missionEntry, "Blocks").getList(TypeToken.of(String.class));
-            List<String> displayLore = BetterMissions.configManager.getConfigNode(2, "Missions", "Mine", missionEntry, "Lore").getList(TypeToken.of(String.class));
-            Map<String, Map<String, String>> itemRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Mine", missionEntry, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Mine", missionEntry, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Mine", missionEntry, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Mine", missionEntry, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Mine", missionEntry, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Mine", missionEntry, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = BetterMissions.configManager.getConfigNode(2, "Missions", "Mine", missionEntry, "Reward", "Type").getString();
-            int timer = BetterMissions.configManager.getConfigNode(2, "Missions", "Mine", missionEntry, "Timer").getInt();
-            MineMission mineMission;
-            if (!BetterMissions.configManager.getConfigNode(2, "Missions", "Mine", missionEntry, "Reward", "Value").isVirtual()) {
-
-                int reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Mine", missionEntry, "Reward", "Value").getInt();
-                mineMission = new MineMission(missionEntry, amount, chance, blockTypes, displayName, commandID, displayLore, rewardType, reward, requirements, timer);
-
-            } else {
-
-                List<String> reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Mine", missionEntry, "Reward", "Commands").getList(TypeToken.of(String.class));
-                mineMission = new MineMission(missionEntry, amount, chance, blockTypes, displayName, commandID, displayLore, rewardType, reward, requirements, timer);
-
-            }
-            List<Mission> missions = new ArrayList<>();
-            if (missionsMap.containsKey("Mine")) {
-
-                missions = missionsMap.get("Mine");
-
-            }
-            missions.add(mineMission);
-            missionsMap.put("Mine", missions);
-
-        }
-
-        /** PHOTOGRAPH */
-        Map<String, Map<String, String>> photographMap = BetterMissions.configManager.getConfigNode(2, "Missions", "Photograph").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        for (Map.Entry<String, Map<String, String>> entry : photographMap.entrySet()) {
-
-            String missionEntry = entry.getKey();
-            Map<String, String> data = entry.getValue();
-            int amount = Integer.parseInt(data.get("Amount"));
-            double chance = Double.parseDouble(data.get("Chance"));
-            String displayName = data.get("Display-Name");
-            String commandID = data.get("ID");
-            List<String> displayLore = BetterMissions.configManager.getConfigNode(2, "Missions", "Photograph", missionEntry, "Lore").getList(TypeToken.of(String.class));
-            Map<String, Map<String, String>> itemRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Photograph", missionEntry, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Photograph", missionEntry, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Photograph", missionEntry, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Photograph", missionEntry, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Photograph", missionEntry, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Photograph", missionEntry, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = BetterMissions.configManager.getConfigNode(2, "Missions", "Photograph", missionEntry, "Reward", "Type").getString();
-            Map<String, String> specs = BetterMissions.configManager.getConfigNode(2, "Missions", "Photograph", missionEntry, "Specs").getValue(new TypeToken<Map<String, String>>() {});
-            int timer = BetterMissions.configManager.getConfigNode(2, "Missions", "Photograph", missionEntry, "Timer").getInt();
-            PhotographMission photographMission;
-            if (!BetterMissions.configManager.getConfigNode(2, "Missions", "Photograph", missionEntry, "Reward", "Value").isVirtual()) {
-
-                int reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Photograph", missionEntry, "Reward", "Value").getInt();
-                photographMission = new PhotographMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            } else {
-
-                List<String> reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Photograph", missionEntry, "Reward", "Commands").getList(TypeToken.of(String.class));
-                photographMission = new PhotographMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            }
-            List<Mission> missions = new ArrayList<>();
-            if (missionsMap.containsKey("Photograph")) {
-
-                missions = missionsMap.get("Photograph");
-
-            }
-            missions.add(photographMission);
-            missionsMap.put("Photograph", missions);
-
-        }
-
-        /** RAID */
-        Map<String, Map<String, String>> raidMap = BetterMissions.configManager.getConfigNode(2, "Missions", "Raid").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        for (Map.Entry<String, Map<String, String>> entry : raidMap.entrySet()) {
-
-            String missionEntry = entry.getKey();
-            Map<String, String> data = entry.getValue();
-            int amount = Integer.parseInt(data.get("Amount"));
-            double chance = Double.parseDouble(data.get("Chance"));
-            String displayName = data.get("Display-Name");
-            String commandID = data.get("ID");
-            List<String> displayLore = BetterMissions.configManager.getConfigNode(2, "Missions", "Raid", missionEntry, "Lore").getList(TypeToken.of(String.class));
-            Map<String, Map<String, String>> itemRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Raid", missionEntry, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Raid", missionEntry, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Raid", missionEntry, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Raid", missionEntry, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Raid", missionEntry, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Raid", missionEntry, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = BetterMissions.configManager.getConfigNode(2, "Missions", "Raid", missionEntry, "Reward", "Type").getString();
-            Map<String, String> specs = BetterMissions.configManager.getConfigNode(2, "Missions", "Raid", missionEntry, "Specs").getValue(new TypeToken<Map<String, String>>() {});
-            int timer = BetterMissions.configManager.getConfigNode(2, "Missions", "Raid", missionEntry, "Timer").getInt();
-            RaidMission raidMission;
-            if (!BetterMissions.configManager.getConfigNode(2, "Missions", "Raid", missionEntry, "Reward", "Value").isVirtual()) {
-
-                int reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Raid", missionEntry, "Reward", "Value").getInt();
-                raidMission = new RaidMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            } else {
-
-                List<String> reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Raid", missionEntry, "Reward", "Commands").getList(TypeToken.of(String.class));
-                raidMission = new RaidMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            }
-            List<Mission> missions = new ArrayList<>();
-            if (missionsMap.containsKey("Raid")) {
-
-                missions = missionsMap.get("Raid");
-
-            }
-            missions.add(raidMission);
-            missionsMap.put("Raid", missions);
-
-        }
-
-        /** RELEASE */
-        Map<String, Map<String, String>> releaseMap = BetterMissions.configManager.getConfigNode(2, "Missions", "Release").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        for (Map.Entry<String, Map<String, String>> entry : releaseMap.entrySet()) {
-
-            String missionEntry = entry.getKey();
-            Map<String, String> data = entry.getValue();
-            int amount = Integer.parseInt(data.get("Amount"));
-            double chance = Double.parseDouble(data.get("Chance"));
-            String displayName = data.get("Display-Name");
-            String commandID = data.get("ID");
-            List<String> displayLore = BetterMissions.configManager.getConfigNode(2, "Missions", "Release", missionEntry, "Lore").getList(TypeToken.of(String.class));
-            Map<String, Map<String, String>> itemRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Release", missionEntry, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Release", missionEntry, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Release", missionEntry, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Release", missionEntry, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Release", missionEntry, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Release", missionEntry, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = BetterMissions.configManager.getConfigNode(2, "Missions", "Release", missionEntry, "Reward", "Type").getString();
-            Map<String, String> specs = BetterMissions.configManager.getConfigNode(2, "Missions", "Release", missionEntry, "Specs").getValue(new TypeToken<Map<String, String>>() {});
-            int timer = BetterMissions.configManager.getConfigNode(2, "Missions", "Release", missionEntry, "Timer").getInt();
-            ReleaseMission releaseMission;
-            if (!BetterMissions.configManager.getConfigNode(2, "Missions", "Release", missionEntry, "Reward", "Value").isVirtual()) {
-
-                int reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Release", missionEntry, "Reward", "Value").getInt();
-                releaseMission = new ReleaseMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            } else {
-
-                List<String> reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Release", missionEntry, "Reward", "Commands").getList(TypeToken.of(String.class));
-                releaseMission = new ReleaseMission(missionEntry, amount, chance, displayName, commandID, displayLore, rewardType, reward, requirements, specs, timer);
-
-            }
-            List<Mission> missions = new ArrayList<>();
-            if (missionsMap.containsKey("Release")) {
-
-                missions = missionsMap.get("Release");
-
-            }
-            missions.add(releaseMission);
-            missionsMap.put("Release", missions);
-
-        }
-
-        /** SMELT */
-        Map<String, Map<String, String>> smeltMap = BetterMissions.configManager.getConfigNode(2, "Missions", "Smelt").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-        for (Map.Entry<String, Map<String, String>> entry : smeltMap.entrySet()) {
-
-            String missionEntry = entry.getKey();
-            Map<String, String> data = entry.getValue();
-            int amount = Integer.parseInt(data.get("Amount"));
-            double chance = Double.parseDouble(data.get("Chance"));
-            String displayName = data.get("Display-Name");
-            String commandID = data.get("ID");
-            List<String> items = BetterMissions.configManager.getConfigNode(2, "Missions", "Smelt", missionEntry, "Items").getList(TypeToken.of(String.class));
-            List<String> displayLore = BetterMissions.configManager.getConfigNode(2, "Missions", "Smelt", missionEntry, "Lore").getList(TypeToken.of(String.class));
-            Map<String, Map<String, String>> itemRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Smelt", missionEntry, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Smelt", missionEntry, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Smelt", missionEntry, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Smelt", missionEntry, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Smelt", missionEntry, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = BetterMissions.configManager.getConfigNode(2, "Missions", "Smelt", missionEntry, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = BetterMissions.configManager.getConfigNode(2, "Missions", "Smelt", missionEntry, "Reward", "Type").getString();
-            int timer = BetterMissions.configManager.getConfigNode(2, "Missions", "Smelt", missionEntry, "Timer").getInt();
+            String rewardType = smeltingConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            int timer = smeltingConfigManager.getConfigNode(index, "Timer").getInt();
             SmeltMission smeltMission;
-            if (!BetterMissions.configManager.getConfigNode(2, "Missions", "Smelt", missionEntry, "Reward", "Value").isVirtual()) {
+            if (!smeltingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
 
-                int reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Smelt", missionEntry, "Reward", "Value").getInt();
-                smeltMission = new SmeltMission(missionEntry, amount, chance, displayName, commandID, items, displayLore, rewardType, reward, requirements, timer);
+                int reward = smeltingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                smeltMission = new SmeltMission(missionID, amount, chance, displayName, commandID, itemIDs, lore, rewardType, reward, requirements, timer);
 
             } else {
 
-                List<String> reward = BetterMissions.configManager.getConfigNode(2, "Missions", "Smelt", missionEntry, "Reward", "Commands").getList(TypeToken.of(String.class));
-                smeltMission = new SmeltMission(missionEntry, amount, chance, displayName, commandID, items, displayLore, rewardType, reward, requirements, timer);
+                List<String> reward = smeltingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                smeltMission = new SmeltMission(missionID, amount, chance, displayName, commandID, itemIDs, lore, rewardType, reward, requirements, timer);
 
             }
-            List<Mission> missions = new ArrayList<>();
-            if (missionsMap.containsKey("Smelt")) {
-
-                missions = missionsMap.get("Smelt");
-
-            }
-            missions.add(smeltMission);
-            missionsMap.put("Smelt", missions);
+            smeltMission.register();
+            count++;
 
         }
+        missionCountMap.put("Smelt", count);
+
+
+        for (Map.Entry<String, Integer> entry : missionCountMap.entrySet()) {
+
+            BetterMissions.logger.info("Successfully loaded " + entry.getValue() + " " + entry.getKey() + " mission(s).");
+
+        }
+        BetterMissions.logger.info("Finished loading all missions!");
 
     }
 

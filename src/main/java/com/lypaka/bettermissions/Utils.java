@@ -1,6 +1,5 @@
 package com.lypaka.bettermissions;
 
-import com.lypaka.bettermissions.Config.ConfigGetters;
 import com.lypaka.bettermissions.Missions.*;
 import com.lypaka.bettermissions.Requirements.*;
 import com.lypaka.lypakautils.ConfigurationLoaders.ComplexConfigManager;
@@ -11,7 +10,6 @@ import com.pixelmonmod.pixelmon.enums.EnumGrowth;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -525,162 +523,9 @@ public class Utils {
 
     }
 
-    public static void reloadAllMissionTypes() {
+    public static void reloadAllMissionTypes() throws ObjectMappingException {
 
-        List<String> types = new ArrayList<>();
-        types.addAll(BetterMissions.missionConfigManager.keySet());
-        for (String missionType : types) {
-
-            ComplexConfigManager configManager = null;
-            List<String> files = new ArrayList<>();
-            switch (missionType.toLowerCase()) {
-
-                case "breed":
-                    configManager = BetterMissions.missionConfigManager.get("Breed");
-                    files = ConfigGetters.breedMissions;
-                    break;
-
-                case "catch":
-                    configManager = BetterMissions.missionConfigManager.get("Catch");
-                    files = ConfigGetters.catchMissions;
-                    break;
-
-                case "craft":
-                    configManager = BetterMissions.missionConfigManager.get("Craft");
-                    files = ConfigGetters.craftMissions;
-                    break;
-
-                case "defeat":
-                    configManager = BetterMissions.missionConfigManager.get("Defeat");
-                    files = ConfigGetters.defeatMissions;
-                    break;
-
-                case "evolve":
-                    configManager = BetterMissions.missionConfigManager.get("Evolve");
-                    files = ConfigGetters.evolveMissions;
-                    break;
-
-                case "fish":
-                    configManager = BetterMissions.missionConfigManager.get("Fish");
-                    files = ConfigGetters.fishMissions;
-                    break;
-
-                case "hatch":
-                    configManager = BetterMissions.missionConfigManager.get("Hatch");
-                    files = ConfigGetters.hatchMissions;
-                    break;
-
-                case "kill":
-                    configManager = BetterMissions.missionConfigManager.get("Kill");
-                    files = ConfigGetters.killMissions;
-                    break;
-
-                case "lose":
-                    configManager = BetterMissions.missionConfigManager.get("Lose");
-                    files = ConfigGetters.loseMissions;
-                    break;
-
-                case "melee":
-                    configManager = BetterMissions.missionConfigManager.get("Melee");
-                    files = ConfigGetters.meleeMissions;
-                    break;
-
-                case "mine":
-                    configManager = BetterMissions.missionConfigManager.get("Mine");
-                    files = ConfigGetters.mineMissions;
-                    break;
-
-                case "photograph":
-                    configManager = BetterMissions.missionConfigManager.get("Photograph");
-                    files = ConfigGetters.photographMissions;
-                    break;
-
-                case "raid":
-                    configManager = BetterMissions.missionConfigManager.get("Raid");
-                    files = ConfigGetters.raidMissions;
-                    break;
-
-                case "release":
-                    configManager = BetterMissions.missionConfigManager.get("Release");
-                    files = ConfigGetters.releaseMissions;
-                    break;
-
-                case "smelt":
-                    configManager = BetterMissions.missionConfigManager.get("Smelt");
-                    files = ConfigGetters.smeltMissions;
-                    break;
-
-            }
-
-            if (configManager == null) return;
-
-            configManager.setFileNames(files);
-            configManager.load();
-            switch (missionType.toLowerCase()) {
-
-                case "breed":
-                    MissionRegistry.loadBreedMissions(false);
-                    break;
-
-                case "catch":
-                    MissionRegistry.loadCatchMissions(false);
-                    break;
-
-                case "craft":
-                    MissionRegistry.loadCraftMissions(false);
-                    break;
-
-                case "defeat":
-                    MissionRegistry.loadDefeatMissions(false);
-                    break;
-
-                case "evolve":
-                    MissionRegistry.loadEvolveMissions(false);
-                    break;
-
-                case "fish":
-                    MissionRegistry.loadFishMissions(false);
-                    break;
-
-                case "hatch":
-                    MissionRegistry.loadHatchMissions(false);
-                    break;
-
-                case "kill":
-                    MissionRegistry.loadKillMissions(false);
-                    break;
-
-                case "lose":
-                    MissionRegistry.loadLoseMissions(false);
-                    break;
-
-                case "melee":
-                    MissionRegistry.loadMeleeMissions(false);
-                    break;
-
-                case "mine":
-                    MissionRegistry.loadMineMissions(false);
-                    break;
-
-                case "photograph":
-                    MissionRegistry.loadPhotographyMissions(false);
-                    break;
-
-                case "raid":
-                    MissionRegistry.loadRaidMissions(false);
-                    break;
-
-                case "release":
-                    MissionRegistry.loadReleaseMissions(false);
-                    break;
-
-                case "smelt":
-                    MissionRegistry.loadSmeltMissions(false);
-
-            }
-            refreshMissionIDsList(missionType);
-
-        }
+        MissionsHandler.loadMissions();
 
     }
 
@@ -773,7 +618,7 @@ public class Utils {
 
         configManager.setFileNames(files);
         configManager.load();
-        switch (missionType.toLowerCase()) {
+        /*switch (missionType.toLowerCase()) {
 
             case "breed":
                 MissionRegistry.loadBreedMissions(false);
@@ -834,7 +679,7 @@ public class Utils {
             case "smelt":
                 MissionRegistry.loadSmeltMissions(false);
 
-        }
+        }*/
         refreshMissionIDsList(missionType);
 
     }

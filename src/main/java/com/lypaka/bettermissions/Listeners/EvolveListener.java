@@ -5,7 +5,7 @@ import com.lypaka.bettermissions.API.MissionRequirementsEvent;
 import com.lypaka.bettermissions.Accounts.Account;
 import com.lypaka.bettermissions.Accounts.AccountHandler;
 import com.lypaka.bettermissions.BetterMissions;
-import com.lypaka.bettermissions.Config.ConfigGetters;
+import com.lypaka.bettermissions.ConfigGetters;
 import com.lypaka.bettermissions.Missions.EvolveMission;
 import com.lypaka.bettermissions.Missions.MissionRegistry;
 import com.lypaka.bettermissions.Requirements.*;
@@ -25,7 +25,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 

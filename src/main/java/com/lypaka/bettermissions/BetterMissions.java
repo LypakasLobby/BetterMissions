@@ -1,6 +1,5 @@
 package com.lypaka.bettermissions;
 
-import com.lypaka.bettermissions.Config.ConfigGetters;
 import com.lypaka.lypakautils.ConfigurationLoaders.BasicConfigManager;
 import com.lypaka.lypakautils.ConfigurationLoaders.ComplexConfigManager;
 import com.lypaka.lypakautils.ConfigurationLoaders.ConfigUtils;
@@ -20,12 +19,10 @@ import java.util.Map;
 @Mod("bettermissions")
 public class BetterMissions {
 
-    public static final String VERSION = "2.0.2";
     public static final String MOD_ID = "bettermissions";
     public static final String MOD_NAME = "BetterMissions";
-    public static final Logger logger = LogManager.getLogger("BetterMissions");
+    public static final Logger logger = LogManager.getLogger(MOD_NAME);
     public static BasicConfigManager configManager;
-    public static BasicConfigManager dummyConfigManager; /** Only used once for the auto-conversion between old system to new */
     public static PlayerConfigManager playerConfigManager;
     public static Map<String, ComplexConfigManager> missionConfigManager = new HashMap<>();
     public static Path dir;
@@ -34,7 +31,7 @@ public class BetterMissions {
     public BetterMissions() throws IOException, ObjectMappingException {
 
         dir = ConfigUtils.checkDir(Paths.get("./config/bettermissions"));
-        String[] files = new String[]{"bettermissions.conf", "missions-list.conf", "defaultMissions.conf", "itemRequirementExample.conf", "partyRequirementExample.conf"};
+        String[] files = new String[]{"bettermissions.conf", "missions-list.conf", "exampleMissions.conf", "itemRequirementExample.conf", "partyRequirementExample.conf"};
         configManager = new BasicConfigManager(files, dir, BetterMissions.class, MOD_NAME, MOD_ID, logger);
         configManager.init();
         playerConfigManager = new PlayerConfigManager("account.conf", "player-accounts", dir, BetterMissions.class, MOD_NAME, MOD_ID, logger);

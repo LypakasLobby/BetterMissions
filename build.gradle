@@ -12,7 +12,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 
 group = 'com.lypaka'
-version = '1.16.5-2.0.5'
+version = '1.16.5-3.0.0'
 
 java {
     archivesBaseName = 'BetterMissions'

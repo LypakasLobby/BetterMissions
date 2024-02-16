@@ -1,8 +1,7 @@
 package com.lypaka.bettermissions.Commands;
 
 import com.lypaka.bettermissions.BetterMissions;
-import com.lypaka.bettermissions.Config.ConfigGetters;
-import com.lypaka.bettermissions.MissionTimer;
+import com.lypaka.bettermissions.ConfigGetters;
 import com.lypaka.bettermissions.Utils;
 import com.lypaka.lypakautils.FancyText;
 import com.lypaka.lypakautils.MiscHandlers.PermissionHandler;
@@ -49,6 +48,7 @@ public class ReloadCommand {
                                                                     if (reloadMissions) {
 
                                                                         Utils.reloadAllMissionTypes();
+                                                                        c.getSource().sendFeedback(FancyText.getFormattedText("&aSending reload to all missions..."), true);
 
                                                                     }
 
@@ -85,7 +85,6 @@ public class ReloadCommand {
                                                     ConfigGetters.load();
 
                                                     c.getSource().sendFeedback(FancyText.getFormattedText("&aSuccessfully reloaded BetterMissions configuration!"), true);
-                                                    c.getSource().sendFeedback(FancyText.getFormattedText("&aTo reload missions themselves, use \"/missions reloadtype <missionType>\"!"), true);
 
                                                 } catch (ObjectMappingException e) {
 

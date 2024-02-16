@@ -2,7 +2,6 @@ package com.lypaka.bettermissions;
 
 import com.lypaka.bettermissions.Accounts.Account;
 import com.lypaka.bettermissions.Accounts.AccountHandler;
-import com.lypaka.bettermissions.Config.ConfigGetters;
 import com.lypaka.lypakautils.FancyText;
 import com.lypaka.lypakautils.Listeners.JoinListener;
 import net.minecraft.entity.player.ServerPlayerEntity;

@@ -5,8 +5,7 @@ import com.lypaka.bettermissions.API.MissionRequirementsEvent;
 import com.lypaka.bettermissions.Accounts.Account;
 import com.lypaka.bettermissions.Accounts.AccountHandler;
 import com.lypaka.bettermissions.BetterMissions;
-import com.lypaka.bettermissions.Config.ConfigGetters;
-import com.lypaka.bettermissions.Missions.CraftMission;
+import com.lypaka.bettermissions.ConfigGetters;
 import com.lypaka.bettermissions.Missions.MissionRegistry;
 import com.lypaka.bettermissions.Missions.SmeltMission;
 import com.lypaka.bettermissions.Requirements.*;
@@ -78,10 +77,20 @@ public class SmeltListener {
                         ComplexConfigManager configManager = BetterMissions.missionConfigManager.get("Smelt");
                         int index = Utils.getIndexFromMissionID("Smelt", mission.getID());
                         PartyRequirement partyRequirement = new PartyRequirement(configManager, index, mission.getRequirements().getPartyRequirements(), player);
+                        System.out.println("partyRequirement == " + partyRequirement);
+                        System.out.println("partyRequirements map == " + mission.getRequirements().getPartyRequirements());
                         PokedexRequirement pokedexRequirement = new PokedexRequirement(mission.getRequirements().getPokedexRequirements(), player);
+                        System.out.println("pokedexRequirement == " + pokedexRequirement);
+                        System.out.println("pokedexRequirement map == " + mission.getRequirements().getPokedexRequirements());
                         PermissionRequirement permissionRequirement = new PermissionRequirement(mission.getRequirements().getPermissionRequirements(), player);
+                        System.out.println("permissionRequirement == " + permissionRequirement);
+                        System.out.println("permissionRequirement map == " + mission.getRequirements().getPermissionRequirements());
                         TimeRequirement timeRequirement = new TimeRequirement(mission.getRequirements().getTimeRequirements(), player);
+                        System.out.println("timeRequirement == " + timeRequirement);
+                        System.out.println("timeRequirement map == " + mission.getRequirements().getTimeRequirements());
                         WeatherRequirement weatherRequirement = new WeatherRequirement(mission.getRequirements().getWeatherRequirements(), player);
+                        System.out.println("weatherRequirement == " + weatherRequirement);
+                        System.out.println("weatherRequirement map == " + mission.getRequirements().getWeatherRequirements());
                         if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, timeRequirement, weatherRequirement)) return;
                         if (partyRequirement.getPokemonToRemove().size() > 0) {
 

@@ -7,7 +7,7 @@ import ca.landonjw.gooeylibs2.api.page.GooeyPage;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import com.lypaka.bettermissions.Accounts.Account;
 import com.lypaka.bettermissions.Accounts.AccountHandler;
-import com.lypaka.bettermissions.Config.ConfigGetters;
+import com.lypaka.bettermissions.ConfigGetters;
 import com.lypaka.bettermissions.Missions.*;
 import com.lypaka.lypakautils.FancyText;
 import com.lypaka.lypakautils.MiscHandlers.ItemStackBuilder;

@@ -2,19 +2,22 @@ package com.lypaka.bettermissions.Listeners;
 
 import com.lypaka.bettermissions.BetterMissions;
 import com.lypaka.bettermissions.MissionTimer;
+import com.lypaka.bettermissions.Missions.MissionsHandler;
 import com.lypaka.bettermissions.Utils;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 @Mod.EventBusSubscriber(modid = BetterMissions.MOD_ID)
 public class ServerStartedListener {
 
     @SubscribeEvent
-    public static void onServerStarted (FMLServerStartedEvent event) {
+    public static void onServerStarted (FMLServerStartedEvent event) throws ObjectMappingException {
 
+        MissionsHandler.loadMissions();
         MinecraftForge.EVENT_BUS.register(new LoginListener());
         Pixelmon.EVENT_BUS.register(new CatchingListener());
         Pixelmon.EVENT_BUS.register(new KillingListener());

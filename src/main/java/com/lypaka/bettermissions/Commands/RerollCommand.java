@@ -3,7 +3,7 @@ package com.lypaka.bettermissions.Commands;
 import com.lypaka.bettermissions.Accounts.Account;
 import com.lypaka.bettermissions.Accounts.AccountHandler;
 import com.lypaka.bettermissions.BetterMissions;
-import com.lypaka.bettermissions.Config.ConfigGetters;
+import com.lypaka.bettermissions.ConfigGetters;
 import com.lypaka.lypakautils.FancyText;
 import com.lypaka.lypakautils.MiscHandlers.PermissionHandler;
 import com.mojang.brigadier.CommandDispatcher;

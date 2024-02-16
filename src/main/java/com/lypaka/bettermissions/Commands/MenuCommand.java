@@ -1,7 +1,7 @@
 package com.lypaka.bettermissions.Commands;
 
 import com.lypaka.bettermissions.BetterMissions;
-import com.lypaka.bettermissions.Config.ConfigGetters;
+import com.lypaka.bettermissions.ConfigGetters;
 import com.lypaka.bettermissions.GUIs.MissionsMenu;
 import com.lypaka.lypakautils.FancyText;
 import com.lypaka.lypakautils.MiscHandlers.PermissionHandler;

@@ -1,16 +1,5 @@
 package com.lypaka.bettermissions.Missions;
 
-import com.google.common.reflect.TypeToken;
-import com.lypaka.bettermissions.Accounts.AccountHandler;
-import com.lypaka.bettermissions.BetterMissions;
-import com.lypaka.bettermissions.Config.ConfigGetters;
-import com.lypaka.bettermissions.Listeners.LoginListener;
-import com.lypaka.bettermissions.MissionTimer;
-import com.lypaka.bettermissions.Requirements.MissionRequirement;
-import com.lypaka.bettermissions.Utils;
-import com.lypaka.lypakautils.ConfigurationLoaders.ComplexConfigManager;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
-
 import java.util.*;
 
 public class MissionRegistry {
@@ -51,9 +40,9 @@ public class MissionRegistry {
     public static List<ReleaseMission> permanentReleaseMissions = new ArrayList<>();
     public static List<SmeltMission> permanentSmeltMissions = new ArrayList<>();
 
-    private static final long interval = ConfigGetters.registryInterval;
+    //private static final long interval = ConfigGetters.registryInterval;
 
-    public static void loadBreedMissions (boolean doNext) {
+    /*public static void loadBreedMissions (boolean doNext) {
 
         BetterMissions.logger.info("Starting mission registry...");
         breedMissions = new ArrayList<>();
@@ -2967,6 +2956,6 @@ public class MissionRegistry {
 
         }, 0, interval);
 
-    }
+    }*/
 
 }
