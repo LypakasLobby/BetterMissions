@@ -1,6 +1,5 @@
 package com.lypaka.bettermissions.Commands;
 
-import com.lypaka.bettermissions.BetterMissions;
 import com.lypaka.bettermissions.Missions.MissionsHandler;
 import com.lypaka.bettermissions.Utils;
 import com.lypaka.lypakautils.FancyText;
