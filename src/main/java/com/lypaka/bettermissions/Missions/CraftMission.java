@@ -34,11 +34,11 @@ public class CraftMission extends Mission {
 
         if (this.getTimer() > 0) {
 
-            MissionRegistry.craftMissions.add(this);
+            MissionsHandler.craftMissions.add(this);
 
         } else {
 
-            MissionRegistry.permanentCraftMissions.add(this);
+            MissionsHandler.permanentCraftMissions.add(this);
 
         }
 

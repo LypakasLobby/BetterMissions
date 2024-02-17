@@ -1,7 +1,6 @@
 package com.lypaka.bettermissions;
 
 import com.google.common.reflect.TypeToken;
-import com.lypaka.bettermissions.BetterMissions;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.util.ArrayList;
@@ -39,6 +38,7 @@ public class ConfigGetters {
     public static List<String> photographMissions;
     public static List<String> raidMissions;
     public static List<String> releaseMissions;
+    public static List<String> reviveMissions;
     public static List<String> smeltMissions;
 
     public static void load() throws ObjectMappingException {
@@ -50,25 +50,6 @@ public class ConfigGetters {
             BetterMissions.configManager.getConfigNode(0, "Auto-Cycle-Missions").setValue(true);
 
         }
-        if (BetterMissions.configManager.getConfigNode(0, "Converted").isVirtual()) {
-
-            if (!save) save = true;
-            BetterMissions.configManager.getConfigNode(0, "Converted").setValue(false);
-            BetterMissions.configManager.getConfigNode(0, "Converted").setComment("DON'T touch this, if you do, your shit could get wiped.");
-
-        }
-        if (BetterMissions.configManager.getConfigNode(0, "Show-Loading-Messages").isVirtual()) {
-
-            if (!save) save = true;
-            BetterMissions.configManager.getConfigNode(0, "Show-Loading-Messages").setValue(false);
-            BetterMissions.configManager.getConfigNode(0, "Show-Loading-Messages").setComment("Set this to true to be able to see console successfully loading mission files");
-
-        }
-        if (save) {
-
-            BetterMissions.configManager.save();
-
-        }
         autoCycleMissions = BetterMissions.configManager.getConfigNode(0, "Auto-Cycle-Missions").getBoolean();
         completionBroadcast = BetterMissions.configManager.getConfigNode(0, "Completion-Broadcast").getString();
         converted = BetterMissions.configManager.getConfigNode(0, "Converted").getBoolean();
@@ -77,6 +58,13 @@ public class ConfigGetters {
         missionsMenuDisplayName = BetterMissions.configManager.getConfigNode(0, "GUI", "Display-Name").getString();
         menuEnabled = BetterMissions.configManager.getConfigNode(0, "GUI", "Enabled").getBoolean();
         missionItemRepresentativeMap = BetterMissions.configManager.getConfigNode(0, "GUI", "Mission-Representative").getValue(new TypeToken<Map<String, String>>() {});
+        if (!missionItemRepresentativeMap.containsKey("Reviving")) {
+
+            missionItemRepresentativeMap.put("Reviving", "pixelmon:revive");
+            BetterMissions.configManager.getConfigNode(0, "GUI", "Mission-Representative").setValue(missionItemRepresentativeMap);
+            if (!save) save = true;
+
+        }
         missionRerollDisplayName = BetterMissions.configManager.getConfigNode(0, "GUI", "Reroll", "Display-Name").getString();
         rerollsEnabled = BetterMissions.configManager.getConfigNode(0, "GUI", "Reroll", "Enabled").getBoolean();
         missionRerollItemID = BetterMissions.configManager.getConfigNode(0, "GUI", "Reroll", "ID").getString();
@@ -98,7 +86,21 @@ public class ConfigGetters {
         photographMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Photograph-Missions").getList(TypeToken.of(String.class)));
         raidMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Raid-Missions").getList(TypeToken.of(String.class)));
         releaseMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Release-Missions").getList(TypeToken.of(String.class)));
+        if (BetterMissions.configManager.getConfigNode(1, "Revive-Missions").isVirtual()) {
+
+            reviveMissions = new ArrayList<>();
+
+        } else {
+
+            reviveMissions = BetterMissions.configManager.getConfigNode(1, "Revive-Missions").getList(TypeToken.of(String.class));
+
+        }
         smeltMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Smelt-Missions").getList(TypeToken.of(String.class)));
+        if (save) {
+
+            BetterMissions.configManager.save();
+
+        }
 
     }
 
@@ -118,6 +120,7 @@ public class ConfigGetters {
         photographMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Photograph-Missions").getList(TypeToken.of(String.class)));
         raidMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Raid-Missions").getList(TypeToken.of(String.class)));
         releaseMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Release-Missions").getList(TypeToken.of(String.class)));
+        reviveMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Revive-Missions").getList(TypeToken.of(String.class)));
         smeltMissions = new ArrayList<>(BetterMissions.configManager.getConfigNode(1, "Smelt-Missions").getList(TypeToken.of(String.class)));
 
     }

@@ -35,11 +35,11 @@ public class HatchMission extends Mission {
 
         if (this.getTimer() > 0) {
 
-            MissionRegistry.hatchMissions.add(this);
+            MissionsHandler.hatchMissions.add(this);
 
         } else {
 
-            MissionRegistry.permanentHatchMissions.add(this);
+            MissionsHandler.permanentHatchMissions.add(this);
 
         }
 

@@ -26,7 +26,6 @@ public class ReloadCommand {
                                                     Commands.argument("reloadMissions", StringArgumentType.word())
                                                             .executes(c -> {
 
-                                                                if (BetterMissions.disabled) return 0;
                                                                 if (c.getSource().getEntity() instanceof ServerPlayerEntity) {
 
                                                                     ServerPlayerEntity player = (ServerPlayerEntity) c.getSource().getEntity();
@@ -66,7 +65,6 @@ public class ReloadCommand {
                                             )
                                             .executes(c -> {
 
-                                                if (BetterMissions.disabled) return 0;
                                                 if (c.getSource().getEntity() instanceof ServerPlayerEntity) {
 
                                                     ServerPlayerEntity player = (ServerPlayerEntity) c.getSource().getEntity();

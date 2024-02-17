@@ -3,7 +3,6 @@ package com.lypaka.bettermissions.Missions;
 import com.lypaka.bettermissions.Requirements.MissionRequirement;
 
 import java.util.List;
-import java.util.Map;
 
 public class LoseMission extends Mission {
 
@@ -35,11 +34,11 @@ public class LoseMission extends Mission {
 
         if (this.getTimer() > 0) {
 
-            MissionRegistry.loseMissions.add(this);
+            MissionsHandler.loseMissions.add(this);
 
         } else {
 
-            MissionRegistry.permanentLoseMissions.add(this);
+            MissionsHandler.permanentLoseMissions.add(this);
 
         }
 

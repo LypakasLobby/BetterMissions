@@ -35,11 +35,11 @@ public class EvolveMission extends Mission {
 
         if (this.getTimer() > 0) {
 
-            MissionRegistry.evolveMissions.add(this);
+            MissionsHandler.evolveMissions.add(this);
 
         } else {
 
-            MissionRegistry.permanentEvolveMissions.add(this);
+            MissionsHandler.permanentEvolveMissions.add(this);
 
         }
 

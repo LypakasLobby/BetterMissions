@@ -380,62 +380,6 @@ public class Utils {
 
     }
 
-    public static void putAllPermanentShitsInOneList() {
-
-        permanentMissionIDs = new ArrayList<>();
-        for (CatchMission mission : MissionRegistry.permanentCatchMissions) {
-
-            permanentMissionIDs.add(mission.getCommandID());
-
-        }
-        for (CraftMission mission : MissionRegistry.permanentCraftMissions) {
-
-            permanentMissionIDs.add(mission.getCommandID());
-
-        }
-        for (DefeatMission mission : MissionRegistry.permanentDefeatMissions) {
-
-            permanentMissionIDs.add(mission.getCommandID());
-
-        }
-        for (EvolveMission mission : MissionRegistry.permanentEvolveMissions) {
-
-            permanentMissionIDs.add(mission.getCommandID());
-
-        }
-        for (FishMission mission : MissionRegistry.permanentFishMissions) {
-
-            permanentMissionIDs.add(mission.getCommandID());
-
-        }
-        for (KillMission mission : MissionRegistry.permanentKillMissions) {
-
-            permanentMissionIDs.add(mission.getCommandID());
-
-        }
-        for (MeleeMission mission : MissionRegistry.permanentMeleeMissions) {
-
-            permanentMissionIDs.add(mission.getCommandID());
-
-        }
-        for (MineMission mission : MissionRegistry.permanentMineMissions) {
-
-            permanentMissionIDs.add(mission.getCommandID());
-
-        }
-        for (ReleaseMission mission : MissionRegistry.permanentReleaseMissions) {
-
-            permanentMissionIDs.add(mission.getCommandID());
-
-        }
-        for (LoseMission mission : MissionRegistry.permanentLoseMissions) {
-
-            permanentMissionIDs.add(mission.getCommandID());
-
-        }
-
-    }
-
     public static int getIndexFromMissionID (String type, String missionID) {
 
         int index = -1;
@@ -496,6 +440,10 @@ public class Utils {
 
                     case "release":
                         files = ConfigGetters.releaseMissions;
+                        break;
+
+                    case "revive":
+                        files = ConfigGetters.reviveMissions;
                         break;
 
                     default:
@@ -607,6 +555,11 @@ public class Utils {
                 files = ConfigGetters.releaseMissions;
                 break;
 
+            case "revive":
+                configManager = BetterMissions.missionConfigManager.get("Revive");
+                files = ConfigGetters.reviveMissions;
+                break;
+
             case "smelt":
                 configManager = BetterMissions.missionConfigManager.get("Smelt");
                 files = ConfigGetters.smeltMissions;
@@ -618,68 +571,6 @@ public class Utils {
 
         configManager.setFileNames(files);
         configManager.load();
-        /*switch (missionType.toLowerCase()) {
-
-            case "breed":
-                MissionRegistry.loadBreedMissions(false);
-                break;
-
-            case "catch":
-                MissionRegistry.loadCatchMissions(false);
-                break;
-
-            case "craft":
-                MissionRegistry.loadCraftMissions(false);
-                break;
-
-            case "defeat":
-                MissionRegistry.loadDefeatMissions(false);
-                break;
-
-            case "evolve":
-                MissionRegistry.loadEvolveMissions(false);
-                break;
-
-            case "fish":
-                MissionRegistry.loadFishMissions(false);
-                break;
-
-            case "hatch":
-                MissionRegistry.loadHatchMissions(false);
-                break;
-
-            case "kill":
-                MissionRegistry.loadKillMissions(false);
-                break;
-
-            case "lose":
-                MissionRegistry.loadLoseMissions(false);
-                break;
-
-            case "melee":
-                MissionRegistry.loadMeleeMissions(false);
-                break;
-
-            case "mine":
-                MissionRegistry.loadMineMissions(false);
-                break;
-
-            case "photograph":
-                MissionRegistry.loadPhotographyMissions(false);
-                break;
-
-            case "raid":
-                MissionRegistry.loadRaidMissions(false);
-                break;
-
-            case "release":
-                MissionRegistry.loadReleaseMissions(false);
-                break;
-
-            case "smelt":
-                MissionRegistry.loadSmeltMissions(false);
-
-        }*/
         refreshMissionIDsList(missionType);
 
     }
@@ -761,6 +652,11 @@ public class Utils {
                 files = ConfigGetters.releaseMissions;
                 break;
 
+            case "revive":
+                configManager = BetterMissions.missionConfigManager.get("Revive");
+                files = ConfigGetters.reviveMissions;
+                break;
+
             case "smelt":
                 configManager = BetterMissions.missionConfigManager.get("Smelt");
                 files = ConfigGetters.smeltMissions;
@@ -780,9 +676,9 @@ public class Utils {
 
         for (String id : currentMissionIDs) {
 
-            if (!MissionRegistry.allMissionIDs.contains(id)) {
+            if (!MissionsHandler.allMissionIDs.contains(id)) {
 
-                MissionRegistry.allMissionIDs.add(id);
+                MissionsHandler.allMissionIDs.add(id);
 
             }
 
@@ -852,6 +748,10 @@ public class Utils {
                 files = ConfigGetters.releaseMissions;
                 break;
 
+            case "revive":
+                files = ConfigGetters.reviveMissions;
+                break;
+
             case "smelt":
                 files = ConfigGetters.smeltMissions;
                 break;
@@ -870,7 +770,7 @@ public class Utils {
     public static String getMissionIDFromCommandID (String commandID) {
 
         String missionID = null;
-        for (BreedMission mission : MissionRegistry.permanentBreedMissions) {
+        for (BreedMission mission : MissionsHandler.permanentBreedMissions) {
 
             if (mission.getCommandID().equalsIgnoreCase(commandID)) {
 
@@ -880,7 +780,7 @@ public class Utils {
             }
 
         }
-        for (CatchMission mission : MissionRegistry.permanentCatchMissions) {
+        for (CatchMission mission : MissionsHandler.permanentCatchMissions) {
 
             if (mission.getCommandID().equalsIgnoreCase(commandID)) {
 
@@ -890,7 +790,7 @@ public class Utils {
             }
 
         }
-        for (CraftMission mission : MissionRegistry.permanentCraftMissions) {
+        for (CraftMission mission : MissionsHandler.permanentCraftMissions) {
 
             if (mission.getCommandID().equalsIgnoreCase(commandID)) {
 
@@ -900,7 +800,7 @@ public class Utils {
             }
 
         }
-        for (DefeatMission mission : MissionRegistry.permanentDefeatMissions) {
+        for (DefeatMission mission : MissionsHandler.permanentDefeatMissions) {
 
             if (mission.getCommandID().equalsIgnoreCase(commandID)) {
 
@@ -910,7 +810,7 @@ public class Utils {
             }
 
         }
-        for (EvolveMission mission : MissionRegistry.permanentEvolveMissions) {
+        for (EvolveMission mission : MissionsHandler.permanentEvolveMissions) {
 
             if (mission.getCommandID().equalsIgnoreCase(commandID)) {
 
@@ -920,7 +820,7 @@ public class Utils {
             }
 
         }
-        for (FishMission mission : MissionRegistry.permanentFishMissions) {
+        for (FishMission mission : MissionsHandler.permanentFishMissions) {
 
             if (mission.getCommandID().equalsIgnoreCase(commandID)) {
 
@@ -930,7 +830,7 @@ public class Utils {
             }
 
         }
-        for (HatchMission mission : MissionRegistry.permanentHatchMissions) {
+        for (HatchMission mission : MissionsHandler.permanentHatchMissions) {
 
             if (mission.getCommandID().equalsIgnoreCase(commandID)) {
 
@@ -940,7 +840,7 @@ public class Utils {
             }
 
         }
-        for (KillMission mission : MissionRegistry.permanentKillMissions) {
+        for (KillMission mission : MissionsHandler.permanentKillMissions) {
 
             if (mission.getCommandID().equalsIgnoreCase(commandID)) {
 
@@ -950,7 +850,7 @@ public class Utils {
             }
 
         }
-        for (LoseMission mission : MissionRegistry.permanentLoseMissions) {
+        for (LoseMission mission : MissionsHandler.permanentLoseMissions) {
 
             if (mission.getCommandID().equalsIgnoreCase(commandID)) {
 
@@ -960,7 +860,7 @@ public class Utils {
             }
 
         }
-        for (MeleeMission mission : MissionRegistry.permanentMeleeMissions) {
+        for (MeleeMission mission : MissionsHandler.permanentMeleeMissions) {
 
             if (mission.getCommandID().equalsIgnoreCase(commandID)) {
 
@@ -970,7 +870,7 @@ public class Utils {
             }
 
         }
-        for (MineMission mission : MissionRegistry.permanentMineMissions) {
+        for (MineMission mission : MissionsHandler.permanentMineMissions) {
 
             if (mission.getCommandID().equalsIgnoreCase(commandID)) {
 
@@ -980,7 +880,7 @@ public class Utils {
             }
 
         }
-        for (PhotographMission mission : MissionRegistry.permanentPhotographMissions) {
+        for (PhotographMission mission : MissionsHandler.permanentPhotographMissions) {
 
             if (mission.getCommandID().equalsIgnoreCase(commandID)) {
 
@@ -990,7 +890,7 @@ public class Utils {
             }
 
         }
-        for (RaidMission mission : MissionRegistry.permanentRaidMissions) {
+        for (RaidMission mission : MissionsHandler.permanentRaidMissions) {
 
             if (mission.getCommandID().equalsIgnoreCase(commandID)) {
 
@@ -1000,7 +900,7 @@ public class Utils {
             }
 
         }
-        for (ReleaseMission mission : MissionRegistry.permanentReleaseMissions) {
+        for (ReleaseMission mission : MissionsHandler.permanentReleaseMissions) {
 
             if (mission.getCommandID().equalsIgnoreCase(commandID)) {
 
@@ -1010,7 +910,17 @@ public class Utils {
             }
 
         }
-        for (SmeltMission mission : MissionRegistry.permanentSmeltMissions) {
+        for (ReviveMission mission : MissionsHandler.permanentReviveMissions) {
+
+            if (mission.getCommandID().equalsIgnoreCase(commandID)) {
+
+                missionID = mission.getID();
+                break;
+
+            }
+
+        }
+        for (SmeltMission mission : MissionsHandler.permanentSmeltMissions) {
 
             if (mission.getCommandID().equalsIgnoreCase(commandID)) {
 

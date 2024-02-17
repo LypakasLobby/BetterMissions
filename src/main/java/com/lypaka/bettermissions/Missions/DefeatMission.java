@@ -3,7 +3,6 @@ package com.lypaka.bettermissions.Missions;
 import com.lypaka.bettermissions.Requirements.MissionRequirement;
 
 import java.util.List;
-import java.util.Map;
 
 public class DefeatMission extends Mission {
 
@@ -35,11 +34,11 @@ public class DefeatMission extends Mission {
 
         if (this.getTimer() > 0) {
 
-            MissionRegistry.defeatMissions.add(this);
+            MissionsHandler.defeatMissions.add(this);
 
         } else {
 
-            MissionRegistry.permanentDefeatMissions.add(this);
+            MissionsHandler.permanentDefeatMissions.add(this);
 
         }
 

@@ -35,11 +35,11 @@ public class FishMission extends Mission {
 
         if (this.getTimer() > 0) {
 
-            MissionRegistry.fishMissions.add(this);
+            MissionsHandler.fishMissions.add(this);
 
         } else {
 
-            MissionRegistry.permanentFishMissions.add(this);
+            MissionsHandler.permanentFishMissions.add(this);
 
         }
 

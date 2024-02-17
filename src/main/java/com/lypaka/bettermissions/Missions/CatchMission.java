@@ -35,11 +35,11 @@ public class CatchMission extends Mission {
 
         if (this.getTimer() > 0) {
 
-            MissionRegistry.catchMissions.add(this);
+            MissionsHandler.catchMissions.add(this);
 
         } else {
 
-            MissionRegistry.permanentCatchMissions.add(this);
+            MissionsHandler.permanentCatchMissions.add(this);
 
         }
 

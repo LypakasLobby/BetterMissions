@@ -35,11 +35,11 @@ public class ReleaseMission extends Mission {
 
         if (this.getTimer() > 0) {
 
-            MissionRegistry.releaseMissions.add(this);
+            MissionsHandler.releaseMissions.add(this);
 
         } else {
 
-            MissionRegistry.permanentReleaseMissions.add(this);
+            MissionsHandler.permanentReleaseMissions.add(this);
 
         }
 

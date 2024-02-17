@@ -119,11 +119,11 @@ public class AccountHandler {
         // only add mission types that have missions to give the player
         if (repID != null) {
 
-            if (MissionRegistry.catchMissions.size() > 0) {
+            if (MissionsHandler.catchMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Catching")) {
 
-                    if (MissionRegistry.catchMissions.size() > 1) {
+                    if (MissionsHandler.catchMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -136,11 +136,11 @@ public class AccountHandler {
                 }
 
             }
-            if (MissionRegistry.killMissions.size() > 0) {
+            if (MissionsHandler.killMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Killing")) {
 
-                    if (MissionRegistry.killMissions.size() > 1) {
+                    if (MissionsHandler.killMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -153,11 +153,11 @@ public class AccountHandler {
                 }
 
             }
-            if (MissionRegistry.defeatMissions.size() > 0) {
+            if (MissionsHandler.defeatMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Defeating")) {
 
-                    if (MissionRegistry.defeatMissions.size() > 1) {
+                    if (MissionsHandler.defeatMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -170,11 +170,11 @@ public class AccountHandler {
                 }
 
             }
-            if (MissionRegistry.evolveMissions.size() > 0) {
+            if (MissionsHandler.evolveMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Evolving")) {
 
-                    if (MissionRegistry.evolveMissions.size() > 1) {
+                    if (MissionsHandler.evolveMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -187,11 +187,11 @@ public class AccountHandler {
                 }
 
             }
-            if (MissionRegistry.fishMissions.size() > 0) {
+            if (MissionsHandler.fishMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Fishing")) {
 
-                    if (MissionRegistry.fishMissions.size() > 1) {
+                    if (MissionsHandler.fishMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -204,11 +204,11 @@ public class AccountHandler {
                 }
 
             }
-            if (MissionRegistry.mineMissions.size() > 0) {
+            if (MissionsHandler.mineMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Mining")) {
 
-                    if (MissionRegistry.mineMissions.size() > 1) {
+                    if (MissionsHandler.mineMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -221,11 +221,11 @@ public class AccountHandler {
                 }
 
             }
-            if (MissionRegistry.craftMissions.size() > 0) {
+            if (MissionsHandler.craftMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Crafting")) {
 
-                    if (MissionRegistry.craftMissions.size() > 1) {
+                    if (MissionsHandler.craftMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -238,11 +238,11 @@ public class AccountHandler {
                 }
 
             }
-            if (MissionRegistry.meleeMissions.size() > 0) {
+            if (MissionsHandler.meleeMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Meleeing")) {
 
-                    if (MissionRegistry.meleeMissions.size() > 1) {
+                    if (MissionsHandler.meleeMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -255,11 +255,11 @@ public class AccountHandler {
                 }
 
             }
-            if (MissionRegistry.fishMissions.size() > 0) {
+            if (MissionsHandler.fishMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Fishing")) {
 
-                    if (MissionRegistry.fishMissions.size() > 1) {
+                    if (MissionsHandler.fishMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -272,11 +272,11 @@ public class AccountHandler {
                 }
 
             }
-            if (MissionRegistry.releaseMissions.size() > 0) {
+            if (MissionsHandler.releaseMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Releasing")) {
 
-                    if (MissionRegistry.releaseMissions.size() > 1) {
+                    if (MissionsHandler.releaseMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -289,11 +289,11 @@ public class AccountHandler {
                 }
 
             }
-            if (MissionRegistry.loseMissions.size() > 0) {
+            if (MissionsHandler.loseMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Losing")) {
 
-                    if (MissionRegistry.loseMissions.size() > 1) {
+                    if (MissionsHandler.loseMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -306,11 +306,11 @@ public class AccountHandler {
                 }
 
             }
-            if (MissionRegistry.breedMissions.size() > 0) {
+            if (MissionsHandler.breedMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Breeding")) {
 
-                    if (MissionRegistry.breedMissions.size() > 1) {
+                    if (MissionsHandler.breedMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -323,11 +323,11 @@ public class AccountHandler {
                 }
 
             }
-            if (MissionRegistry.hatchMissions.size() > 0) {
+            if (MissionsHandler.hatchMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Hatching")) {
 
-                    if (MissionRegistry.hatchMissions.size() > 1) {
+                    if (MissionsHandler.hatchMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -340,11 +340,11 @@ public class AccountHandler {
                 }
 
             }
-            if (MissionRegistry.photographMissions.size() > 0) {
+            if (MissionsHandler.photographMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Photographing")) {
 
-                    if (MissionRegistry.photographMissions.size() > 1) {
+                    if (MissionsHandler.photographMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -357,11 +357,11 @@ public class AccountHandler {
                 }
 
             }
-            if (MissionRegistry.raidMissions.size() > 0) {
+            if (MissionsHandler.raidMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Raiding")) {
 
-                    if (MissionRegistry.raidMissions.size() > 1) {
+                    if (MissionsHandler.raidMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -374,11 +374,11 @@ public class AccountHandler {
                 }
 
             }
-            if (MissionRegistry.smeltMissions.size() > 0) {
+            if (MissionsHandler.smeltMissions.size() > 0) {
 
                 if (repID.equalsIgnoreCase("Smelting")) {
 
-                    if (MissionRegistry.smeltMissions.size() > 1) {
+                    if (MissionsHandler.smeltMissions.size() > 1) {
 
                         types.add(repID);
 
@@ -394,21 +394,21 @@ public class AccountHandler {
 
         } else {
 
-            if (MissionRegistry.catchMissions.size() > 0) types.add("catching");
-            if (MissionRegistry.killMissions.size() > 0) types.add("killing");
-            if (MissionRegistry.defeatMissions.size() > 0) types.add("defeating");
-            if (MissionRegistry.evolveMissions.size() > 0) types.add("evolving");
-            if (MissionRegistry.mineMissions.size() > 0) types.add("mining");
-            if (MissionRegistry.craftMissions.size() > 0) types.add("crafting");
-            if (MissionRegistry.meleeMissions.size() > 0) types.add("meleeing");
-            if (MissionRegistry.fishMissions.size() > 0) types.add("fishing");
-            if (MissionRegistry.releaseMissions.size() > 0) types.add("releasing");
-            if (MissionRegistry.loseMissions.size() > 0) types.add("losing");
-            if (MissionRegistry.breedMissions.size() > 0) types.add("breeding");
-            if (MissionRegistry.hatchMissions.size() > 0) types.add("hatching");
-            if (MissionRegistry.photographMissions.size() > 0) types.add("photographing");
-            if (MissionRegistry.raidMissions.size() > 0) types.add("raiding");
-            if (MissionRegistry.smeltMissions.size() > 0) types.add("smelting");
+            if (MissionsHandler.catchMissions.size() > 0) types.add("catching");
+            if (MissionsHandler.killMissions.size() > 0) types.add("killing");
+            if (MissionsHandler.defeatMissions.size() > 0) types.add("defeating");
+            if (MissionsHandler.evolveMissions.size() > 0) types.add("evolving");
+            if (MissionsHandler.mineMissions.size() > 0) types.add("mining");
+            if (MissionsHandler.craftMissions.size() > 0) types.add("crafting");
+            if (MissionsHandler.meleeMissions.size() > 0) types.add("meleeing");
+            if (MissionsHandler.fishMissions.size() > 0) types.add("fishing");
+            if (MissionsHandler.releaseMissions.size() > 0) types.add("releasing");
+            if (MissionsHandler.loseMissions.size() > 0) types.add("losing");
+            if (MissionsHandler.breedMissions.size() > 0) types.add("breeding");
+            if (MissionsHandler.hatchMissions.size() > 0) types.add("hatching");
+            if (MissionsHandler.photographMissions.size() > 0) types.add("photographing");
+            if (MissionsHandler.raidMissions.size() > 0) types.add("raiding");
+            if (MissionsHandler.smeltMissions.size() > 0) types.add("smelting");
 
         }
         if (types.size() == 0) {
@@ -426,9 +426,9 @@ public class AccountHandler {
 
             case "catching":
                 List<CatchMission> possibleCatches = new ArrayList<>();
-                if (MissionRegistry.catchMissions.size() > 1) {
+                if (MissionsHandler.catchMissions.size() > 1) {
 
-                    for (CatchMission mission : MissionRegistry.catchMissions) {
+                    for (CatchMission mission : MissionsHandler.catchMissions) {
 
                         if (!mission.getID().equalsIgnoreCase(currentMission)) {
 
@@ -440,7 +440,7 @@ public class AccountHandler {
 
                 } else {
 
-                    possibleCatches.add(MissionRegistry.catchMissions.get(0));
+                    possibleCatches.add(MissionsHandler.catchMissions.get(0));
 
                 }
                 CatchMission selectedCatch = RandomHelper.getRandomElementFromList(possibleCatches);
@@ -451,9 +451,9 @@ public class AccountHandler {
 
             case "killing":
                 List<KillMission> possibleKills = new ArrayList<>();
-                if (MissionRegistry.killMissions.size() > 1) {
+                if (MissionsHandler.killMissions.size() > 1) {
 
-                    for (KillMission mission : MissionRegistry.killMissions) {
+                    for (KillMission mission : MissionsHandler.killMissions) {
 
                         if (!mission.getID().equalsIgnoreCase(currentMission)) {
 
@@ -465,7 +465,7 @@ public class AccountHandler {
 
                 } else {
 
-                    possibleKills.add(MissionRegistry.killMissions.get(0));
+                    possibleKills.add(MissionsHandler.killMissions.get(0));
 
                 }
                 KillMission selectedKill = RandomHelper.getRandomElementFromList(possibleKills);
@@ -476,9 +476,9 @@ public class AccountHandler {
 
             case "defeating":
                 List<DefeatMission> possibleDefeats = new ArrayList<>();
-                if (MissionRegistry.defeatMissions.size() > 1) {
+                if (MissionsHandler.defeatMissions.size() > 1) {
 
-                    for (DefeatMission mission : MissionRegistry.defeatMissions) {
+                    for (DefeatMission mission : MissionsHandler.defeatMissions) {
 
                         if (!mission.getID().equalsIgnoreCase(currentMission)) {
 
@@ -490,7 +490,7 @@ public class AccountHandler {
 
                 } else {
 
-                    possibleDefeats.add(MissionRegistry.defeatMissions.get(0));
+                    possibleDefeats.add(MissionsHandler.defeatMissions.get(0));
 
                 }
                 DefeatMission selectedDefeat = RandomHelper.getRandomElementFromList(possibleDefeats);
@@ -501,9 +501,9 @@ public class AccountHandler {
 
             case "evolving":
                 List<EvolveMission> possibleEvolves = new ArrayList<>();
-                if (MissionRegistry.evolveMissions.size() > 1) {
+                if (MissionsHandler.evolveMissions.size() > 1) {
 
-                    for (EvolveMission mission : MissionRegistry.evolveMissions) {
+                    for (EvolveMission mission : MissionsHandler.evolveMissions) {
 
                         if (!mission.getID().equalsIgnoreCase(currentMission)) {
 
@@ -515,7 +515,7 @@ public class AccountHandler {
 
                 } else {
 
-                    possibleEvolves.add(MissionRegistry.evolveMissions.get(0));
+                    possibleEvolves.add(MissionsHandler.evolveMissions.get(0));
 
                 }
                 EvolveMission selectedEvolve = RandomHelper.getRandomElementFromList(possibleEvolves);
@@ -526,9 +526,9 @@ public class AccountHandler {
 
             case "mining":
                 List<MineMission> possibleMines = new ArrayList<>();
-                if (MissionRegistry.mineMissions.size() > 1) {
+                if (MissionsHandler.mineMissions.size() > 1) {
 
-                    for (MineMission mission : MissionRegistry.mineMissions) {
+                    for (MineMission mission : MissionsHandler.mineMissions) {
 
                         if (!mission.getID().equalsIgnoreCase(currentMission)) {
 
@@ -540,7 +540,7 @@ public class AccountHandler {
 
                 } else {
 
-                    possibleMines.add(MissionRegistry.mineMissions.get(0));
+                    possibleMines.add(MissionsHandler.mineMissions.get(0));
 
                 }
                 MineMission selectedMine = RandomHelper.getRandomElementFromList(possibleMines);
@@ -551,9 +551,9 @@ public class AccountHandler {
 
             case "crafting":
                 List<CraftMission> possibleCrafts = new ArrayList<>();
-                if (MissionRegistry.craftMissions.size() > 1) {
+                if (MissionsHandler.craftMissions.size() > 1) {
 
-                    for (CraftMission mission : MissionRegistry.craftMissions) {
+                    for (CraftMission mission : MissionsHandler.craftMissions) {
 
                         if (!mission.getID().equalsIgnoreCase(currentMission)) {
 
@@ -565,7 +565,7 @@ public class AccountHandler {
 
                 } else {
 
-                    possibleCrafts.add(MissionRegistry.craftMissions.get(0));
+                    possibleCrafts.add(MissionsHandler.craftMissions.get(0));
 
                 }
                 CraftMission selectedCraft = RandomHelper.getRandomElementFromList(possibleCrafts);
@@ -576,9 +576,9 @@ public class AccountHandler {
 
             case "meleeing":
                 List<MeleeMission> possibleMelee = new ArrayList<>();
-                if (MissionRegistry.meleeMissions.size() > 1) {
+                if (MissionsHandler.meleeMissions.size() > 1) {
 
-                    for (MeleeMission mission : MissionRegistry.meleeMissions) {
+                    for (MeleeMission mission : MissionsHandler.meleeMissions) {
 
                         if (!mission.getID().equalsIgnoreCase(currentMission)) {
 
@@ -590,7 +590,7 @@ public class AccountHandler {
 
                 } else {
 
-                    possibleMelee.add(MissionRegistry.meleeMissions.get(0));
+                    possibleMelee.add(MissionsHandler.meleeMissions.get(0));
 
                 }
                 MeleeMission selectedMelee = RandomHelper.getRandomElementFromList(possibleMelee);
@@ -601,9 +601,9 @@ public class AccountHandler {
 
             case "fishing":
                 List<FishMission> possibleFishing = new ArrayList<>();
-                if (MissionRegistry.fishMissions.size() > 1) {
+                if (MissionsHandler.fishMissions.size() > 1) {
 
-                    for (FishMission mission : MissionRegistry.fishMissions) {
+                    for (FishMission mission : MissionsHandler.fishMissions) {
 
                         if (!mission.getID().equalsIgnoreCase(currentMission)) {
 
@@ -615,7 +615,7 @@ public class AccountHandler {
 
                 } else {
 
-                    possibleFishing.add(MissionRegistry.fishMissions.get(0));
+                    possibleFishing.add(MissionsHandler.fishMissions.get(0));
 
                 }
                 FishMission selectedFishing = RandomHelper.getRandomElementFromList(possibleFishing);
@@ -626,9 +626,9 @@ public class AccountHandler {
 
             case "releasing":
                 List<ReleaseMission> possibleReleasing = new ArrayList<>();
-                if (MissionRegistry.releaseMissions.size() > 1) {
+                if (MissionsHandler.releaseMissions.size() > 1) {
 
-                    for (ReleaseMission mission : MissionRegistry.releaseMissions) {
+                    for (ReleaseMission mission : MissionsHandler.releaseMissions) {
 
                         if (!mission.getID().equalsIgnoreCase(currentMission)) {
 
@@ -640,7 +640,7 @@ public class AccountHandler {
 
                 } else {
 
-                    possibleReleasing.add(MissionRegistry.releaseMissions.get(0));
+                    possibleReleasing.add(MissionsHandler.releaseMissions.get(0));
 
                 }
                 ReleaseMission selectedRelease = RandomHelper.getRandomElementFromList(possibleReleasing);
@@ -651,9 +651,9 @@ public class AccountHandler {
 
             case "losing":
                 List<LoseMission> possibleLosing = new ArrayList<>();
-                if (MissionRegistry.loseMissions.size() > 1) {
+                if (MissionsHandler.loseMissions.size() > 1) {
 
-                    for (LoseMission mission : MissionRegistry.loseMissions) {
+                    for (LoseMission mission : MissionsHandler.loseMissions) {
 
                         if (!mission.getID().equalsIgnoreCase(currentMission)) {
 
@@ -665,7 +665,7 @@ public class AccountHandler {
 
                 } else {
 
-                    possibleLosing.add(MissionRegistry.loseMissions.get(0));
+                    possibleLosing.add(MissionsHandler.loseMissions.get(0));
 
                 }
                 LoseMission selectedLose = RandomHelper.getRandomElementFromList(possibleLosing);
@@ -676,9 +676,9 @@ public class AccountHandler {
 
             case "breeding":
                 List<BreedMission> possibleBreeding = new ArrayList<>();
-                if (MissionRegistry.breedMissions.size() > 1) {
+                if (MissionsHandler.breedMissions.size() > 1) {
 
-                    for (BreedMission mission : MissionRegistry.breedMissions) {
+                    for (BreedMission mission : MissionsHandler.breedMissions) {
 
                         if (!mission.getID().equalsIgnoreCase(currentMission)) {
 
@@ -690,7 +690,7 @@ public class AccountHandler {
 
                 } else {
 
-                    possibleBreeding.add(MissionRegistry.breedMissions.get(0));
+                    possibleBreeding.add(MissionsHandler.breedMissions.get(0));
 
                 }
                 BreedMission selectedBreed = RandomHelper.getRandomElementFromList(possibleBreeding);
@@ -701,9 +701,9 @@ public class AccountHandler {
 
             case "hatching":
                 List<HatchMission> possibleHatching = new ArrayList<>();
-                if (MissionRegistry.hatchMissions.size() > 1) {
+                if (MissionsHandler.hatchMissions.size() > 1) {
 
-                    for (HatchMission mission : MissionRegistry.hatchMissions) {
+                    for (HatchMission mission : MissionsHandler.hatchMissions) {
 
                         if (!mission.getID().equalsIgnoreCase(currentMission)) {
 
@@ -715,7 +715,7 @@ public class AccountHandler {
 
                 } else {
 
-                    possibleHatching.add(MissionRegistry.hatchMissions.get(0));
+                    possibleHatching.add(MissionsHandler.hatchMissions.get(0));
 
                 }
                 HatchMission selectedHatch = RandomHelper.getRandomElementFromList(possibleHatching);
@@ -726,9 +726,9 @@ public class AccountHandler {
 
             case "photographing":
                 List<PhotographMission> possiblePhotograph = new ArrayList<>();
-                if (MissionRegistry.photographMissions.size() > 1) {
+                if (MissionsHandler.photographMissions.size() > 1) {
 
-                    for (PhotographMission mission : MissionRegistry.photographMissions) {
+                    for (PhotographMission mission : MissionsHandler.photographMissions) {
 
                         if (!mission.getID().equalsIgnoreCase(currentMission)) {
 
@@ -740,7 +740,7 @@ public class AccountHandler {
 
                 } else {
 
-                    possiblePhotograph.add(MissionRegistry.photographMissions.get(0));
+                    possiblePhotograph.add(MissionsHandler.photographMissions.get(0));
 
                 }
                 PhotographMission selectedPhotograph = RandomHelper.getRandomElementFromList(possiblePhotograph);
@@ -751,9 +751,9 @@ public class AccountHandler {
 
             case "raiding":
                 List<RaidMission> possibleRaid = new ArrayList<>();
-                if (MissionRegistry.raidMissions.size() > 1) {
+                if (MissionsHandler.raidMissions.size() > 1) {
 
-                    for (RaidMission mission : MissionRegistry.raidMissions) {
+                    for (RaidMission mission : MissionsHandler.raidMissions) {
 
                         if (!mission.getID().equalsIgnoreCase(currentMission)) {
 
@@ -765,7 +765,7 @@ public class AccountHandler {
 
                 } else {
 
-                    possibleRaid.add(MissionRegistry.raidMissions.get(0));
+                    possibleRaid.add(MissionsHandler.raidMissions.get(0));
 
                 }
                 RaidMission selectedRaid = RandomHelper.getRandomElementFromList(possibleRaid);
@@ -776,9 +776,9 @@ public class AccountHandler {
 
             case "smelting":
                 List<SmeltMission> possibleSmelt = new ArrayList<>();
-                if (MissionRegistry.smeltMissions.size() > 1) {
+                if (MissionsHandler.smeltMissions.size() > 1) {
 
-                    for (SmeltMission mission : MissionRegistry.smeltMissions) {
+                    for (SmeltMission mission : MissionsHandler.smeltMissions) {
 
                         if (!mission.getID().equalsIgnoreCase(currentMission)) {
 
@@ -790,7 +790,7 @@ public class AccountHandler {
 
                 } else {
 
-                    possibleSmelt.add(MissionRegistry.smeltMissions.get(0));
+                    possibleSmelt.add(MissionsHandler.smeltMissions.get(0));
 
                 }
                 SmeltMission selectedSmelt = RandomHelper.getRandomElementFromList(possibleSmelt);

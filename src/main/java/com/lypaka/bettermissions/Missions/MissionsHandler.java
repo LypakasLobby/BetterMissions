@@ -1,20 +1,69 @@
 package com.lypaka.bettermissions.Missions;
 
 import com.google.common.reflect.TypeToken;
+import com.lypaka.bettermissions.API.MissionCompletedEvent;
+import com.lypaka.bettermissions.API.MissionRequirementsEvent;
+import com.lypaka.bettermissions.Accounts.Account;
+import com.lypaka.bettermissions.Accounts.AccountHandler;
 import com.lypaka.bettermissions.BetterMissions;
 import com.lypaka.bettermissions.ConfigGetters;
-import com.lypaka.bettermissions.Requirements.MissionRequirement;
+import com.lypaka.bettermissions.Requirements.*;
+import com.lypaka.bettermissions.Utils;
 import com.lypaka.lypakautils.ConfigurationLoaders.ComplexConfigManager;
 import com.lypaka.lypakautils.ConfigurationLoaders.ConfigUtils;
+import com.lypaka.lypakautils.FancyText;
+import com.lypaka.lypakautils.Listeners.JoinListener;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.api.storage.PlayerPartyStorage;
+import com.pixelmonmod.pixelmon.api.storage.StorageProxy;
+import com.pixelmonmod.pixelmon.api.util.helpers.RandomHelper;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MissionsHandler {
+
+    public static List<String> allMissionIDs = new ArrayList<>();
+
+    public static List<BreedMission> breedMissions = new ArrayList<>();
+    public static List<CatchMission> catchMissions = new ArrayList<>();
+    public static List<CraftMission> craftMissions = new ArrayList<>();
+    public static List<DefeatMission> defeatMissions = new ArrayList<>();
+    public static List<EvolveMission> evolveMissions = new ArrayList<>();
+    public static List<FishMission> fishMissions = new ArrayList<>();
+    public static List<HatchMission> hatchMissions = new ArrayList<>();
+    public static List<KillMission> killMissions = new ArrayList<>();
+    public static List<LoseMission> loseMissions = new ArrayList<>();
+    public static List<MeleeMission> meleeMissions = new ArrayList<>();
+    public static List<MineMission> mineMissions = new ArrayList<>();
+    public static List<PhotographMission> photographMissions = new ArrayList<>();
+    public static List<RaidMission> raidMissions = new ArrayList<>();
+    public static List<ReleaseMission> releaseMissions = new ArrayList<>();
+    public static List<ReviveMission> reviveMissions = new ArrayList<>();
+    public static List<SmeltMission> smeltMissions = new ArrayList<>();
+
+    /** Permanent missions, do not run on a timer and do not automatically expire, needs to be given with a command */
+    public static List<BreedMission> permanentBreedMissions = new ArrayList<>();
+    public static List<CatchMission> permanentCatchMissions = new ArrayList<>();
+    public static List<CraftMission> permanentCraftMissions = new ArrayList<>();
+    public static List<DefeatMission> permanentDefeatMissions = new ArrayList<>();
+    public static List<EvolveMission> permanentEvolveMissions = new ArrayList<>();
+    public static List<FishMission> permanentFishMissions = new ArrayList<>();
+    public static List<HatchMission> permanentHatchMissions = new ArrayList<>();
+    public static List<KillMission> permanentKillMissions = new ArrayList<>();
+    public static List<LoseMission> permanentLoseMissions = new ArrayList<>();
+    public static List<MeleeMission> permanentMeleeMissions = new ArrayList<>();
+    public static List<MineMission> permanentMineMissions = new ArrayList<>();
+    public static List<PhotographMission> permanentPhotographMissions = new ArrayList<>();
+    public static List<RaidMission> permanentRaidMissions = new ArrayList<>();
+    public static List<ReleaseMission> permanentReleaseMissions = new ArrayList<>();
+    public static List<ReviveMission> permanentReviveMissions = new ArrayList<>();
+    public static List<SmeltMission> permanentSmeltMissions = new ArrayList<>();
 
     /*
     Craft, Smelt, Mine need lists of item IDs
@@ -589,6 +638,46 @@ public class MissionsHandler {
         missionCountMap.put("Release", count);
         count = 0;
 
+        ComplexConfigManager revivingConfigManager = new ComplexConfigManager(ConfigGetters.reviveMissions, "revive-missions", "mission-template-specs.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
+        revivingConfigManager.init();
+        BetterMissions.missionConfigManager.put("Revive", revivingConfigManager);
+        for (int index = 0; index < ConfigGetters.reviveMissions.size(); index++) {
+
+            int amount = revivingConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = revivingConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = revivingConfigManager.getConfigNode(index, "Command-ID").getString();
+            String displayName = revivingConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> lore = revivingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            String missionID = revivingConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = revivingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = revivingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = revivingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            List<String> doesNotHavePermissionRequirements = revivingConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = revivingConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
+            List<String> weatherRequirements = revivingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
+            String rewardType = revivingConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            Map<String, String> specs = revivingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
+            int timer = revivingConfigManager.getConfigNode(index, "Timer").getInt();
+            ReviveMission reviveMission;
+            if (!revivingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
+
+                int reward = revivingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                reviveMission = new ReviveMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            } else {
+
+                List<String> reward = revivingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                reviveMission = new ReviveMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+
+            }
+            reviveMission.register();
+            count++;
+
+        }
+        missionCountMap.put("Revive", count);
+        count = 0;
+
         ComplexConfigManager smeltingConfigManager = new ComplexConfigManager(ConfigGetters.smeltMissions, "smelt-missions", "mission-template-items.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         smeltingConfigManager.init();
         BetterMissions.missionConfigManager.put("Smelt", smeltingConfigManager);
@@ -635,6 +724,950 @@ public class MissionsHandler {
 
         }
         BetterMissions.logger.info("Finished loading all missions!");
+
+    }
+
+    private static Mission getMissionFromPlayer (ServerPlayerEntity player, Mission mission) {
+
+        UUID uuid = player.getUniqueID();
+        Account account = AccountHandler.accountMap.get(uuid);
+        String id = AccountHandler.getCurrentMission(account);
+        if (mission instanceof BreedMission) {
+
+            for (BreedMission missions : breedMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        } else if (mission instanceof CatchMission) {
+
+            for (CatchMission missions : catchMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        } else if (mission instanceof CraftMission) {
+
+            for (CraftMission missions : craftMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        } else if (mission instanceof DefeatMission) {
+
+            for (DefeatMission missions : defeatMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        } else if (mission instanceof EvolveMission) {
+
+            for (EvolveMission missions : evolveMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        } else if (mission instanceof FishMission) {
+
+            for (FishMission missions : fishMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        } else if (mission instanceof HatchMission) {
+
+            for (HatchMission missions : hatchMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        } else if (mission instanceof KillMission) {
+
+            for (KillMission missions : killMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        } else if (mission instanceof LoseMission) {
+
+            for (LoseMission missions : loseMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        } else if (mission instanceof MeleeMission) {
+
+            for (MeleeMission missions : meleeMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        } else if (mission instanceof MineMission) {
+
+            for (MineMission missions : mineMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        } else if (mission instanceof PhotographMission) {
+
+            for (PhotographMission missions : photographMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        } else if (mission instanceof RaidMission) {
+
+            for (RaidMission missions : raidMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        } else if (mission instanceof ReleaseMission) {
+
+            for (ReleaseMission missions : releaseMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        } else if (mission instanceof ReviveMission) {
+
+            for (ReviveMission missions : reviveMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        } else if (mission instanceof SmeltMission) {
+
+            for (SmeltMission missions : smeltMissions) {
+
+                if (missions.getID().equalsIgnoreCase(id) && mission.getID().equalsIgnoreCase(missions.getID())) {
+
+                    return missions;
+
+                }
+
+            }
+
+        }
+
+        return null;
+
+    }
+
+    private static String getMissionType (Mission mission) {
+
+        String type = "";
+        if (mission instanceof BreedMission) {
+
+            type = "Breed";
+
+        } else if (mission instanceof CatchMission) {
+
+            type = "Catch";
+
+        } else if (mission instanceof CraftMission) {
+
+            type = "Craft";
+
+        } else if (mission instanceof DefeatMission) {
+
+            type = "Defeat";
+
+        } else if (mission instanceof EvolveMission) {
+
+            type = "Evolve";
+
+        } else if (mission instanceof FishMission) {
+
+            type = "Fish";
+
+        } else if (mission instanceof HatchMission) {
+
+            type = "Hatch";
+
+        } else if (mission instanceof KillMission) {
+
+            type = "Kill";
+
+        } else if (mission instanceof LoseMission) {
+
+            type = "Lose";
+
+        } else if (mission instanceof MeleeMission) {
+
+            type = "Melee";
+
+        } else if (mission instanceof MineMission) {
+
+            type = "Mine";
+
+        } else if (mission instanceof PhotographMission) {
+
+            type = "Photograph";
+
+        } else if (mission instanceof RaidMission) {
+
+            type = "Raid";
+
+        } else if (mission instanceof ReleaseMission) {
+
+            type = "Release";
+
+        } else if (mission instanceof ReviveMission) {
+
+            type = "Revive";
+
+        } else if (mission instanceof SmeltMission) {
+
+            type = "Smelt";
+
+        }
+
+        return type;
+
+    }
+
+    private static int getMissionMoneyReward (Mission mission) {
+
+        int value = 0;
+        if (mission instanceof BreedMission) {
+
+            value = ((BreedMission) mission).getReward();
+
+        } else if (mission instanceof CatchMission) {
+
+            value = ((CatchMission) mission).getReward();
+
+        } else if (mission instanceof CraftMission) {
+
+            value = ((CraftMission) mission).getReward();
+
+        } else if (mission instanceof DefeatMission) {
+
+            value = ((DefeatMission) mission).getReward();
+
+        } else if (mission instanceof EvolveMission) {
+
+            value = ((EvolveMission) mission).getReward();
+
+        } else if (mission instanceof FishMission) {
+
+            value = ((FishMission) mission).getReward();
+
+        } else if (mission instanceof HatchMission) {
+
+            value = ((HatchMission) mission).getReward();
+
+        } else if (mission instanceof KillMission) {
+
+            value = ((KillMission) mission).getReward();
+
+        } else if (mission instanceof LoseMission) {
+
+            value = ((LoseMission) mission).getReward();
+
+        } else if (mission instanceof MeleeMission) {
+
+            value = ((MeleeMission) mission).getReward();
+
+        } else if (mission instanceof MineMission) {
+
+            value = ((MineMission) mission).getReward();
+
+        } else if (mission instanceof PhotographMission) {
+
+            value = ((PhotographMission) mission).getReward();
+
+        } else if (mission instanceof RaidMission) {
+
+            value = ((RaidMission) mission).getReward();
+
+        } else if (mission instanceof ReleaseMission) {
+
+            value = ((ReleaseMission) mission).getReward();
+
+        } else if (mission instanceof ReviveMission) {
+
+            value = ((ReviveMission) mission).getReward();
+
+        } else if (mission instanceof SmeltMission) {
+
+            value = ((SmeltMission) mission).getReward();
+
+        }
+
+        return value;
+
+    }
+
+    private static List<String> getRewardCommandsFromMission (Mission mission) {
+
+        List<String> value = new ArrayList<>();
+        if (mission instanceof BreedMission) {
+
+            value = ((BreedMission) mission).getRewardCommands();
+
+        } else if (mission instanceof CatchMission) {
+
+            value = ((CatchMission) mission).getRewardCommands();
+
+        } else if (mission instanceof CraftMission) {
+
+            value = ((CraftMission) mission).getRewardCommands();
+
+        } else if (mission instanceof DefeatMission) {
+
+            value = ((DefeatMission) mission).getRewardCommands();
+
+        } else if (mission instanceof EvolveMission) {
+
+            value = ((EvolveMission) mission).getRewardCommands();
+
+        } else if (mission instanceof FishMission) {
+
+            value = ((FishMission) mission).getRewardCommands();
+
+        } else if (mission instanceof HatchMission) {
+
+            value = ((HatchMission) mission).getRewardCommands();
+
+        } else if (mission instanceof KillMission) {
+
+            value = ((KillMission) mission).getRewardCommands();
+
+        } else if (mission instanceof LoseMission) {
+
+            value = ((LoseMission) mission).getRewardCommands();
+
+        } else if (mission instanceof MeleeMission) {
+
+            value = ((MeleeMission) mission).getRewardCommands();
+
+        } else if (mission instanceof MineMission) {
+
+            value = ((MineMission) mission).getRewardCommands();
+
+        } else if (mission instanceof PhotographMission) {
+
+            value = ((PhotographMission) mission).getRewardCommands();
+
+        } else if (mission instanceof RaidMission) {
+
+            value = ((RaidMission) mission).getRewardCommands();
+
+        } else if (mission instanceof ReleaseMission) {
+
+            value = ((ReleaseMission) mission).getRewardCommands();
+
+        } else if (mission instanceof ReviveMission) {
+
+            value = ((ReviveMission) mission).getRewardCommands();
+
+        } else if (mission instanceof SmeltMission) {
+
+            value = ((SmeltMission) mission).getRewardCommands();
+
+        }
+
+        return value;
+
+    }
+
+    private static Mission getPermanentMissionsFromType (String missionID) {
+
+        for (BreedMission m : permanentBreedMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+        for (CatchMission m : permanentCatchMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+        for (CraftMission m : permanentCraftMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+        for (DefeatMission m : permanentDefeatMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+        for (EvolveMission m : permanentEvolveMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+        for (FishMission m : permanentFishMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+        for (HatchMission m : permanentHatchMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+        for (KillMission m : permanentKillMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+        for (LoseMission m : permanentLoseMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+        for (MeleeMission m : permanentMeleeMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+        for (MineMission m : permanentMineMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+        for (PhotographMission m : permanentPhotographMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+        for (RaidMission m : permanentRaidMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+        for (ReleaseMission m : permanentReleaseMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+        for (ReviveMission m : permanentReviveMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+        for (SmeltMission m : permanentSmeltMissions) {
+
+            if (m.getID().equalsIgnoreCase(missionID)) {
+
+                return m;
+
+            }
+
+        }
+
+        return null;
+
+    }
+
+    public static void runMissionProgressCheck (ServerPlayerEntity player, Pokemon pokemon, String stringToCheckFor, Mission mission, int progressQuantity) throws ObjectMappingException {
+
+        UUID uuid = player.getUniqueID();
+        if (AccountHandler.accountMap.containsKey(uuid)) {
+
+            Account account = AccountHandler.accountMap.get(uuid);
+            mission = getMissionFromPlayer(player, mission);
+            String type = getMissionType(mission);
+            if (mission != null) {
+
+                boolean run = true;
+                if (pokemon != null) {
+
+                    Map<String, String> specs = new HashMap<>();
+                    if (mission instanceof BreedMission) {
+
+                        specs = ((BreedMission) mission).getSpecs();
+
+                    } else if (mission instanceof CatchMission) {
+
+                        specs = ((CatchMission) mission).getSpecs();
+
+                    } else if (mission instanceof EvolveMission) {
+
+                        specs = ((EvolveMission) mission).getSpecs();
+
+                    } else if (mission instanceof FishMission) {
+
+                        specs = ((FishMission) mission).getSpecs();
+
+                    } else if (mission instanceof HatchMission) {
+
+                        specs = ((HatchMission) mission).getSpecs();
+
+                    } else if (mission instanceof PhotographMission) {
+
+                        specs = ((PhotographMission) mission).getSpecs();
+
+                    } else if (mission instanceof RaidMission) {
+
+                        specs = ((RaidMission) mission).getSpecs();
+
+                    } else if (mission instanceof ReleaseMission) {
+
+                        specs = ((ReleaseMission) mission).getSpecs();
+
+                    } else if (mission instanceof ReviveMission) {
+
+                        specs = ((ReviveMission) mission).getSpecs();
+
+                    }
+                    run = Utils.applies(specs, pokemon);
+
+                } else if (stringToCheckFor != null) {
+
+                    if (mission instanceof CraftMission) {
+
+                        run = ((CraftMission) mission).getItemIDs().contains(stringToCheckFor);
+
+                    } else if (mission instanceof DefeatMission) {
+
+                        run = ((DefeatMission) mission).getLocations().contains(stringToCheckFor);
+
+                    } else if (mission instanceof LoseMission) {
+
+                        run = ((LoseMission) mission).getEntityType().equalsIgnoreCase(stringToCheckFor) || ((LoseMission) mission).getEntityType().equalsIgnoreCase("both");
+
+                    } else if (mission instanceof MeleeMission) {
+
+                        run = ((MeleeMission) mission).getEntityTypes().contains(stringToCheckFor);
+
+                    } else if (mission instanceof MineMission) {
+
+                        run = ((MineMission) mission).getBlockTypes().contains(stringToCheckFor);
+
+                    } else if (mission instanceof SmeltMission) {
+
+                        run = ((SmeltMission) mission).getItemIDs().contains(stringToCheckFor);
+
+                    }
+
+                }
+                if (run) {
+
+                    double chance = mission.getChance();
+                    if (chance < 1.0) {
+
+                        if (!RandomHelper.getRandomChance(mission.getChance())) return;
+
+                    }
+                    MissionRequirementsEvent requirementsEvent = new MissionRequirementsEvent(player, mission.getID(), mission.getRequirements());
+                    MinecraftForge.EVENT_BUS.post(requirementsEvent);
+                    if (!requirementsEvent.isCanceled()) {
+
+                        ItemRequirement itemRequirement = new ItemRequirement(mission.getRequirements().getItemRequirements(), player);
+                        ComplexConfigManager configManager = BetterMissions.missionConfigManager.get(type);
+                        int index = Utils.getIndexFromMissionID(type, mission.getID());
+                        PartyRequirement partyRequirement = new PartyRequirement(configManager, index, mission.getRequirements().getPartyRequirements(), player);
+                        PokedexRequirement pokedexRequirement = new PokedexRequirement(mission.getRequirements().getPokedexRequirements(), player);
+                        PermissionRequirement permissionRequirement = new PermissionRequirement(mission.getRequirements().getDoesNotHavePermissionRequirements(), mission.getRequirements().getHasPermissionRequirements(), player);
+                        WeatherRequirement weatherRequirement = new WeatherRequirement(mission.getRequirements().getWeatherRequirements(), player);
+                        if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, weatherRequirement)) return;
+                        if (partyRequirement.getPokemonToRemove().size() > 0) {
+
+                            PlayerPartyStorage storage = StorageProxy.getParty(player);
+                            for (Map.Entry<Integer, Pokemon> pokemonEntry : partyRequirement.getPokemonToRemove().entrySet()) {
+
+                                storage.set(pokemonEntry.getKey(), null);
+
+                            }
+
+                        }
+                        if (itemRequirement.getItemsToRemove().size() > 0) {
+
+                            for (Map.Entry<String, Integer> itemEntry : itemRequirement.getItemsToRemove().entrySet()) {
+
+                                for (ItemStack item : player.inventory.mainInventory) {
+
+                                    if (item.getItem().getRegistryName().toString().equalsIgnoreCase(itemEntry.getKey())) {
+
+                                        item.setCount(item.getCount() - itemEntry.getValue());
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+                    int progress = AccountHandler.getMissionProgress(account, mission.getID());
+                    int updated = progress + progressQuantity;
+                    AccountHandler.updateProgress(account, mission.getID(), updated);
+                    if (AccountHandler.completed(mission.getAmount(), updated)) {
+
+                        // Run commands after mission assignment in the event of command giving same mission back to players
+                        if (ConfigGetters.autoCycleMissions) {
+
+                            AccountHandler.assignRandomMission(account);
+                            if (!ConfigGetters.newMissionNotification.equals("")) {
+
+                                player.sendMessage(FancyText.getFormattedText(ConfigGetters.newMissionNotification), player.getUniqueID());
+
+                            }
+
+                        }
+                        AccountHandler.removeMission(account, mission.getID());
+                        MissionCompletedEvent completedEvent;
+                        if (mission.getRewardType().equalsIgnoreCase("money")) {
+
+                            completedEvent = new MissionCompletedEvent(player, mission, getMissionMoneyReward(mission));
+                            MinecraftForge.EVENT_BUS.post(completedEvent);
+                            PlayerPartyStorage storage = StorageProxy.getParty(uuid);
+                            storage.add(completedEvent.getRewardMoney());
+
+                        } else {
+
+                            completedEvent = new MissionCompletedEvent(player, mission, getRewardCommandsFromMission(mission));
+                            MinecraftForge.EVENT_BUS.post(completedEvent);
+                            for (String c : completedEvent.getRewardCommands()) {
+
+                                player.getServer().getCommandManager().handleCommand(
+                                        player.getServer().getCommandSource(),
+                                        c.replace("%player%", player.getName().getString())
+                                );
+
+                            }
+
+                        }
+
+                        if (!ConfigGetters.completionBroadcast.equalsIgnoreCase("")) {
+
+                            for (Map.Entry<UUID, ServerPlayerEntity> entry : JoinListener.playerMap.entrySet()) {
+
+                                entry.getValue().sendMessage(FancyText.getFormattedText(ConfigGetters.completionBroadcast
+                                        .replace("%player%", player.getName().getString())
+                                        .replace("%mission%", mission.getID())
+                                ), entry.getValue().getUniqueID());
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                AccountHandler.saveProgress(account);
+
+            }
+            // Checking permanent missions, looping through in the event the player has more than one
+            if (mission == null) {
+
+                ArrayList<String> permanentMissions = AccountHandler.getCurrentPermanentMissionsList(account);
+                permanentMissions.removeIf(m -> {
+
+                    Mission pMission = getPermanentMissionsFromType(m);
+                    if (pMission != null) {
+
+                        boolean run = true;
+                        if (pokemon != null) {
+
+                            Map<String, String> specs = new HashMap<>();
+                            if (pMission instanceof BreedMission) {
+
+                                specs = ((BreedMission) pMission).getSpecs();
+
+                            } else if (pMission instanceof CatchMission) {
+
+                                specs = ((CatchMission) pMission).getSpecs();
+
+                            } else if (pMission instanceof EvolveMission) {
+
+                                specs = ((EvolveMission) pMission).getSpecs();
+
+                            } else if (pMission instanceof FishMission) {
+
+                                specs = ((FishMission) pMission).getSpecs();
+
+                            } else if (pMission instanceof HatchMission) {
+
+                                specs = ((HatchMission) pMission).getSpecs();
+
+                            } else if (pMission instanceof PhotographMission) {
+
+                                specs = ((PhotographMission) pMission).getSpecs();
+
+                            } else if (pMission instanceof RaidMission) {
+
+                                specs = ((RaidMission) pMission).getSpecs();
+
+                            } else if (pMission instanceof ReleaseMission) {
+
+                                specs = ((ReleaseMission) pMission).getSpecs();
+
+                            } else if (pMission instanceof ReviveMission) {
+
+                                specs = ((ReviveMission) pMission).getSpecs();
+
+                            }
+                            run = Utils.applies(specs, pokemon);
+
+                        }
+                        if (run) {
+
+                            double chance = pMission.getChance();
+                            if (chance < 1.0) {
+
+                                if (!RandomHelper.getRandomChance(pMission.getChance())) {
+
+                                    return false;
+
+                                }
+
+                            }
+                            MissionRequirementsEvent requirementsEvent = new MissionRequirementsEvent(player, pMission.getID(), pMission.getRequirements());
+                            MinecraftForge.EVENT_BUS.post(requirementsEvent);
+                            if (!requirementsEvent.isCanceled()) {
+
+                                ItemRequirement itemRequirement = new ItemRequirement(pMission.getRequirements().getItemRequirements(), player);
+                                ComplexConfigManager configManager = BetterMissions.missionConfigManager.get(type);
+                                int index = Utils.getIndexFromMissionID(type, pMission.getID());
+                                PartyRequirement partyRequirement = new PartyRequirement(configManager, index, pMission.getRequirements().getPartyRequirements(), player);
+                                PokedexRequirement pokedexRequirement = new PokedexRequirement(pMission.getRequirements().getPokedexRequirements(), player);
+                                PermissionRequirement permissionRequirement = new PermissionRequirement(pMission.getRequirements().getDoesNotHavePermissionRequirements(), pMission.getRequirements().getHasPermissionRequirements(), player);
+                                WeatherRequirement weatherRequirement = new WeatherRequirement(pMission.getRequirements().getWeatherRequirements(), player);
+                                try {
+
+                                    if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, weatherRequirement)) return false;
+
+                                } catch (ObjectMappingException e) {
+
+                                    e.printStackTrace();
+
+                                }
+                                if (partyRequirement.getPokemonToRemove().size() > 0) {
+
+                                    PlayerPartyStorage storage = StorageProxy.getParty(player);
+                                    for (Map.Entry<Integer, Pokemon> pokemonEntry : partyRequirement.getPokemonToRemove().entrySet()) {
+
+                                        storage.set(pokemonEntry.getKey(), null);
+
+                                    }
+
+                                }
+                                if (itemRequirement.getItemsToRemove().size() > 0) {
+
+                                    for (Map.Entry<String, Integer> itemEntry : itemRequirement.getItemsToRemove().entrySet()) {
+
+                                        for (ItemStack item : player.inventory.mainInventory) {
+
+                                            if (item.getItem().getRegistryName().toString().equalsIgnoreCase(itemEntry.getKey())) {
+
+                                                item.setCount(item.getCount() - itemEntry.getValue());
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+                            int progress = AccountHandler.getMissionProgress(account, pMission.getID());
+                            int updated = progress + progressQuantity;
+                            AccountHandler.updateProgress(account, pMission.getID(), updated);
+                            if (AccountHandler.completed(pMission.getAmount(), updated)) {
+
+                                player.getServer().deferTask(() -> {
+
+                                    AccountHandler.movePermanentMissionToCompleted(account, pMission.getID());
+
+                                });
+                                MissionCompletedEvent completedEvent;
+                                if (pMission.getRewardType().equalsIgnoreCase("money")) {
+
+                                    completedEvent = new MissionCompletedEvent(player, pMission, getMissionMoneyReward(pMission));
+                                    MinecraftForge.EVENT_BUS.post(completedEvent);
+                                    PlayerPartyStorage storage = StorageProxy.getParty(uuid);
+                                    storage.add(completedEvent.getRewardMoney());
+
+                                } else {
+
+                                    completedEvent = new MissionCompletedEvent(player, pMission, getRewardCommandsFromMission(pMission));
+                                    MinecraftForge.EVENT_BUS.post(completedEvent);
+                                    for (String c : completedEvent.getRewardCommands()) {
+
+                                        player.getServer().getCommandManager().handleCommand(
+                                                player.getServer().getCommandSource(),
+                                                c.replace("%player%", player.getName().getString())
+                                        );
+
+                                    }
+
+                                }
+
+                                if (!ConfigGetters.completionBroadcast.equalsIgnoreCase("")) {
+
+                                    for (Map.Entry<UUID, ServerPlayerEntity> entry : JoinListener.playerMap.entrySet()) {
+
+                                        entry.getValue().sendMessage(FancyText.getFormattedText(ConfigGetters.completionBroadcast
+                                                .replace("%player%", player.getName().getString())
+                                                .replace("%mission%", pMission.getID())
+                                        ), entry.getValue().getUniqueID());
+
+                                    }
+
+                                }
+
+                                return true;
+
+                            }
+
+                        }
+
+                    }
+
+                    return false;
+
+                });
+
+                AccountHandler.saveProgress(account);
+
+            }
+
+        }
 
     }
 

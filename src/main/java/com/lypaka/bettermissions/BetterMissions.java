@@ -26,7 +26,6 @@ public class BetterMissions {
     public static PlayerConfigManager playerConfigManager;
     public static Map<String, ComplexConfigManager> missionConfigManager = new HashMap<>();
     public static Path dir;
-    public static boolean disabled = false;
 
     public BetterMissions() throws IOException, ObjectMappingException {
 

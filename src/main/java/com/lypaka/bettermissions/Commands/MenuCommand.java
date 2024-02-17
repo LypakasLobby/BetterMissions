@@ -22,7 +22,6 @@ public class MenuCommand {
                                     Commands.literal("menu")
                                             .executes(c -> {
 
-                                                if (BetterMissions.disabled) return 0;
                                                 if (c.getSource().getEntity() instanceof ServerPlayerEntity) {
 
                                                     ServerPlayerEntity player = (ServerPlayerEntity) c.getSource().getEntity();

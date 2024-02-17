@@ -35,11 +35,11 @@ public class BreedMission extends Mission {
 
         if (this.getTimer() > 0) {
 
-            MissionRegistry.breedMissions.add(this);
+            MissionsHandler.breedMissions.add(this);
 
         } else {
 
-            MissionRegistry.permanentBreedMissions.add(this);
+            MissionsHandler.permanentBreedMissions.add(this);
 
         }
 

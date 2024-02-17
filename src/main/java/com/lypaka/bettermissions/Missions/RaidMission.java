@@ -35,11 +35,11 @@ public class RaidMission extends Mission {
 
         if (this.getTimer() > 0) {
 
-            MissionRegistry.raidMissions.add(this);
+            MissionsHandler.raidMissions.add(this);
 
         } else {
 
-            MissionRegistry.permanentRaidMissions.add(this);
+            MissionsHandler.permanentRaidMissions.add(this);
 
         }
 

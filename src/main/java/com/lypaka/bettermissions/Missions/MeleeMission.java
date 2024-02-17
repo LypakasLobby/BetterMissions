@@ -3,7 +3,6 @@ package com.lypaka.bettermissions.Missions;
 import com.lypaka.bettermissions.Requirements.MissionRequirement;
 
 import java.util.List;
-import java.util.Map;
 
 public class MeleeMission extends Mission {
 
@@ -35,11 +34,11 @@ public class MeleeMission extends Mission {
 
         if (this.getTimer() > 0) {
 
-            MissionRegistry.meleeMissions.add(this);
+            MissionsHandler.meleeMissions.add(this);
 
         } else {
 
-            MissionRegistry.permanentMeleeMissions.add(this);
+            MissionsHandler.permanentMeleeMissions.add(this);
 
         }
 

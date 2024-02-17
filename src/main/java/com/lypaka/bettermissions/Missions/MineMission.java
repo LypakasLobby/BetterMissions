@@ -3,7 +3,6 @@ package com.lypaka.bettermissions.Missions;
 import com.lypaka.bettermissions.Requirements.MissionRequirement;
 
 import java.util.List;
-import java.util.Map;
 
 public class MineMission extends Mission {
 
@@ -35,11 +34,11 @@ public class MineMission extends Mission {
 
         if (this.getTimer() > 0) {
 
-            MissionRegistry.mineMissions.add(this);
+            MissionsHandler.mineMissions.add(this);
 
         } else {
 
-            MissionRegistry.permanentMineMissions.add(this);
+            MissionsHandler.permanentMineMissions.add(this);
 
         }
 

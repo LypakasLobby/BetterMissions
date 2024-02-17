@@ -1,7 +1,7 @@
 package com.lypaka.bettermissions.Commands;
 
 import com.lypaka.bettermissions.BetterMissions;
-import com.lypaka.bettermissions.Missions.MissionRegistry;
+import com.lypaka.bettermissions.Missions.MissionsHandler;
 import com.lypaka.bettermissions.Utils;
 import com.lypaka.lypakautils.FancyText;
 import com.lypaka.lypakautils.MiscHandlers.PermissionHandler;
@@ -29,7 +29,6 @@ public class AddMissionCommand {
                                                                     Commands.argument("missionID", StringArgumentType.string())
                                                                             .executes(c -> {
 
-                                                                                if (BetterMissions.disabled) return 0;
                                                                                 if (c.getSource().getEntity() instanceof ServerPlayerEntity) {
 
                                                                                     ServerPlayerEntity player = (ServerPlayerEntity) c.getSource().getEntity();
@@ -46,7 +45,7 @@ public class AddMissionCommand {
                                                                                 String missionID = StringArgumentType.getString(c, "missionID");
                                                                                 if (missionID.contains(".conf")) missionID = missionID.replace(".conf", "");
 
-                                                                                for (String s : MissionRegistry.allMissionIDs) {
+                                                                                for (String s : MissionsHandler.allMissionIDs) {
 
                                                                                     if (s.equalsIgnoreCase(missionID.replace(" ", ""))) {
 

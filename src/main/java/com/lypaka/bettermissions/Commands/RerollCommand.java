@@ -26,7 +26,6 @@ public class RerollCommand {
                                                     Commands.argument("player", EntityArgument.player())
                                                             .executes(c -> {
 
-                                                                if (BetterMissions.disabled) return 0;
                                                                 if (c.getSource().getEntity() instanceof ServerPlayerEntity) {
 
                                                                     ServerPlayerEntity player = (ServerPlayerEntity) c.getSource().getEntity();

@@ -7,7 +7,7 @@ import com.lypaka.bettermissions.Accounts.AccountHandler;
 import com.lypaka.bettermissions.BetterMissions;
 import com.lypaka.bettermissions.ConfigGetters;
 import com.lypaka.bettermissions.Missions.MeleeMission;
-import com.lypaka.bettermissions.Missions.MissionRegistry;
+import com.lypaka.bettermissions.Missions.MissionsHandler;
 import com.lypaka.bettermissions.Requirements.*;
 import com.lypaka.bettermissions.Utils;
 import com.lypaka.lypakautils.ConfigurationLoaders.ComplexConfigManager;
@@ -35,7 +35,6 @@ public class MeleeListener {
     @SubscribeEvent
     public void onKill (LivingDeathEvent event) throws ObjectMappingException {
 
-        if (BetterMissions.disabled) return;
         if (event.getSource().getTrueSource() instanceof ServerPlayerEntity) {
 
             ServerPlayerEntity player = (ServerPlayerEntity) event.getSource().getTrueSource();
@@ -59,7 +58,7 @@ public class MeleeListener {
                     }
                     MeleeMission mission = null;
                     String id = AccountHandler.getCurrentMission(account);
-                    for (MeleeMission missions : MissionRegistry.meleeMissions) {
+                    for (MeleeMission missions : MissionsHandler.meleeMissions) {
 
                         if (missions.getID().equalsIgnoreCase(id)) {
 
@@ -69,253 +68,7 @@ public class MeleeListener {
                         }
 
                     }
-                    if (mission != null) {
-
-                        List<String> entityIDs = mission.getEntityTypes();
-                        if (entityIDs.contains(entityID)) { // TODO check to make sure false-positives don't happen
-
-                            double chance = mission.getChance();
-                            if (chance < 1.0) {
-
-                                if (!RandomHelper.getRandomChance(mission.getChance())) return;
-
-                            }
-                            MissionRequirementsEvent requirementsEvent = new MissionRequirementsEvent(player, mission.getID(), mission.getRequirements());
-                            MinecraftForge.EVENT_BUS.post(requirementsEvent);
-                            if (!requirementsEvent.isCanceled()) {
-
-                                ItemRequirement itemRequirement = new ItemRequirement(mission.getRequirements().getItemRequirements(), player);
-                                ComplexConfigManager configManager = BetterMissions.missionConfigManager.get("Melee");
-                                int index = Utils.getIndexFromMissionID("Melee", mission.getID());
-                                PartyRequirement partyRequirement = new PartyRequirement(configManager, index, mission.getRequirements().getPartyRequirements(), player);
-                                PokedexRequirement pokedexRequirement = new PokedexRequirement(mission.getRequirements().getPokedexRequirements(), player);
-                                PermissionRequirement permissionRequirement = new PermissionRequirement(mission.getRequirements().getDoesNotHavePermissionRequirements(), mission.getRequirements().getHasPermissionRequirements(), player);
-        
-                                WeatherRequirement weatherRequirement = new WeatherRequirement(mission.getRequirements().getWeatherRequirements(), player);
-                                if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, weatherRequirement)) return;
-                                if (partyRequirement.getPokemonToRemove().size() > 0) {
-
-                                    PlayerPartyStorage storage = StorageProxy.getParty(player);
-                                    for (Map.Entry<Integer, Pokemon> pokemonEntry : partyRequirement.getPokemonToRemove().entrySet()) {
-
-                                        storage.set(pokemonEntry.getKey(), null);
-
-                                    }
-
-                                }
-                                if (itemRequirement.getItemsToRemove().size() > 0) {
-
-                                    for (Map.Entry<String, Integer> itemEntry : itemRequirement.getItemsToRemove().entrySet()) {
-
-                                        for (ItemStack item : player.inventory.mainInventory) {
-
-                                            if (item.getItem().getRegistryName().toString().equalsIgnoreCase(itemEntry.getKey())) {
-
-                                                item.setCount(item.getCount() - itemEntry.getValue());
-
-                                            }
-
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-                            int progress = AccountHandler.getMissionProgress(account, mission.getID());
-                            int updated = progress + 1;
-                            AccountHandler.updateProgress(account, mission.getID(), updated);
-                            if (AccountHandler.completed(mission.getAmount(), updated)) {
-
-                                if (ConfigGetters.autoCycleMissions) {
-
-                                    AccountHandler.assignRandomMission(account);
-                                    if (!ConfigGetters.newMissionNotification.equals("")) {
-
-                                        player.sendMessage(FancyText.getFormattedText(ConfigGetters.newMissionNotification), player.getUniqueID());
-
-                                    }
-
-                                }
-                                AccountHandler.removeMission(account, mission.getID());
-                                MissionCompletedEvent completedEvent;
-                                if (mission.getRewardType().equalsIgnoreCase("money")) {
-
-                                    completedEvent = new MissionCompletedEvent(player, mission, mission.getReward());
-                                    MinecraftForge.EVENT_BUS.post(completedEvent);
-                                    PlayerPartyStorage storage = StorageProxy.getParty(uuid);
-                                    storage.add(completedEvent.getRewardMoney());
-
-                                } else {
-
-                                    completedEvent = new MissionCompletedEvent(player, mission, mission.getRewardCommands());
-                                    MinecraftForge.EVENT_BUS.post(completedEvent);
-                                    for (String c : completedEvent.getRewardCommands()) {
-
-                                        player.getServer().getCommandManager().handleCommand(
-                                                player.getServer().getCommandSource(),
-                                                c.replace("%player%", player.getName().getString())
-                                        );
-
-                                    }
-
-                                }
-
-                                if (!ConfigGetters.completionBroadcast.equalsIgnoreCase("")) {
-
-                                    for (Map.Entry<UUID, ServerPlayerEntity> entry : JoinListener.playerMap.entrySet()) {
-
-                                        entry.getValue().sendMessage(FancyText.getFormattedText(ConfigGetters.completionBroadcast
-                                                .replace("%player%", player.getName().getString())
-                                                .replace("%mission%", mission.getID())
-                                        ), entry.getValue().getUniqueID());
-
-                                    }
-
-                                }
-
-                            }
-
-                            AccountHandler.saveProgress(account);
-
-                        }
-
-                    }
-                    if (mission == null) {
-
-                        ArrayList<String> permanentMissions = AccountHandler.getCurrentPermanentMissionsList(account);
-                        for (MeleeMission missions : MissionRegistry.permanentMeleeMissions) {
-
-                            permanentMissions.removeIf(m -> {
-
-                                if (m.equalsIgnoreCase(missions.getID())) {
-
-                                    List<String> entityIDs = missions.getEntityTypes();
-                                    if (entityIDs.contains(entityID)) { // TODO check to make sure false-positives don't happen
-
-                                        double chance = missions.getChance();
-                                        if (chance < 1.0) {
-
-                                            if (!RandomHelper.getRandomChance(missions.getChance())) {
-
-                                                return false;
-
-                                            }
-
-                                        }
-                                        MissionRequirementsEvent requirementsEvent = new MissionRequirementsEvent(player, missions.getID(), missions.getRequirements());
-                                        MinecraftForge.EVENT_BUS.post(requirementsEvent);
-                                        if (!requirementsEvent.isCanceled()) {
-
-                                            ItemRequirement itemRequirement = new ItemRequirement(missions.getRequirements().getItemRequirements(), player);
-                                            ComplexConfigManager configManager = BetterMissions.missionConfigManager.get("Melee");
-                                            int index = Utils.getIndexFromMissionID("Melee", missions.getID());
-                                            PartyRequirement partyRequirement = new PartyRequirement(configManager, index, missions.getRequirements().getPartyRequirements(), player);
-                                            PokedexRequirement pokedexRequirement = new PokedexRequirement(missions.getRequirements().getPokedexRequirements(), player);
-                                            PermissionRequirement permissionRequirement = new PermissionRequirement(missions.getRequirements().getDoesNotHavePermissionRequirements(), missions.getRequirements().getHasPermissionRequirements(), player);
-        
-                                            WeatherRequirement weatherRequirement = new WeatherRequirement(missions.getRequirements().getWeatherRequirements(), player);
-                                            try {
-
-                                                if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, weatherRequirement)) return false;
-
-                                            } catch (ObjectMappingException e) {
-
-                                                e.printStackTrace();
-
-                                            }
-                                            if (partyRequirement.getPokemonToRemove().size() > 0) {
-
-                                                PlayerPartyStorage storage = StorageProxy.getParty(player);
-                                                for (Map.Entry<Integer, Pokemon> pokemonEntry : partyRequirement.getPokemonToRemove().entrySet()) {
-
-                                                    storage.set(pokemonEntry.getKey(), null);
-
-                                                }
-
-                                            }
-                                            if (itemRequirement.getItemsToRemove().size() > 0) {
-
-                                                for (Map.Entry<String, Integer> itemEntry : itemRequirement.getItemsToRemove().entrySet()) {
-
-                                                    for (ItemStack item : player.inventory.mainInventory) {
-
-                                                        if (item.getItem().getRegistryName().toString().equalsIgnoreCase(itemEntry.getKey())) {
-
-                                                            item.setCount(item.getCount() - itemEntry.getValue());
-
-                                                        }
-
-                                                    }
-
-                                                }
-
-                                            }
-
-                                        }
-                                        int progress = AccountHandler.getMissionProgress(account, missions.getID());
-                                        int updated = progress + 1;
-                                        AccountHandler.updateProgress(account, missions.getID(), updated);
-                                        if (AccountHandler.completed(missions.getAmount(), updated)) {
-
-                                            player.getServer().deferTask(() -> {
-
-                                                AccountHandler.movePermanentMissionToCompleted(account, missions.getID());
-
-                                            });
-                                            MissionCompletedEvent completedEvent;
-                                            if (missions.getRewardType().equalsIgnoreCase("money")) {
-
-                                                completedEvent = new MissionCompletedEvent(player, missions, missions.getReward());
-                                                MinecraftForge.EVENT_BUS.post(completedEvent);
-                                                PlayerPartyStorage storage = StorageProxy.getParty(uuid);
-                                                storage.add(completedEvent.getRewardMoney());
-
-                                            } else {
-
-                                                completedEvent = new MissionCompletedEvent(player, missions, missions.getRewardCommands());
-                                                MinecraftForge.EVENT_BUS.post(completedEvent);
-                                                for (String c : completedEvent.getRewardCommands()) {
-
-                                                    player.getServer().getCommandManager().handleCommand(
-                                                            player.getServer().getCommandSource(),
-                                                            c.replace("%player%", player.getName().getString())
-                                                    );
-
-                                                }
-
-                                            }
-
-                                            if (!ConfigGetters.completionBroadcast.equalsIgnoreCase("")) {
-
-                                                for (Map.Entry<UUID, ServerPlayerEntity> entry : JoinListener.playerMap.entrySet()) {
-
-                                                    entry.getValue().sendMessage(FancyText.getFormattedText(ConfigGetters.completionBroadcast
-                                                            .replace("%player%", player.getName().getString())
-                                                            .replace("%mission%", missions.getID())
-                                                    ), entry.getValue().getUniqueID());
-
-                                                }
-
-                                            }
-
-                                            return true;
-
-                                        }
-
-                                    }
-
-                                }
-
-                                return false;
-
-                            });
-
-                        }
-
-                        AccountHandler.saveProgress(account);
-
-                    }
+                    MissionsHandler.runMissionProgressCheck(player, null, entityID, mission, 1);
 
                 }
 

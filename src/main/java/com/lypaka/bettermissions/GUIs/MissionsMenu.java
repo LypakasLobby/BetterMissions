@@ -132,7 +132,7 @@ public class MissionsMenu {
     private static int getMissionRequiredAmount (String id) {
 
         int required = -1;
-        for (CatchMission catchMissions : MissionRegistry.catchMissions) {
+        for (CatchMission catchMissions : MissionsHandler.catchMissions) {
 
             if (catchMissions.getID().equalsIgnoreCase(id)) {
 
@@ -143,7 +143,7 @@ public class MissionsMenu {
 
         }
         if (required > -1) return required;
-        for (CraftMission craftMission : MissionRegistry.craftMissions) {
+        for (CraftMission craftMission : MissionsHandler.craftMissions) {
 
             if (craftMission.getID().equalsIgnoreCase(id)) {
 
@@ -154,7 +154,7 @@ public class MissionsMenu {
 
         }
         if (required > -1) return required;
-        for (DefeatMission defeatMission : MissionRegistry.defeatMissions) {
+        for (DefeatMission defeatMission : MissionsHandler.defeatMissions) {
 
             if (defeatMission.getID().equalsIgnoreCase(id)) {
 
@@ -165,7 +165,7 @@ public class MissionsMenu {
 
         }
         if (required > -1) return required;
-        for (EvolveMission evolveMission : MissionRegistry.evolveMissions) {
+        for (EvolveMission evolveMission : MissionsHandler.evolveMissions) {
 
             if (evolveMission.getID().equalsIgnoreCase(id)) {
 
@@ -176,7 +176,7 @@ public class MissionsMenu {
 
         }
         if (required > -1) return required;
-        for (KillMission killMission : MissionRegistry.killMissions) {
+        for (KillMission killMission : MissionsHandler.killMissions) {
 
             if (killMission.getID().equalsIgnoreCase(id)) {
 
@@ -187,7 +187,7 @@ public class MissionsMenu {
 
         }
         if (required > -1) return required;
-        for (MineMission mineMission : MissionRegistry.mineMissions) {
+        for (MineMission mineMission : MissionsHandler.mineMissions) {
 
             if (mineMission.getID().equalsIgnoreCase(id)) {
 
@@ -198,7 +198,7 @@ public class MissionsMenu {
 
         }
         if (required > -1) return required;
-        for (FishMission fishMission : MissionRegistry.fishMissions) {
+        for (FishMission fishMission : MissionsHandler.fishMissions) {
 
             if (fishMission.getID().equalsIgnoreCase(id)) {
 
@@ -209,7 +209,7 @@ public class MissionsMenu {
 
         }
         if (required > -1) return required;
-        for (LoseMission loseMission : MissionRegistry.loseMissions) {
+        for (LoseMission loseMission : MissionsHandler.loseMissions) {
 
             if (loseMission.getID().equalsIgnoreCase(id)) {
 
@@ -220,7 +220,7 @@ public class MissionsMenu {
 
         }
         if (required > -1) return required;
-        for (MeleeMission meleeMission : MissionRegistry.meleeMissions) {
+        for (MeleeMission meleeMission : MissionsHandler.meleeMissions) {
 
             if (meleeMission.getID().equalsIgnoreCase(id)) {
 
@@ -231,7 +231,7 @@ public class MissionsMenu {
 
         }
         if (required > -1) return required;
-        for (ReleaseMission releaseMission : MissionRegistry.releaseMissions) {
+        for (ReleaseMission releaseMission : MissionsHandler.releaseMissions) {
 
             if (releaseMission.getID().equalsIgnoreCase(id)) {
 
@@ -242,7 +242,7 @@ public class MissionsMenu {
 
         }
         if (required > -1) return required;
-        for (BreedMission mission : MissionRegistry.breedMissions) {
+        for (BreedMission mission : MissionsHandler.breedMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -253,7 +253,7 @@ public class MissionsMenu {
 
         }
         if (required > -1) return required;
-        for (HatchMission mission : MissionRegistry.hatchMissions) {
+        for (HatchMission mission : MissionsHandler.hatchMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -264,7 +264,7 @@ public class MissionsMenu {
 
         }
         if (required > -1) return required;
-        for (PhotographMission mission : MissionRegistry.photographMissions) {
+        for (PhotographMission mission : MissionsHandler.photographMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -275,7 +275,7 @@ public class MissionsMenu {
 
         }
         if (required > -1) return required;
-        for (RaidMission mission : MissionRegistry.raidMissions) {
+        for (RaidMission mission : MissionsHandler.raidMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -286,7 +286,18 @@ public class MissionsMenu {
 
         }
         if (required > -1) return required;
-        for (SmeltMission mission : MissionRegistry.smeltMissions) {
+        for (SmeltMission mission : MissionsHandler.smeltMissions) {
+
+            if (mission.getID().equalsIgnoreCase(id)) {
+
+                required = mission.getAmount();
+                break;
+
+            }
+
+        }
+        if (required > -1) return required;
+        for (ReviveMission mission : MissionsHandler.reviveMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -305,7 +316,7 @@ public class MissionsMenu {
     private static List<String> getMissionDisplayLore (String id) {
 
         List<String> lore = null;
-        for (CatchMission catchMissions : MissionRegistry.catchMissions) {
+        for (CatchMission catchMissions : MissionsHandler.catchMissions) {
 
             if (catchMissions.getID().equalsIgnoreCase(id)) {
 
@@ -316,7 +327,7 @@ public class MissionsMenu {
 
         }
         if (lore != null) return lore;
-        for (CraftMission craftMission : MissionRegistry.craftMissions) {
+        for (CraftMission craftMission : MissionsHandler.craftMissions) {
 
             if (craftMission.getID().equalsIgnoreCase(id)) {
 
@@ -327,7 +338,7 @@ public class MissionsMenu {
 
         }
         if (lore != null) return lore;
-        for (DefeatMission defeatMission : MissionRegistry.defeatMissions) {
+        for (DefeatMission defeatMission : MissionsHandler.defeatMissions) {
 
             if (defeatMission.getID().equalsIgnoreCase(id)) {
 
@@ -338,7 +349,7 @@ public class MissionsMenu {
 
         }
         if (lore != null) return lore;
-        for (EvolveMission evolveMission : MissionRegistry.evolveMissions) {
+        for (EvolveMission evolveMission : MissionsHandler.evolveMissions) {
 
             if (evolveMission.getID().equalsIgnoreCase(id)) {
 
@@ -349,7 +360,7 @@ public class MissionsMenu {
 
         }
         if (lore != null) return lore;
-        for (KillMission killMission : MissionRegistry.killMissions) {
+        for (KillMission killMission : MissionsHandler.killMissions) {
 
             if (killMission.getID().equalsIgnoreCase(id)) {
 
@@ -360,7 +371,7 @@ public class MissionsMenu {
 
         }
         if (lore != null) return lore;
-        for (MineMission mineMission : MissionRegistry.mineMissions) {
+        for (MineMission mineMission : MissionsHandler.mineMissions) {
 
             if (mineMission.getID().equalsIgnoreCase(id)) {
 
@@ -371,7 +382,7 @@ public class MissionsMenu {
 
         }
         if (lore != null) return lore;
-        for (FishMission fishMission : MissionRegistry.fishMissions) {
+        for (FishMission fishMission : MissionsHandler.fishMissions) {
 
             if (fishMission.getID().equalsIgnoreCase(id)) {
 
@@ -382,7 +393,7 @@ public class MissionsMenu {
 
         }
         if (lore != null) return lore;
-        for (LoseMission loseMission : MissionRegistry.loseMissions) {
+        for (LoseMission loseMission : MissionsHandler.loseMissions) {
 
             if (loseMission.getID().equalsIgnoreCase(id)) {
 
@@ -393,7 +404,7 @@ public class MissionsMenu {
 
         }
         if (lore != null) return lore;
-        for (MeleeMission meleeMission : MissionRegistry.meleeMissions) {
+        for (MeleeMission meleeMission : MissionsHandler.meleeMissions) {
 
             if (meleeMission.getID().equalsIgnoreCase(id)) {
 
@@ -404,7 +415,7 @@ public class MissionsMenu {
 
         }
         if (lore != null) return lore;
-        for (ReleaseMission releaseMission : MissionRegistry.releaseMissions) {
+        for (ReleaseMission releaseMission : MissionsHandler.releaseMissions) {
 
             if (releaseMission.getID().equalsIgnoreCase(id)) {
 
@@ -415,7 +426,7 @@ public class MissionsMenu {
 
         }
         if (lore != null) return lore;
-        for (BreedMission mission : MissionRegistry.breedMissions) {
+        for (BreedMission mission : MissionsHandler.breedMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -426,7 +437,7 @@ public class MissionsMenu {
 
         }
         if (lore != null) return lore;
-        for (HatchMission mission : MissionRegistry.hatchMissions) {
+        for (HatchMission mission : MissionsHandler.hatchMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -437,7 +448,7 @@ public class MissionsMenu {
 
         }
         if (lore != null) return lore;
-        for (PhotographMission mission : MissionRegistry.photographMissions) {
+        for (PhotographMission mission : MissionsHandler.photographMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -448,7 +459,7 @@ public class MissionsMenu {
 
         }
         if (lore != null) return lore;
-        for (RaidMission mission : MissionRegistry.raidMissions) {
+        for (RaidMission mission : MissionsHandler.raidMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -459,7 +470,18 @@ public class MissionsMenu {
 
         }
         if (lore != null) return lore;
-        for (SmeltMission mission : MissionRegistry.smeltMissions) {
+        for (SmeltMission mission : MissionsHandler.smeltMissions) {
+
+            if (mission.getID().equalsIgnoreCase(id)) {
+
+                lore = mission.getDisplayLore();
+                break;
+
+            }
+
+        }
+        if (lore != null) return lore;
+        for (ReviveMission mission : MissionsHandler.reviveMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -477,7 +499,7 @@ public class MissionsMenu {
     private static String getMissionNameFromID (String id) {
 
         String name = null;
-        for (CatchMission catchMissions : MissionRegistry.catchMissions) {
+        for (CatchMission catchMissions : MissionsHandler.catchMissions) {
 
             if (catchMissions.getID().equalsIgnoreCase(id)) {
 
@@ -488,7 +510,7 @@ public class MissionsMenu {
 
         }
         if (name != null) return name;
-        for (CraftMission craftMission : MissionRegistry.craftMissions) {
+        for (CraftMission craftMission : MissionsHandler.craftMissions) {
 
             if (craftMission.getID().equalsIgnoreCase(id)) {
 
@@ -499,7 +521,7 @@ public class MissionsMenu {
 
         }
         if (name != null) return name;
-        for (DefeatMission defeatMission : MissionRegistry.defeatMissions) {
+        for (DefeatMission defeatMission : MissionsHandler.defeatMissions) {
 
             if (defeatMission.getID().equalsIgnoreCase(id)) {
 
@@ -510,7 +532,7 @@ public class MissionsMenu {
 
         }
         if (name != null) return name;
-        for (EvolveMission evolveMission : MissionRegistry.evolveMissions) {
+        for (EvolveMission evolveMission : MissionsHandler.evolveMissions) {
 
             if (evolveMission.getID().equalsIgnoreCase(id)) {
 
@@ -521,7 +543,7 @@ public class MissionsMenu {
 
         }
         if (name != null) return name;
-        for (KillMission killMission : MissionRegistry.killMissions) {
+        for (KillMission killMission : MissionsHandler.killMissions) {
 
             if (killMission.getID().equalsIgnoreCase(id)) {
 
@@ -532,7 +554,7 @@ public class MissionsMenu {
 
         }
         if (name != null) return name;
-        for (MineMission mineMission : MissionRegistry.mineMissions) {
+        for (MineMission mineMission : MissionsHandler.mineMissions) {
 
             if (mineMission.getID().equalsIgnoreCase(id)) {
 
@@ -543,7 +565,7 @@ public class MissionsMenu {
 
         }
         if (name != null) return name;
-        for (FishMission fishMission : MissionRegistry.fishMissions) {
+        for (FishMission fishMission : MissionsHandler.fishMissions) {
 
             if (fishMission.getID().equalsIgnoreCase(id)) {
 
@@ -554,7 +576,7 @@ public class MissionsMenu {
 
         }
         if (name != null) return name;
-        for (LoseMission loseMission : MissionRegistry.loseMissions) {
+        for (LoseMission loseMission : MissionsHandler.loseMissions) {
 
             if (loseMission.getID().equalsIgnoreCase(id)) {
 
@@ -565,7 +587,7 @@ public class MissionsMenu {
 
         }
         if (name != null) return name;
-        for (MeleeMission meleeMission : MissionRegistry.meleeMissions) {
+        for (MeleeMission meleeMission : MissionsHandler.meleeMissions) {
 
             if (meleeMission.getID().equalsIgnoreCase(id)) {
 
@@ -576,7 +598,7 @@ public class MissionsMenu {
 
         }
         if (name != null) return name;
-        for (ReleaseMission releaseMission : MissionRegistry.releaseMissions) {
+        for (ReleaseMission releaseMission : MissionsHandler.releaseMissions) {
 
             if (releaseMission.getID().equalsIgnoreCase(id)) {
 
@@ -587,7 +609,7 @@ public class MissionsMenu {
 
         }
         if (name != null) return name;
-        for (BreedMission mission : MissionRegistry.breedMissions) {
+        for (BreedMission mission : MissionsHandler.breedMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -598,7 +620,7 @@ public class MissionsMenu {
 
         }
         if (name != null) return name;
-        for (HatchMission mission : MissionRegistry.hatchMissions) {
+        for (HatchMission mission : MissionsHandler.hatchMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -609,7 +631,7 @@ public class MissionsMenu {
 
         }
         if (name != null) return name;
-        for (PhotographMission mission : MissionRegistry.photographMissions) {
+        for (PhotographMission mission : MissionsHandler.photographMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -620,7 +642,7 @@ public class MissionsMenu {
 
         }
         if (name != null) return name;
-        for (RaidMission mission : MissionRegistry.raidMissions) {
+        for (RaidMission mission : MissionsHandler.raidMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -631,7 +653,18 @@ public class MissionsMenu {
 
         }
         if (name != null) return name;
-        for (SmeltMission mission : MissionRegistry.smeltMissions) {
+        for (SmeltMission mission : MissionsHandler.smeltMissions) {
+
+            if (mission.getID().equalsIgnoreCase(id)) {
+
+                name = mission.getDisplayName();
+                break;
+
+            }
+
+        }
+        if (name != null) return name;
+        for (ReviveMission mission : MissionsHandler.reviveMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -649,7 +682,7 @@ public class MissionsMenu {
     public static String getRepresentationIDFromMissionID (String id) {
 
         String repID = null;
-        for (CatchMission catchMissions : MissionRegistry.catchMissions) {
+        for (CatchMission catchMissions : MissionsHandler.catchMissions) {
 
             if (catchMissions.getID().equalsIgnoreCase(id)) {
 
@@ -660,7 +693,7 @@ public class MissionsMenu {
 
         }
         if (repID != null) return repID;
-        for (CraftMission craftMission : MissionRegistry.craftMissions) {
+        for (CraftMission craftMission : MissionsHandler.craftMissions) {
 
             if (craftMission.getID().equalsIgnoreCase(id)) {
 
@@ -671,7 +704,7 @@ public class MissionsMenu {
 
         }
         if (repID != null) return repID;
-        for (DefeatMission defeatMission : MissionRegistry.defeatMissions) {
+        for (DefeatMission defeatMission : MissionsHandler.defeatMissions) {
 
             if (defeatMission.getID().equalsIgnoreCase(id)) {
 
@@ -682,7 +715,7 @@ public class MissionsMenu {
 
         }
         if (repID != null) return repID;
-        for (EvolveMission evolveMission : MissionRegistry.evolveMissions) {
+        for (EvolveMission evolveMission : MissionsHandler.evolveMissions) {
 
             if (evolveMission.getID().equalsIgnoreCase(id)) {
 
@@ -693,7 +726,7 @@ public class MissionsMenu {
 
         }
         if (repID != null) return repID;
-        for (KillMission killMission : MissionRegistry.killMissions) {
+        for (KillMission killMission : MissionsHandler.killMissions) {
 
             if (killMission.getID().equalsIgnoreCase(id)) {
 
@@ -704,7 +737,7 @@ public class MissionsMenu {
 
         }
         if (repID != null) return repID;
-        for (MineMission mineMission : MissionRegistry.mineMissions) {
+        for (MineMission mineMission : MissionsHandler.mineMissions) {
 
             if (mineMission.getID().equalsIgnoreCase(id)) {
 
@@ -715,7 +748,7 @@ public class MissionsMenu {
 
         }
         if (repID != null) return repID;
-        for (MeleeMission meleeMission : MissionRegistry.meleeMissions) {
+        for (MeleeMission meleeMission : MissionsHandler.meleeMissions) {
 
             if (meleeMission.getID().equalsIgnoreCase(id)) {
 
@@ -726,7 +759,7 @@ public class MissionsMenu {
 
         }
         if (repID != null) return repID;
-        for (FishMission fishMission : MissionRegistry.fishMissions) {
+        for (FishMission fishMission : MissionsHandler.fishMissions) {
 
             if (fishMission.getID().equalsIgnoreCase(id)) {
 
@@ -737,7 +770,7 @@ public class MissionsMenu {
 
         }
         if (repID != null) return repID;
-        for (ReleaseMission releaseMission : MissionRegistry.releaseMissions) {
+        for (ReleaseMission releaseMission : MissionsHandler.releaseMissions) {
 
             if (releaseMission.getID().equalsIgnoreCase(id)) {
 
@@ -748,7 +781,7 @@ public class MissionsMenu {
 
         }
         if (repID != null) return repID;
-        for (LoseMission loseMission : MissionRegistry.loseMissions) {
+        for (LoseMission loseMission : MissionsHandler.loseMissions) {
 
             if (loseMission.getID().equalsIgnoreCase(id)) {
 
@@ -759,7 +792,7 @@ public class MissionsMenu {
 
         }
         if (repID != null) return repID;
-        for (BreedMission breedMission : MissionRegistry.breedMissions) {
+        for (BreedMission breedMission : MissionsHandler.breedMissions) {
 
             if (breedMission.getID().equalsIgnoreCase(id)) {
 
@@ -770,7 +803,7 @@ public class MissionsMenu {
 
         }
         if (repID != null) return repID;
-        for (HatchMission mission : MissionRegistry.hatchMissions) {
+        for (HatchMission mission : MissionsHandler.hatchMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -781,7 +814,7 @@ public class MissionsMenu {
 
         }
         if (repID != null) return repID;
-        for (PhotographMission mission : MissionRegistry.photographMissions) {
+        for (PhotographMission mission : MissionsHandler.photographMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -792,7 +825,7 @@ public class MissionsMenu {
 
         }
         if (repID != null) return repID;
-        for (RaidMission mission : MissionRegistry.raidMissions) {
+        for (RaidMission mission : MissionsHandler.raidMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
@@ -803,11 +836,22 @@ public class MissionsMenu {
 
         }
         if (repID != null) return repID;
-        for (SmeltMission mission : MissionRegistry.smeltMissions) {
+        for (SmeltMission mission : MissionsHandler.smeltMissions) {
 
             if (mission.getID().equalsIgnoreCase(id)) {
 
                 repID = "Smelting";
+                break;
+
+            }
+
+        }
+        if (repID != null) return repID;
+        for (ReviveMission mission : MissionsHandler.reviveMissions) {
+
+            if (mission.getID().equalsIgnoreCase(id)) {
+
+                repID = "Reviving";
                 break;
 
             }

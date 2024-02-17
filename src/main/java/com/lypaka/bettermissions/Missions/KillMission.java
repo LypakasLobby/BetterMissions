@@ -35,11 +35,11 @@ public class KillMission extends Mission {
 
         if (this.getTimer() > 0) {
 
-            MissionRegistry.killMissions.add(this);
+            MissionsHandler.killMissions.add(this);
 
         } else {
 
-            MissionRegistry.permanentKillMissions.add(this);
+            MissionsHandler.permanentKillMissions.add(this);
 
         }
 

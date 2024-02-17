@@ -1,6 +1,5 @@
 package com.lypaka.bettermissions.Requirements;
 
-import com.pixelmonmod.pixelmon.battles.status.Weather;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
 import java.util.List;

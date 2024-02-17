@@ -35,11 +35,11 @@ public class PhotographMission extends Mission {
 
         if (this.getTimer() > 0) {
 
-            MissionRegistry.photographMissions.add(this);
+            MissionsHandler.photographMissions.add(this);
 
         } else {
 
-            MissionRegistry.permanentPhotographMissions.add(this);
+            MissionsHandler.permanentPhotographMissions.add(this);
 
         }
 

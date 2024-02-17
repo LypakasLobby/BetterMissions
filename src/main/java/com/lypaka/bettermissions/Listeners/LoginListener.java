@@ -15,8 +15,6 @@ import java.util.UUID;
 
 public class LoginListener {
 
-    public static List<Account> accountsToUpdate = new ArrayList<>();
-
     @SubscribeEvent
     public void onJoin (PlayerEvent.PlayerLoggedInEvent event) throws ObjectMappingException {
 
@@ -45,18 +43,10 @@ public class LoginListener {
 
         }
 
-        if (!BetterMissions.disabled) {
+        if (account.getMissionMap().size() == 0) {
 
-            if (account.getMissionMap().size() == 0) {
-
-                AccountHandler.assignRandomMission(account);
-                AccountHandler.saveProgress(account);
-
-            }
-
-        } else {
-
-            accountsToUpdate.add(account);
+            AccountHandler.assignRandomMission(account);
+            AccountHandler.saveProgress(account);
 
         }
 

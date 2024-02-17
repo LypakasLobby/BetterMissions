@@ -34,11 +34,11 @@ public class SmeltMission extends Mission {
 
         if (this.getTimer() > 0) {
 
-            MissionRegistry.smeltMissions.add(this);
+            MissionsHandler.smeltMissions.add(this);
 
         } else {
 
-            MissionRegistry.permanentSmeltMissions.add(this);
+            MissionsHandler.permanentSmeltMissions.add(this);
 
         }
 
