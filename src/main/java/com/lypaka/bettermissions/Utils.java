@@ -1026,13 +1026,12 @@ public class Utils {
     }
 
     public static boolean passesRequirements (ItemRequirement itemRequirement, PartyRequirement partyRequirement, PokedexRequirement pokedexRequirement, PermissionRequirement permissionRequirement,
-                                              TimeRequirement timeRequirement, WeatherRequirement weatherRequirement) throws ObjectMappingException {
+                                              WeatherRequirement weatherRequirement) throws ObjectMappingException {
 
         if (!itemRequirement.passes()) return false;
         if (!partyRequirement.passes()) return false;
         if (!pokedexRequirement.passes()) return false;
         if (!permissionRequirement.passes()) return false;
-        if (!timeRequirement.passes()) return false;
         return weatherRequirement.passes();
 
     }

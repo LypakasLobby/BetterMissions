@@ -43,10 +43,10 @@ public class MissionsHandler {
             Map<String, Map<String, String>> itemRequirements = breedingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             Map<String, Map<String, String>> partyRequirements = breedingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             List<String> pokedexRequirements = breedingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = breedingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = breedingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> doesNotHavePermissionRequirements = breedingConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = breedingConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
             List<String> weatherRequirements = breedingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
             String rewardType = breedingConfigManager.getConfigNode(index, "Reward", "Type").getString();
             Map<String, String> specs = breedingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
             int timer = breedingConfigManager.getConfigNode(index, "Timer").getInt();
@@ -83,10 +83,10 @@ public class MissionsHandler {
             Map<String, Map<String, String>> itemRequirements = catchingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             Map<String, Map<String, String>> partyRequirements = catchingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             List<String> pokedexRequirements = catchingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = catchingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = catchingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> doesNotHavePermissionRequirements = catchingConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = catchingConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
             List<String> weatherRequirements = catchingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
             String rewardType = catchingConfigManager.getConfigNode(index, "Reward", "Type").getString();
             Map<String, String> specs = catchingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
             int timer = catchingConfigManager.getConfigNode(index, "Timer").getInt();
@@ -124,10 +124,10 @@ public class MissionsHandler {
             Map<String, Map<String, String>> itemRequirements = craftingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             Map<String, Map<String, String>> partyRequirements = craftingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             List<String> pokedexRequirements = craftingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = craftingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = craftingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> doesNotHavePermissionRequirements = craftingConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = craftingConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
             List<String> weatherRequirements = craftingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
             String rewardType = craftingConfigManager.getConfigNode(index, "Reward", "Type").getString();
             int timer = craftingConfigManager.getConfigNode(index, "Timer").getInt();
             CraftMission craftMission;
@@ -164,10 +164,10 @@ public class MissionsHandler {
             Map<String, Map<String, String>> itemRequirements = defeatingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             Map<String, Map<String, String>> partyRequirements = defeatingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             List<String> pokedexRequirements = defeatingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = defeatingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = defeatingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> doesNotHavePermissionRequirements = defeatingConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = defeatingConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
             List<String> weatherRequirements = defeatingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
             String rewardType = defeatingConfigManager.getConfigNode(index, "Reward", "Type").getString();
             int timer = defeatingConfigManager.getConfigNode(index, "Timer").getInt();
             DefeatMission defeatMission;
@@ -203,10 +203,10 @@ public class MissionsHandler {
             Map<String, Map<String, String>> itemRequirements = evolvingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             Map<String, Map<String, String>> partyRequirements = evolvingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             List<String> pokedexRequirements = evolvingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = evolvingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = evolvingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> doesNotHavePermissionRequirements = evolvingConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = evolvingConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
             List<String> weatherRequirements = evolvingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
             String rewardType = evolvingConfigManager.getConfigNode(index, "Reward", "Type").getString();
             Map<String, String> specs = evolvingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
             int timer = evolvingConfigManager.getConfigNode(index, "Timer").getInt();
@@ -243,10 +243,10 @@ public class MissionsHandler {
             Map<String, Map<String, String>> itemRequirements = fishingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             Map<String, Map<String, String>> partyRequirements = fishingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             List<String> pokedexRequirements = fishingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = fishingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = fishingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> doesNotHavePermissionRequirements = fishingConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = fishingConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
             List<String> weatherRequirements = fishingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
             String rewardType = fishingConfigManager.getConfigNode(index, "Reward", "Type").getString();
             Map<String, String> specs = fishingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
             int timer = fishingConfigManager.getConfigNode(index, "Timer").getInt();
@@ -283,10 +283,10 @@ public class MissionsHandler {
             Map<String, Map<String, String>> itemRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             Map<String, Map<String, String>> partyRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             List<String> pokedexRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> doesNotHavePermissionRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
             List<String> weatherRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
             String rewardType = hatchingConfigManager.getConfigNode(index, "Reward", "Type").getString();
             Map<String, String> specs = hatchingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
             int timer = hatchingConfigManager.getConfigNode(index, "Timer").getInt();
@@ -312,41 +312,41 @@ public class MissionsHandler {
         ComplexConfigManager killingConfigManager = new ComplexConfigManager(ConfigGetters.killMissions, "kill-missions", "mission-template-specs.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
         killingConfigManager.init();
         BetterMissions.missionConfigManager.put("Kill", killingConfigManager);
-        for (int index = 0; index < ConfigGetters.hatchMissions.size(); index++) {
+        for (int index = 0; index < ConfigGetters.killMissions.size(); index++) {
 
-            int amount = hatchingConfigManager.getConfigNode(index, "Amount").getInt();
-            double chance = hatchingConfigManager.getConfigNode(index, "Chance").getDouble();
-            String commandID = hatchingConfigManager.getConfigNode(index, "Command-ID").getString();
-            String displayName = hatchingConfigManager.getConfigNode(index, "Display-Name").getString();
-            List<String> lore = hatchingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
-            String missionID = hatchingConfigManager.getConfigNode(index, "Mission-ID").getString();
-            Map<String, Map<String, String>> itemRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            Map<String, Map<String, String>> partyRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            List<String> pokedexRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            List<String> weatherRequirements = hatchingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
-            String rewardType = hatchingConfigManager.getConfigNode(index, "Reward", "Type").getString();
-            Map<String, String> specs = hatchingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
-            int timer = hatchingConfigManager.getConfigNode(index, "Timer").getInt();
-            HatchMission hatchMission;
-            if (!hatchingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
+            int amount = killingConfigManager.getConfigNode(index, "Amount").getInt();
+            double chance = killingConfigManager.getConfigNode(index, "Chance").getDouble();
+            String commandID = killingConfigManager.getConfigNode(index, "Command-ID").getString();
+            String displayName = killingConfigManager.getConfigNode(index, "Display-Name").getString();
+            List<String> lore = killingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
+            String missionID = killingConfigManager.getConfigNode(index, "Mission-ID").getString();
+            Map<String, Map<String, String>> itemRequirements = killingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            Map<String, Map<String, String>> partyRequirements = killingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+            List<String> pokedexRequirements = killingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
+            List<String> doesNotHavePermissionRequirements = killingConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = killingConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
+            List<String> weatherRequirements = killingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
+            String rewardType = killingConfigManager.getConfigNode(index, "Reward", "Type").getString();
+            Map<String, String> specs = killingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
+            int timer = killingConfigManager.getConfigNode(index, "Timer").getInt();
+            KillMission killMission;
+            if (!killingConfigManager.getConfigNode(index, "Reward", "Value").isVirtual()) {
 
-                int reward = hatchingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
-                hatchMission = new HatchMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+                int reward = killingConfigManager.getConfigNode(index, "Reward", "Value").getInt();
+                killMission = new KillMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
 
             } else {
 
-                List<String> reward = hatchingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
-                hatchMission = new HatchMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
+                List<String> reward = killingConfigManager.getConfigNode(index, "Reward", "Commands").getList(TypeToken.of(String.class));
+                killMission = new KillMission(missionID, amount, chance, displayName, commandID, lore, rewardType, reward, requirements, specs, timer);
 
             }
-            hatchMission.register();
+            killMission.register();
             count++;
 
         }
-        missionCountMap.put("Hatch", count);
+        missionCountMap.put("Kill", count);
         count = 0;
 
         ComplexConfigManager losingConfigManager = new ComplexConfigManager(ConfigGetters.loseMissions, "lose-missions", "mission-template-losing.conf", dir, BetterMissions.class, BetterMissions.MOD_NAME, BetterMissions.MOD_ID, BetterMissions.logger);
@@ -364,10 +364,10 @@ public class MissionsHandler {
             Map<String, Map<String, String>> itemRequirements = losingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             Map<String, Map<String, String>> partyRequirements = losingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             List<String> pokedexRequirements = losingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = losingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = losingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> doesNotHavePermissionRequirements = losingConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = losingConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
             List<String> weatherRequirements = losingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
             String rewardType = losingConfigManager.getConfigNode(index, "Reward", "Type").getString();
             int timer = losingConfigManager.getConfigNode(index, "Timer").getInt();
             LoseMission loseMission;
@@ -404,10 +404,10 @@ public class MissionsHandler {
             Map<String, Map<String, String>> itemRequirements = meleeConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             Map<String, Map<String, String>> partyRequirements = meleeConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             List<String> pokedexRequirements = meleeConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = meleeConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = meleeConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> doesNotHavePermissionRequirements = meleeConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = meleeConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
             List<String> weatherRequirements = meleeConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
             String rewardType = meleeConfigManager.getConfigNode(index, "Reward", "Type").getString();
             int timer = meleeConfigManager.getConfigNode(index, "Timer").getInt();
             MeleeMission meleeMission;
@@ -444,10 +444,10 @@ public class MissionsHandler {
             Map<String, Map<String, String>> itemRequirements = miningConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             Map<String, Map<String, String>> partyRequirements = miningConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             List<String> pokedexRequirements = miningConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = miningConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = miningConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> doesNotHavePermissionRequirements = miningConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = miningConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
             List<String> weatherRequirements = miningConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
             String rewardType = miningConfigManager.getConfigNode(index, "Reward", "Type").getString();
             int timer = miningConfigManager.getConfigNode(index, "Timer").getInt();
             MineMission mineMission;
@@ -483,10 +483,10 @@ public class MissionsHandler {
             Map<String, Map<String, String>> itemRequirements = photographingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             Map<String, Map<String, String>> partyRequirements = photographingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             List<String> pokedexRequirements = photographingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = photographingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = photographingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> doesNotHavePermissionRequirements = photographingConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = photographingConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
             List<String> weatherRequirements = photographingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
             String rewardType = photographingConfigManager.getConfigNode(index, "Reward", "Type").getString();
             Map<String, String> specs = photographingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
             int timer = photographingConfigManager.getConfigNode(index, "Timer").getInt();
@@ -523,10 +523,10 @@ public class MissionsHandler {
             Map<String, Map<String, String>> itemRequirements = raidingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             Map<String, Map<String, String>> partyRequirements = raidingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             List<String> pokedexRequirements = raidingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = raidingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = raidingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> doesNotHavePermissionRequirements = raidingConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = raidingConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
             List<String> weatherRequirements = raidingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
             String rewardType = raidingConfigManager.getConfigNode(index, "Reward", "Type").getString();
             Map<String, String> specs = raidingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
             int timer = raidingConfigManager.getConfigNode(index, "Timer").getInt();
@@ -563,10 +563,10 @@ public class MissionsHandler {
             Map<String, Map<String, String>> itemRequirements = releasingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             Map<String, Map<String, String>> partyRequirements = releasingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             List<String> pokedexRequirements = releasingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            Map<String, List<String>> permissionRequirements = releasingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            Map<String, List<String>> timeRequirements = releasingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
+            List<String> doesNotHavePermissionRequirements = releasingConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = releasingConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
             List<String> weatherRequirements = releasingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
             String rewardType = releasingConfigManager.getConfigNode(index, "Reward", "Type").getString();
             Map<String, String> specs = releasingConfigManager.getConfigNode(index, "Specs").getValue(new TypeToken<Map<String, String>>() {});
             int timer = releasingConfigManager.getConfigNode(index, "Timer").getInt();
@@ -602,18 +602,12 @@ public class MissionsHandler {
             List<String> lore = smeltingConfigManager.getConfigNode(index, "Lore").getList(TypeToken.of(String.class));
             String missionID = smeltingConfigManager.getConfigNode(index, "Mission-ID").getString();
             Map<String, Map<String, String>> itemRequirements = smeltingConfigManager.getConfigNode(index, "Requirements", "Items").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            System.out.println("config item == " + itemRequirements);
             Map<String, Map<String, String>> partyRequirements = smeltingConfigManager.getConfigNode(index, "Requirements", "Party").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
-            System.out.println("config party == " + partyRequirements);
             List<String> pokedexRequirements = smeltingConfigManager.getConfigNode(index, "Requirements", "Pokedex").getList(TypeToken.of(String.class));
-            System.out.println("config pokedex == " + pokedexRequirements);
-            Map<String, List<String>> permissionRequirements = smeltingConfigManager.getConfigNode(index, "Requirements", "Permission").getValue(new TypeToken<Map<String, List<String>>>() {});
-            System.out.println("config permission == " + permissionRequirements);
-            Map<String, List<String>> timeRequirements = smeltingConfigManager.getConfigNode(index, "Requirements", "Time").getValue(new TypeToken<Map<String, List<String>>>() {});
-            System.out.println("config time == " + timeRequirements);
+            List<String> doesNotHavePermissionRequirements = smeltingConfigManager.getConfigNode(index, "Requirements", "Permission", "Does-Not-Have").getList(TypeToken.of(String.class));
+            List<String> hasPermissionRequirements = smeltingConfigManager.getConfigNode(index, "Requirements", "Permission", "Has").getList(TypeToken.of(String.class));
             List<String> weatherRequirements = smeltingConfigManager.getConfigNode(index, "Requirements", "Weather").getList(TypeToken.of(String.class));
-            System.out.println("config weather == " + weatherRequirements);
-            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, permissionRequirements, timeRequirements, weatherRequirements);
+            MissionRequirement requirements = new MissionRequirement(itemRequirements, partyRequirements, pokedexRequirements, doesNotHavePermissionRequirements, hasPermissionRequirements, weatherRequirements);
             String rewardType = smeltingConfigManager.getConfigNode(index, "Reward", "Type").getString();
             int timer = smeltingConfigManager.getConfigNode(index, "Timer").getInt();
             SmeltMission smeltMission;

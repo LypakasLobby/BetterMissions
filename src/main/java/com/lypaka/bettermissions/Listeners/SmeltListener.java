@@ -33,23 +33,20 @@ public class SmeltListener {
     @SubscribeEvent
     public void onSmelt (PlayerEvent.ItemSmeltedEvent event) throws ObjectMappingException {
 
-        System.out.println("hi from smelting");
         if (BetterMissions.disabled) return;
         ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
         UUID uuid = player.getUniqueID();
         String itemID = event.getSmelting().getItem().getRegistryName().toString();
+        int quantity = event.getSmelting().getCount();
         if (AccountHandler.accountMap.containsKey(uuid)) {
 
             Account account = AccountHandler.accountMap.get(uuid);
             String id = AccountHandler.getCurrentMission(account);
-            System.out.println("current mission ID == " + id);
             SmeltMission mission = null;
             for (SmeltMission missions : MissionRegistry.smeltMissions) {
 
-                System.out.println("mission ID from registry: " + missions.getID());
                 if (missions.getID().equalsIgnoreCase(id)) {
 
-                    System.out.println("found match");
                     mission = missions;
                     break;
 
@@ -64,11 +61,8 @@ public class SmeltListener {
                     if (!RandomHelper.getRandomChance(mission.getChance())) return;
 
                 }
-                System.out.println("itemID == " + itemID);
-                System.out.println("mission item ids == " + mission.getItemIDs());
                 if (mission.getItemIDs().contains(itemID)) {
 
-                    System.out.println("item IDs contains item id");
                     MissionRequirementsEvent requirementsEvent = new MissionRequirementsEvent(player, mission.getID(), mission.getRequirements());
                     MinecraftForge.EVENT_BUS.post(requirementsEvent);
                     if (!requirementsEvent.isCanceled()) {
@@ -77,21 +71,10 @@ public class SmeltListener {
                         ComplexConfigManager configManager = BetterMissions.missionConfigManager.get("Smelt");
                         int index = Utils.getIndexFromMissionID("Smelt", mission.getID());
                         PartyRequirement partyRequirement = new PartyRequirement(configManager, index, mission.getRequirements().getPartyRequirements(), player);
-                        System.out.println("partyRequirement == " + partyRequirement);
-                        System.out.println("partyRequirements map == " + mission.getRequirements().getPartyRequirements());
                         PokedexRequirement pokedexRequirement = new PokedexRequirement(mission.getRequirements().getPokedexRequirements(), player);
-                        System.out.println("pokedexRequirement == " + pokedexRequirement);
-                        System.out.println("pokedexRequirement map == " + mission.getRequirements().getPokedexRequirements());
-                        PermissionRequirement permissionRequirement = new PermissionRequirement(mission.getRequirements().getPermissionRequirements(), player);
-                        System.out.println("permissionRequirement == " + permissionRequirement);
-                        System.out.println("permissionRequirement map == " + mission.getRequirements().getPermissionRequirements());
-                        TimeRequirement timeRequirement = new TimeRequirement(mission.getRequirements().getTimeRequirements(), player);
-                        System.out.println("timeRequirement == " + timeRequirement);
-                        System.out.println("timeRequirement map == " + mission.getRequirements().getTimeRequirements());
+                        PermissionRequirement permissionRequirement = new PermissionRequirement(mission.getRequirements().getDoesNotHavePermissionRequirements(), mission.getRequirements().getHasPermissionRequirements(), player);
                         WeatherRequirement weatherRequirement = new WeatherRequirement(mission.getRequirements().getWeatherRequirements(), player);
-                        System.out.println("weatherRequirement == " + weatherRequirement);
-                        System.out.println("weatherRequirement map == " + mission.getRequirements().getWeatherRequirements());
-                        if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, timeRequirement, weatherRequirement)) return;
+                        if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, weatherRequirement)) return;
                         if (partyRequirement.getPokemonToRemove().size() > 0) {
 
                             PlayerPartyStorage storage = StorageProxy.getParty(player);
@@ -122,7 +105,7 @@ public class SmeltListener {
 
                     }
                     int progress = AccountHandler.getMissionProgress(account, mission.getID());
-                    int updated = progress + 1;
+                    int updated = progress + quantity;
                     AccountHandler.updateProgress(account, mission.getID(), updated);
                     if (AccountHandler.completed(mission.getAmount(), updated)) {
 
@@ -210,12 +193,11 @@ public class SmeltListener {
                                     int index = Utils.getIndexFromMissionID("Smelt", missions.getID());
                                     PartyRequirement partyRequirement = new PartyRequirement(configManager, index, missions.getRequirements().getPartyRequirements(), player);
                                     PokedexRequirement pokedexRequirement = new PokedexRequirement(missions.getRequirements().getPokedexRequirements(), player);
-                                    PermissionRequirement permissionRequirement = new PermissionRequirement(missions.getRequirements().getPermissionRequirements(), player);
-                                    TimeRequirement timeRequirement = new TimeRequirement(missions.getRequirements().getTimeRequirements(), player);
+                                    PermissionRequirement permissionRequirement = new PermissionRequirement(missions.getRequirements().getDoesNotHavePermissionRequirements(), missions.getRequirements().getHasPermissionRequirements(), player);
                                     WeatherRequirement weatherRequirement = new WeatherRequirement(missions.getRequirements().getWeatherRequirements(), player);
                                     try {
 
-                                        if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, timeRequirement, weatherRequirement)) return false;
+                                        if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, weatherRequirement)) return false;
 
                                     } catch (ObjectMappingException e) {
 
@@ -252,7 +234,7 @@ public class SmeltListener {
 
                                 }
                                 int progress = AccountHandler.getMissionProgress(account, missions.getID());
-                                int updated = progress + 1;
+                                int updated = progress + quantity;
                                 AccountHandler.updateProgress(account, missions.getID(), updated);
                                 if (AccountHandler.completed(missions.getAmount(), updated)) {
 

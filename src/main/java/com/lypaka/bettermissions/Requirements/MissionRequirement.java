@@ -8,23 +8,23 @@ public class MissionRequirement {
     private final Map<String, Map<String, String>> itemRequirements;
     private final Map<String, Map<String, String>> partyRequirements;
     private final List<String> pokedexRequirements;
-    private final Map<String, List<String>> permissionRequirements;
-    private final Map<String, List<String>> timeRequirements;
+    private final List<String> doesNotHavePermissionRequirements;
+    private final List<String> hasPermissionRequirements;
     private final List<String> weatherRequirements;
 
     public MissionRequirement (Map<String, Map<String, String>> itemRequirements,
                                Map<String, Map<String, String>> partyRequirements,
                                List<String> pokedexRequirements,
-                               Map<String, List<String>> permissionRequirements,
-                               Map<String, List<String>> timeRequirements,
+                               List<String> doesNotHavePermissionRequirements,
+                               List<String> hasPermissionRequirements,
                                List<String> weatherRequirements
                                ) {
 
         this.itemRequirements = itemRequirements;
         this.partyRequirements = partyRequirements;
         this.pokedexRequirements = pokedexRequirements;
-        this.permissionRequirements = permissionRequirements;
-        this.timeRequirements = timeRequirements;
+        this.doesNotHavePermissionRequirements = doesNotHavePermissionRequirements;
+        this.hasPermissionRequirements = hasPermissionRequirements;
         this.weatherRequirements = weatherRequirements;
 
     }
@@ -47,15 +47,15 @@ public class MissionRequirement {
 
     }
 
-    public Map<String, List<String>> getPermissionRequirements() {
+    public List<String> getDoesNotHavePermissionRequirements() {
 
-        return permissionRequirements;
+        return this.doesNotHavePermissionRequirements;
 
     }
 
-    public Map<String, List<String>> getTimeRequirements() {
+    public List<String> getHasPermissionRequirements() {
 
-        return timeRequirements;
+        return this.hasPermissionRequirements;
 
     }
 

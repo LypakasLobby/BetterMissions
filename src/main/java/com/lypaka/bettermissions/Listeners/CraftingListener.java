@@ -36,12 +36,11 @@ public class CraftingListener {
     @SubscribeEvent
     public void onBrew (PlayerBrewedPotionEvent event) throws ObjectMappingException {
 
-        System.out.println("hi");
         if (BetterMissions.disabled) return;
-        System.out.println("hi 2");
         ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
         UUID uuid = player.getUniqueID();
         String itemID = event.getStack().getItem().getRegistryName().toString();
+        int quantity = event.getStack().getCount();
         if (AccountHandler.accountMap.containsKey(uuid)) {
 
             Account account = AccountHandler.accountMap.get(uuid);
@@ -76,10 +75,10 @@ public class CraftingListener {
                         int index = Utils.getIndexFromMissionID("Craft", mission.getID());
                         PartyRequirement partyRequirement = new PartyRequirement(configManager, index, mission.getRequirements().getPartyRequirements(), player);
                         PokedexRequirement pokedexRequirement = new PokedexRequirement(mission.getRequirements().getPokedexRequirements(), player);
-                        PermissionRequirement permissionRequirement = new PermissionRequirement(mission.getRequirements().getPermissionRequirements(), player);
-                        TimeRequirement timeRequirement = new TimeRequirement(mission.getRequirements().getTimeRequirements(), player);
+                        PermissionRequirement permissionRequirement = new PermissionRequirement(mission.getRequirements().getDoesNotHavePermissionRequirements(), mission.getRequirements().getHasPermissionRequirements(), player);
+
                         WeatherRequirement weatherRequirement = new WeatherRequirement(mission.getRequirements().getWeatherRequirements(), player);
-                        if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, timeRequirement, weatherRequirement)) return;
+                        if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, weatherRequirement)) return;
                         if (partyRequirement.getPokemonToRemove().size() > 0) {
 
                             PlayerPartyStorage storage = StorageProxy.getParty(player);
@@ -110,7 +109,7 @@ public class CraftingListener {
 
                     }
                     int progress = AccountHandler.getMissionProgress(account, mission.getID());
-                    int updated = progress + 1;
+                    int updated = progress + quantity;
                     AccountHandler.updateProgress(account, mission.getID(), updated);
                     if (AccountHandler.completed(mission.getAmount(), updated)) {
 
@@ -199,12 +198,11 @@ public class CraftingListener {
                                     int index = Utils.getIndexFromMissionID("Craft", missions.getID());
                                     PartyRequirement partyRequirement = new PartyRequirement(configManager, index, missions.getRequirements().getPartyRequirements(), player);
                                     PokedexRequirement pokedexRequirement = new PokedexRequirement(missions.getRequirements().getPokedexRequirements(), player);
-                                    PermissionRequirement permissionRequirement = new PermissionRequirement(missions.getRequirements().getPermissionRequirements(), player);
-                                    TimeRequirement timeRequirement = new TimeRequirement(missions.getRequirements().getTimeRequirements(), player);
+                                    PermissionRequirement permissionRequirement = new PermissionRequirement(missions.getRequirements().getDoesNotHavePermissionRequirements(), missions.getRequirements().getHasPermissionRequirements(), player);
                                     WeatherRequirement weatherRequirement = new WeatherRequirement(missions.getRequirements().getWeatherRequirements(), player);
                                     try {
 
-                                        if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, timeRequirement, weatherRequirement)) return false;
+                                        if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, weatherRequirement)) return false;
 
                                     } catch (ObjectMappingException e) {
 
@@ -241,7 +239,7 @@ public class CraftingListener {
 
                                 }
                                 int progress = AccountHandler.getMissionProgress(account, missions.getID());
-                                int updated = progress + 1;
+                                int updated = progress + quantity;
                                 AccountHandler.updateProgress(account, missions.getID(), updated);
                                 if (AccountHandler.completed(missions.getAmount(), updated)) {
 
@@ -311,12 +309,11 @@ public class CraftingListener {
     @SubscribeEvent
     public void onCraft (PlayerEvent.ItemCraftedEvent event) throws ObjectMappingException {
 
-        System.out.println("hi");
         if (BetterMissions.disabled) return;
-        System.out.println("hi 2");
         ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
         UUID uuid = player.getUniqueID();
         String itemID = event.getCrafting().getItem().getRegistryName().toString();
+        int quantity = event.getCrafting().getCount();
         if (AccountHandler.accountMap.containsKey(uuid)) {
 
             Account account = AccountHandler.accountMap.get(uuid);
@@ -356,10 +353,9 @@ public class CraftingListener {
                         int index = Utils.getIndexFromMissionID("Craft", mission.getID());
                         PartyRequirement partyRequirement = new PartyRequirement(configManager, index, mission.getRequirements().getPartyRequirements(), player);
                         PokedexRequirement pokedexRequirement = new PokedexRequirement(mission.getRequirements().getPokedexRequirements(), player);
-                        PermissionRequirement permissionRequirement = new PermissionRequirement(mission.getRequirements().getPermissionRequirements(), player);
-                        TimeRequirement timeRequirement = new TimeRequirement(mission.getRequirements().getTimeRequirements(), player);
+                        PermissionRequirement permissionRequirement = new PermissionRequirement(mission.getRequirements().getDoesNotHavePermissionRequirements(), mission.getRequirements().getHasPermissionRequirements(), player);
                         WeatherRequirement weatherRequirement = new WeatherRequirement(mission.getRequirements().getWeatherRequirements(), player);
-                        if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, timeRequirement, weatherRequirement)) return;
+                        if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, weatherRequirement)) return;
                         if (partyRequirement.getPokemonToRemove().size() > 0) {
 
                             PlayerPartyStorage storage = StorageProxy.getParty(player);
@@ -390,7 +386,7 @@ public class CraftingListener {
 
                     }
                     int progress = AccountHandler.getMissionProgress(account, mission.getID());
-                    int updated = progress + 1;
+                    int updated = progress + quantity;
                     AccountHandler.updateProgress(account, mission.getID(), updated);
                     if (AccountHandler.completed(mission.getAmount(), updated)) {
 
@@ -484,12 +480,11 @@ public class CraftingListener {
                                     int index = Utils.getIndexFromMissionID("Craft", missions.getID());
                                     PartyRequirement partyRequirement = new PartyRequirement(configManager, index, missions.getRequirements().getPartyRequirements(), player);
                                     PokedexRequirement pokedexRequirement = new PokedexRequirement(missions.getRequirements().getPokedexRequirements(), player);
-                                    PermissionRequirement permissionRequirement = new PermissionRequirement(missions.getRequirements().getPermissionRequirements(), player);
-                                    TimeRequirement timeRequirement = new TimeRequirement(missions.getRequirements().getTimeRequirements(), player);
+                                    PermissionRequirement permissionRequirement = new PermissionRequirement(missions.getRequirements().getDoesNotHavePermissionRequirements(), missions.getRequirements().getHasPermissionRequirements(), player);
                                     WeatherRequirement weatherRequirement = new WeatherRequirement(missions.getRequirements().getWeatherRequirements(), player);
                                     try {
 
-                                        if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, timeRequirement, weatherRequirement)) return false;
+                                        if (!Utils.passesRequirements(itemRequirement, partyRequirement, pokedexRequirement, permissionRequirement, weatherRequirement)) return false;
 
                                     } catch (ObjectMappingException e) {
 
@@ -526,7 +521,7 @@ public class CraftingListener {
 
                                 }
                                 int progress = AccountHandler.getMissionProgress(account, missions.getID());
-                                int updated = progress + 1;
+                                int updated = progress + quantity;
                                 AccountHandler.updateProgress(account, missions.getID(), updated);
                                 if (AccountHandler.completed(missions.getAmount(), updated)) {
 
