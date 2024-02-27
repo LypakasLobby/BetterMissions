@@ -22,6 +22,7 @@ public class BreedListener {
         if (AccountHandler.accountMap.containsKey(uuid)) {
 
             Pokemon pokemon = event.getChildGiven();
+            if (pokemon == null) return;
             Account account = AccountHandler.accountMap.get(uuid);
             BreedMission mission = null;
             String id = AccountHandler.getCurrentMission(account);
