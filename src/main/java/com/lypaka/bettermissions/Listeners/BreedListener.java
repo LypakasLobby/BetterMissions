@@ -15,14 +15,13 @@ import java.util.UUID;
 public class BreedListener {
 
     @SubscribeEvent
-    public void onBreed (DayCareEvent.PreEggCalculate event) throws ObjectMappingException {
+    public void onBreed (DayCareEvent.PostCollect event) throws ObjectMappingException {
 
-        if (!event.isChildExists()) return;
         ServerPlayerEntity player = event.getPlayer();
         UUID uuid = player.getUniqueID();
         if (AccountHandler.accountMap.containsKey(uuid)) {
 
-            Pokemon pokemon = event.getCalculatedChild();
+            Pokemon pokemon = event.getChildGiven();
             Account account = AccountHandler.accountMap.get(uuid);
             BreedMission mission = null;
             String id = AccountHandler.getCurrentMission(account);

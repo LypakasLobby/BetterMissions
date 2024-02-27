@@ -45,8 +45,12 @@ public class MissionsMenu {
         Account account = AccountHandler.accountMap.get(player.getUniqueID());
         String missionID = AccountHandler.getCurrentMission(account);
         String repID = getRepresentationIDFromMissionID(missionID);
+        GooeyButton repButton;// = GooeyButton.builder().display(icon).build();
+
+        boolean hasMission;
         if (repID != null) {
 
+            hasMission = true;
             String itemID = ConfigGetters.missionItemRepresentativeMap.get(repID);
             ItemStack icon = ItemStackBuilder.buildFromStringID(itemID);
             icon.setDisplayName(FancyText.getFormattedText(getMissionNameFromID(missionID)));
@@ -72,45 +76,52 @@ public class MissionsMenu {
 
             }
 
-            GooeyButton repButton = GooeyButton.builder().display(icon).build();
-            page.getTemplate().getSlot(12).setButton(repButton);
+            repButton = GooeyButton.builder().display(icon).build();
 
-            ItemStack rerollIcon = ItemStackBuilder.buildFromStringID(ConfigGetters.missionRerollItemID);
-            rerollIcon.setDisplayName(FancyText.getFormattedText(ConfigGetters.missionRerollDisplayName));
-            List<String> rerollLoreString = ConfigGetters.rerollLore;
-            ListNBT rerollLore = new ListNBT();
-            for (String s : rerollLoreString) {
 
-                rerollLore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s.replace("%cost%", String.valueOf(ConfigGetters.rerollCost))))));
+        } else {
 
-            }
-            rerollIcon.getOrCreateChildTag("display").put("Lore", rerollLore);
-            Button rerollButton;
-            if (ConfigGetters.rerollsEnabled) {
+            hasMission = false;
+            ItemStack icon = ItemStackBuilder.buildFromStringID("minecraft:air");
+            icon.setDisplayName(FancyText.getFormattedText("&cNo Mission Data"));
+            ListNBT listNBT = new ListNBT();
+            listNBT.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText("&eYou currently don't have a mission!"))));
+            icon.getOrCreateChildTag("display").put("Lore", listNBT);
+            repButton = GooeyButton.builder().display(icon).build();
 
-                PlayerPartyStorage storage = StorageProxy.getParty(player);
-                int balance = (int) LogicalPixelmonMoneyHandler.getBalance(player.getUniqueID());
-                if (balance >= ConfigGetters.rerollCost || ConfigGetters.rerollCost == 0) {
+        }
+        page.getTemplate().getSlot(12).setButton(repButton);
 
-                    rerollButton = GooeyButton.builder()
-                            .display(rerollIcon)
-                            .onClick(() -> {
+        ItemStack rerollIcon = ItemStackBuilder.buildFromStringID(ConfigGetters.missionRerollItemID);
+        rerollIcon.setDisplayName(FancyText.getFormattedText(ConfigGetters.missionRerollDisplayName));
+        List<String> rerollLoreString = ConfigGetters.rerollLore;
+        ListNBT rerollLore = new ListNBT();
+        for (String s : rerollLoreString) {
 
-                                storage.setBalance(balance - ConfigGetters.rerollCost);
-                                AccountHandler.assignRandomMission(account);
-                                AccountHandler.removeMission(account, missionID);
-                                AccountHandler.saveProgress(account);
-                                player.sendMessage(FancyText.getFormattedText(ConfigGetters.newMissionNotification), player.getUniqueID());
-                                open(player);
+            rerollLore.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(FancyText.getFormattedText(s.replace("%cost%", String.valueOf(ConfigGetters.rerollCost))))));
 
-                            })
-                            .build();
+        }
+        rerollIcon.getOrCreateChildTag("display").put("Lore", rerollLore);
+        Button rerollButton;
+        if (ConfigGetters.rerollsEnabled) {
 
-                } else {
+            PlayerPartyStorage storage = StorageProxy.getParty(player);
+            int balance = (int) LogicalPixelmonMoneyHandler.getBalance(player.getUniqueID());
+            if (balance >= ConfigGetters.rerollCost || ConfigGetters.rerollCost == 0) {
 
-                    rerollButton = GooeyButton.builder().display(rerollIcon).build();
+                rerollButton = GooeyButton.builder()
+                        .display(rerollIcon)
+                        .onClick(() -> {
 
-                }
+                            storage.setBalance(balance - ConfigGetters.rerollCost);
+                            AccountHandler.assignRandomMission(account);
+                            AccountHandler.removeMission(account, missionID);
+                            AccountHandler.saveProgress(account);
+                            player.sendMessage(FancyText.getFormattedText(ConfigGetters.newMissionNotification), player.getUniqueID());
+                            open(player);
+
+                        })
+                        .build();
 
             } else {
 
@@ -118,12 +129,21 @@ public class MissionsMenu {
 
             }
 
-            page.getTemplate().getSlot(14).setButton(rerollButton);
-            UIManager.openUIForcefully(player, page);
+        } else {
+
+            rerollButton = GooeyButton.builder().display(rerollIcon).build();
+
+        }
+
+        page.getTemplate().getSlot(14).setButton(rerollButton);
+        if (!hasMission && !ConfigGetters.rerollsEnabled) {
+
+            player.sendMessage(FancyText.getFormattedText("&cAn error occurred when trying to open the menu! Please report this message to staff!"), player.getUniqueID());
+            player.sendMessage(FancyText.getFormattedText("&e9/10 times, though, this message just means you don't have a mission to show and rerolling missions is not enabled!"), player.getUniqueID());
 
         } else {
 
-            player.sendMessage(FancyText.getFormattedText("&cAn error occurred when trying to open the menu! Please report this message to staff!"), player.getUniqueID());
+            UIManager.openUIForcefully(player, page);
 
         }
 

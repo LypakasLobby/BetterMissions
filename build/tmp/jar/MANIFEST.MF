@@ -3,7 +3,7 @@ Specification-Title: bettermissions
 Specification-Vendor: Lypaka
 Specification-Version: 1
 Implementation-Title: bettermissions
-Implementation-Version: 1.16.5-3.0.0
+Implementation-Version: 1.16.5-3.0.1
 Implementation-Vendor: Lypaka
-Implementation-Timestamp: 2024-02-17T16:02:36-0600
+Implementation-Timestamp: 2024-02-19T10:14:26-0600
 
