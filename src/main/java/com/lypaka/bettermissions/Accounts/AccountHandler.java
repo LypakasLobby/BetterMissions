@@ -391,6 +391,23 @@ public class AccountHandler {
                 }
 
             }
+            if (MissionsHandler.reviveMissions.size() > 0) {
+
+                if (repID.equalsIgnoreCase("Reviving")) {
+
+                    if (MissionsHandler.reviveMissions.size() > 1) {
+
+                        types.add(repID);
+
+                    }
+
+                } else {
+
+                    types.add("Reviving");
+
+                }
+
+            }
 
         } else {
 
@@ -409,6 +426,7 @@ public class AccountHandler {
             if (MissionsHandler.photographMissions.size() > 0) types.add("photographing");
             if (MissionsHandler.raidMissions.size() > 0) types.add("raiding");
             if (MissionsHandler.smeltMissions.size() > 0) types.add("smelting");
+            if (MissionsHandler.reviveMissions.size() > 0) types.add("reviving");
 
         }
         if (types.size() == 0) {
@@ -418,6 +436,7 @@ public class AccountHandler {
 
         }
         String selectedType = RandomHelper.getRandomElementFromList(types);
+        BetterMissions.logger.info("Assigning a random " + selectedType + " Mission to " + account.getUUID().toString());
         Map<String, String> map = new HashMap<>();
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime then;
@@ -797,6 +816,31 @@ public class AccountHandler {
                 then = now.plusSeconds(selectedSmelt.getTimer());
                 map.put("Expires", then.toString());
                 account.getMissionMap().put(selectedSmelt.getID(), map);
+                break;
+
+            case "reviving":
+                List<ReviveMission> possibleRevives = new ArrayList<>();
+                if (MissionsHandler.reviveMissions.size() > 1) {
+
+                    for (ReviveMission mission : MissionsHandler.reviveMissions) {
+
+                        if (!mission.getID().equalsIgnoreCase(currentMission)) {
+
+                            possibleRevives.add(mission);
+
+                        }
+
+                    }
+
+                } else {
+
+                    possibleRevives.add(MissionsHandler.reviveMissions.get(0));
+
+                }
+                ReviveMission selectedRevive = RandomHelper.getRandomElementFromList(possibleRevives);
+                then = now.plusSeconds(selectedRevive.getTimer());
+                map.put("Expires", then.toString());
+                account.getMissionMap().put(selectedRevive.getID(), map);
                 break;
 
         }

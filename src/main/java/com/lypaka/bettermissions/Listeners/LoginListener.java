@@ -4,6 +4,9 @@ import com.google.common.reflect.TypeToken;
 import com.lypaka.bettermissions.Accounts.Account;
 import com.lypaka.bettermissions.Accounts.AccountHandler;
 import com.lypaka.bettermissions.BetterMissions;
+import com.lypaka.bettermissions.ConfigGetters;
+import com.lypaka.lypakautils.FancyText;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
@@ -17,7 +20,8 @@ public class LoginListener {
     @SubscribeEvent
     public void onJoin (PlayerEvent.PlayerLoggedInEvent event) throws ObjectMappingException {
 
-        UUID uuid = event.getPlayer().getUniqueID();
+        ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+        UUID uuid = player.getUniqueID();
         BetterMissions.playerConfigManager.loadPlayer(uuid);
         if (BetterMissions.playerConfigManager.getPlayerConfigNode(uuid, "Claimed-Missions").isVirtual()) {
 
@@ -46,6 +50,7 @@ public class LoginListener {
 
             AccountHandler.assignRandomMission(account);
             AccountHandler.saveProgress(account);
+            player.sendMessage(FancyText.getFormattedText(ConfigGetters.newMissionNotification), uuid);
 
         }
 
